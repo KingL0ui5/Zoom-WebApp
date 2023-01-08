@@ -1,0 +1,57 @@
+<style>
+    body { font-family: Arial, sans-serif; }
+</style>
+
+<body>
+    
+<form action="/users" accept-charset="UTF-8" method="post">
+  <input type="hidden" name="authenticity_token" value="...">
+
+  <div>
+    <label for="user_EmployeeID">Employee ID</label><br>
+    <input type="text" name="user[EmployeeID]" id="user_EmployeeID">
+    <% user.errors.full_messages_for(:EmployeeID).each do |message| %>  <!-- gets errors from validator see /app/app/models/user.rb -->
+      <div style="color:red";><%= message[10,1000] %></div>
+    <% end %><br>
+  </div>
+
+  <div>
+    <label for="user_Name">Name</label><br>
+    <input type="text" name="user[Name]" id="user_Name">
+    <% user.errors.full_messages_for(:Name).each do |message| %>
+      <div style="color:red";><%= message[5,1000] %></div>
+    <% end %><br>
+  </div>
+  
+  <div>
+    <label for="user_EmailAddress">Email Address</label><br>
+    <input type="text" name="user[EmailAddress]" id="user_EmailAddress">
+    <% user.errors.full_messages_for(:EmailAddress).each do |message| %>
+      <div style="color:red";><%= message[13,1000] %></div>
+    <% end %><br> 
+  </div>
+  
+  <div>
+    <label for="user_EmailAddress_confirmation">Confirm Email Address</label><br>
+    <input type="text" name="user[EmailAddress_confirmation]" id="user_EmailAddress_confirmation">
+    <% user.errors.full_messages_for(:EmailAddress_confirmation).each do |message| %>
+      <div style="color:red";><%= message[25,1000] %></div>
+    <% end %><br>       
+  </div>
+
+  <div>
+    <label for="user_Department">Department</label><br>
+    <input type="text" name="user[Department]" id="user_Department">
+    <% user.errors.full_messages_for(:Department).each do |message| %>
+      <div style="color:red";><%= message[11,1000] %></div>
+    <% end %><br> 
+  </div>
+  
+  <div>
+    <input type="submit" name="commit" value="Update User" data-disable-with="Update User">
+  </div>
+</form>
+
+<p><%= link_to "Go back", "/users" %></p>
+
+</body>

@@ -1,0 +1,29 @@
+<style>
+    body { font-family: Arial, sans-serif; }
+</style>
+
+<body>
+<h1>Departments</h1>
+
+<ul>
+  <% @departments.each do |department| %>
+    <li>
+    <div>
+       <a href="<%= department_path(department) %>">
+        Name: <%= department.name %>
+    </div> 
+    <div><br>
+        <%= link_to "Show details", department %>
+    </div>
+    </li>
+    <% end %>
+</ul>
+
+<p>
+  <%= link_to "New Department", new_department_path %>
+</p>
+
+<p> 
+<%= link_to "Go back", "/home" %> 
+</p>
+</body>

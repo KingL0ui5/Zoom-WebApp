@@ -8,12 +8,13 @@
 <ul>
   <% @users.each do |user| %>
       <li>
-      <div>
+        <div>
           <a href="<%= user_path(user) %>">
           Employee ID: <%= user.Name %>
-      </div> 
-<!--  <%= link_to "edit", edit_user_path(user) %>  -->
-<!--  <%= link_to "Destroy", user, data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %>  -->
+        </div> 
+        <div>
+          <%= link_to "Show details", user %>
+        </div>
       </li>
   <% end %>
 </ul>
@@ -23,6 +24,6 @@
 </p>
 
 <p> 
-<%= link_to "Go back", "/home" %> 
+<%= link_to "Go back", "/departments" %> 
 </p>
 </body>

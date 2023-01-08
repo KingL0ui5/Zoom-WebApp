@@ -9,5 +9,13 @@
 <p>EmailAddress: <%= @user.EmailAddress %></p>
 <p>Department: <%= @user.Department %></p>
 
+<ul>
+    <li><%= link_to "Edit", edit_user_path(@user) %></li>
+    <li><%= link_to "Destroy", user_path(@user), data: {
+                        turbo_method: :delete, 
+                        turbo_confirm: "Are you sure?"
+                        } %></li> 
+</ul>
+
 <p><%= link_to "Go back", "/users" %></p>
 </body>

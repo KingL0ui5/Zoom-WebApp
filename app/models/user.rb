@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+    has_one :department
+    
     validates :EmployeeID, :Name, :EmailAddress, :Department, presence: { message: "This field cannot be blank" }
     
     validates :EmployeeID, uniqueness: {message: "Employee already exists."}, format: {with: /\A[+-]?\d+\z/, message: "This is not a valid Employee ID"}, length: { is: 4, message: "This is not a valid Employee ID" } 
