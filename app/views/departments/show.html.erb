@@ -8,20 +8,8 @@
 <p>Name: <%= @department.name %></p>
 
 <h2>Users</h2>
-<%= @department.users.each do |user| %>
-<li>
-    <div>
-        <a href="<%= department_user_path(user) %>">
-        Name: <%= department_user.Name %>
-    </div>
-    <div><br>
-        <%= link_to "Edit", edit_department_path(@user) %> 
-        <%= link_to "Destroy", department_path(@user), data: {turbo_method: :delete, turbo_confirm: "Are you sure?"} %> 
-    </div>
-    </li>
-  <% end %>
 
-<h2></h2>
+<%= link_to "See Users", user_path %>
 
 <p><%= link_to "Go back", "/departments" %></p>
 </body>

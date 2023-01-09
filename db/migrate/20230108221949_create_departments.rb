@@ -4,6 +4,13 @@ class CreateDepartments < ActiveRecord::Migration[5.0]
       t.string :name
 
       t.timestamps
+    
+    create_table :users do |t|
+      t.integer :EmployeeID
+      t.string :Name
+      t.string :EmailAddress
+
+      t.timestamps
     end
   end
 end

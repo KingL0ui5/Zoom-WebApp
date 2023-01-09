@@ -9,11 +9,11 @@
   <% @departments.each do |department| %>
     <li>
     <div>
-       <a href="<%= department_path(department) %>">
-        Name: <%= department.name %>
+        Name: <%= department.name %><br>
+        ID: <%= department.id %>
     </div> 
     <div><br>
-        <%= link_to "Show details", department %>
+        <%= link_to "Details", department %>
     </div>
     </li>
     <% end %>

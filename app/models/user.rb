@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-    has_one :department
+    belongs_to :department, index: true, foreign_key: true 
     
     validates :EmployeeID, :Name, :EmailAddress, :Department, presence: { message: "This field cannot be blank" }
     

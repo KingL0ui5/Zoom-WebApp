@@ -4,7 +4,7 @@ class UsersController < ApplicationController
     end 
 
     def show
-        @user = User.find(params[:id])
+        @user = @department.users.find(params[:id])
     end
     
     def new
@@ -35,7 +35,7 @@ class UsersController < ApplicationController
         @user = User.find(params[:id])
         @user.destroy
         
-        redirect_to root_path, status: :see_other, notice: "User was sucessfully destroyed"
+        redirect_to users_path, status: :see_other, notice: "User was sucessfully destroyed"
     end 
     
     private

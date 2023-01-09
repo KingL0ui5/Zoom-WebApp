@@ -4,7 +4,6 @@ class CreateUsers < ActiveRecord::Migration[5.0]
       t.integer :EmployeeID
       t.string :Name
       t.string :EmailAddress
-      t.string :Department
 
       t.timestamps
     end
