@@ -4,7 +4,7 @@ class UsersController < ApplicationController
     end 
 
     def show
-        @user = @department.users.find(params[:id])
+        @user = User.find(params[:id])
     end
     
     def new
@@ -12,10 +12,9 @@ class UsersController < ApplicationController
     end 
     
     def create 
-        @department = Department.find(params[:user_id])
-        @user = @department.users.create(user_parameters)
+        @user = User.create(user_parameters)
         if @user.save
-            redirect_to user_path(@user), notice: "User was sucessfully created"
+            redirect_to user_path(@user), notice: "User created sucessfully"
         else 
             render :new, status: :unprocessable_entity
         end
@@ -35,11 +34,12 @@ class UsersController < ApplicationController
         @user = User.find(params[:id])
         @user.destroy
         
-        redirect_to users_path, status: :see_other, notice: "User was sucessfully destroyed"
+        flash[:notice] = 
+        redirect_to users_path, status: :see_other, notice: "User destroyed successfully."
     end 
     
     private
       def user_parameters
-          params.require(:user).permit(:EmployeeID, :Name, :EmailAddress, :Department)
+          params.require(:user).permit(:EmployeeID, :Name, :EmailAddress, :EmailAddress_confirmation, :Department)
       end
 end 

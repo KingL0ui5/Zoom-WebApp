@@ -1,0 +1,25 @@
+<style>
+    body { font-family: Arial, sans-serif; }
+</style>
+
+<body>
+
+<form action="/departments" accept-charset="UTF-8" method="post">
+  <input type="hidden" name="authenticity_token" value="...">
+
+  <div>
+    <label for="name">Department Name</label><br>
+    <input type="text" name="department[name]" id="department_name">
+    <% department.errors.full_messages_for(:name).each do |message| %>  <!-- gets errors from validator see /app/app/models/department.rb -->
+      <div style="color:red";><%= message[10,1000] %></div>
+    <% end %><br>
+  </div>
+  
+  <div>
+    <input type="submit" name="commit" value="Submit" data-disable-with="Submit">
+  </div>
+</form>
+
+<p><%= link_to "Go back", "/departments" %></p>
+
+</body>

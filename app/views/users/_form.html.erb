@@ -9,7 +9,7 @@
 
   <div>
     <label for="user_EmployeeID">Employee ID</label><br>
-    <input type="text" name="user[EmployeeID]" id="user_EmployeeID">
+    <input type="text" name="user[EmployeeID]" id="user_EmployeeID" pattern: "/{4}/">
     <% user.errors.full_messages_for(:EmployeeID).each do |message| %>  <!-- gets errors from validator see /app/app/models/user.rb -->
       <div style="color:red";><%= message[10,1000] %></div>
     <% end %><br>
