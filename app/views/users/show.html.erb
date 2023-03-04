@@ -2,6 +2,10 @@
     body { font-family: Arial, sans-serif; }
 </style>
 
+<% if flash[:notice] %>
+  <div class="notice"><%= flash[:notice] %></div>
+<% end %>
+
 <body>
 <h1>EmployeeID: <%= @user.EmployeeID %></h1>
 

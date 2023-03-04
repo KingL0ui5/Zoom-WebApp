@@ -4,37 +4,55 @@ class DepartmentsController < ApplicationController
     end 
     
     def show
-        @department = Department.find(params[:id])
+        begin
+            @department = Department.find(params[:id])
+            @users = @department.users
+        rescue => e 
+            redirect_to department_path, notice: (e.message) #displays error passed by ruby
+        end
     end
     
     def new
-        @department = department.new
+        @department = Department.new
     end 
     
     def create 
-        @department = Department.new(:name)
-        if @Department.save
-            redirect_to @Department, notice: "Department was sucessfully created"
-        else 
-            render :new, status: :unprocessable_entity
+        begin 
+            @department = Department.new(params.require(:department).permit(:name))
+            @department.save!
+            redirect_to @department
+        rescue => e
+            render :new, notice: (e.message) 
         end
     end
     
     def update
         @department = Department.find([params(:id)])
         
-        if @Department.update(:name)
+        begin
+            @Department.update(:name)
             redirect_to @Department
-        else 
-            render @edit, status: :unprocessable_entity
+        rescue => e 
+            redirect_to department_path, notice: e.message
+
         end
     end
     
-    def destroy 
+    def destroy
+    
         @department = Department.find(params[:id])
         @department.destroy
         
-        redirect_to root_path, status: :see_other, notice: "Department was sucessfully destroyed"
+        i = Department.last.id
+        ActiveRecord::Base.connection.execute("ALTER TABLE departments AUTO_INCREMENT = #{(i)} ") #resets the auto-increment function to the previous largest ie the last ID
+    
+        redirect_to @department, status: :see_other, notice: "Department sucessfully destroyed" #sucess (400 ok)
+        
+    rescue ActiveRecord::DepartmentNotFound #department cannot be found 
+        redirect_to department_path, status: :see_other, notice: "Department does not exist"
+
+    rescue ActiveRecord::DepartmentNotDestroyed #department not being destroyed 
+        redirect_to @department, status: :see_other, notice: "Department could not be destroyed, please try again"
     end 
     
 end

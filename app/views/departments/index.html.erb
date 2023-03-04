@@ -2,6 +2,10 @@
     body { font-family: Arial, sans-serif; }
 </style>
 
+<% if flash[:notice] %>
+  <div class="notice"; style="color:red";><%= flash[:notice] %></div>
+<% end %>
+
 <body>
 <h1>Departments</h1>
 
@@ -24,6 +28,6 @@
 </p>
 
 <p> 
-<%= link_to "Go back", "/home" %> 
+<%= link_to "Back", "/home" %> 
 </p>
 </body>

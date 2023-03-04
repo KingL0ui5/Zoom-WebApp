@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   resources :home
   resources :users
-  get "/departments/:id", to: "departments#index"
+  resources :departments
+  get "/departments/:id", to: "departments#show"
   get "/users/:id", to: "users#show"
   
   resources :departments do 

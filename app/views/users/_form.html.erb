@@ -1,3 +1,8 @@
+<%= form_tag do %>
+  <%= csrf_meta_tags %>
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+<% end %> 
+
 <style>
     body { font-family: Arial, sans-serif; }
 </style>
@@ -8,17 +13,9 @@
   <input type="hidden" name="authenticity_token" value="...">
 
   <div>
-    <label for="user_EmployeeID">Employee ID</label><br>
-    <input type="text" name="user[EmployeeID]" id="user_EmployeeID" pattern: "/{4}/">
-    <% user.errors.full_messages_for(:EmployeeID).each do |message| %>  <!-- gets errors from validator see /app/app/models/user.rb -->
-      <div style="color:red";><%= message[10,1000] %></div>
-    <% end %><br>
-  </div>
-
-  <div>
     <label for="user_Name">Name</label><br>
     <input type="text" name="user[Name]" id="user_Name">
-    <% user.errors.full_messages_for(:Name).each do |message| %>
+    <% user.errors.full_messages_for(:Name).each do |message|%> <!-- gets errors from validator see /app/app/models/user.rb --></%>
       <div style="color:red";><%= message[5,1000] %></div>
     <% end %><br>
   </div>
@@ -39,19 +36,17 @@
     <% end %><br>       
   </div>
 
-  <div>
-    <label for="user_Department">Department</label><br>
-    <input type="text" name="user[Department]" id="user_Department">
-    <% user.errors.full_messages_for(:Department).each do |message| %>
-      <div style="color:red";><%= message[11,1000] %></div>
-    <% end %><br> 
-  </div>
+  <%= form_for(@user) do |f| %> 
+    <%= f.label :department %> 
+    <%= f.collection_select :department, Department.all, :id, :name %><br>
+    
+    <div>
+      <br><%= f.submit %> 
+    </div>
+  <% end %>  
   
-  <div>
-    <input type="submit" name="commit" value="Submit" data-disable-with="Submit">
-  </div>
 </form>
 
-<p><%= link_to "Go back", "/users" %></p>
+<p><%= link_to "Back", "/users" %></p>
 
 </body>
