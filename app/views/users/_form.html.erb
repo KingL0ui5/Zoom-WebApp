@@ -9,9 +9,13 @@
 
 <body>
 
+<% if flash[:notice] %>
+  <div class="notice"><%= flash[:notice] %></div>
+<% end %>
+
 <form action="/users" accept-charset="UTF-8" method="post">
   <input type="hidden" name="authenticity_token" value="...">
-
+  
   <div>
     <label for="user_Name">Name</label><br>
     <input type="text" name="user[Name]" id="user_Name">
@@ -37,8 +41,8 @@
   </div>
 
   <%= form_for(@user) do |f| %> 
-    <%= f.label :department %> 
-    <%= f.collection_select :department, Department.all, :id, :name %><br>
+    <%= f.label :department_id %> 
+    <%= f.collection_select(:department_id, Department.all, :id, :name) %><br>
     
     <div>
       <br><%= f.submit %> 

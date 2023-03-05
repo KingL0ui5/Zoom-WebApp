@@ -1,7 +1,7 @@
-class User < ActiveRecord::Base
+class User < ActiveRecord::Base 
     belongs_to :department, foreign_key: true 
     
-    validates :Name, :EmailAddress, :Department, presence: { message: "This field cannot be blank" }
+    validates :Name, :EmailAddress, :department_id, presence: { message: "This field cannot be blank" }
     
    # validates :EmployeeID, uniqueness: {message: "Employee already exists."}, format: {with: /\A\d{4}\z/, message: "This is not a valid Employee ID"}, if: -> {:EmployeeID.present?}  #regex for 4 digits
     

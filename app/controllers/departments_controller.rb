@@ -20,7 +20,7 @@ class DepartmentsController < ApplicationController
         begin 
             @department = Department.new(params.require(:department).permit(:name))
             @department.save!
-            redirect_to @department
+            redirect_to @department, notice: "Department sucessfully created"
         rescue => e
             render :new, notice: (e.message) 
         end
@@ -48,10 +48,10 @@ class DepartmentsController < ApplicationController
     
         redirect_to @department, status: :see_other, notice: "Department sucessfully destroyed" #sucess (400 ok)
         
-    rescue ActiveRecord::DepartmentNotFound #department cannot be found 
+    rescue ActiveRecord::RecordNotFound #department cannot be found 
         redirect_to department_path, status: :see_other, notice: "Department does not exist"
 
-    rescue ActiveRecord::DepartmentNotDestroyed #department not being destroyed 
+    rescue ActiveRecord::RecordNotDestroyed #department not being destroyed 
         redirect_to @department, status: :see_other, notice: "Department could not be destroyed, please try again"
     end 
     
