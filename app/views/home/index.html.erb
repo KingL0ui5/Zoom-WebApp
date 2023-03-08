@@ -2,6 +2,10 @@
     body { font-family: Arial, sans-serif; }
 </style>
 
+<% if flash[:notice] %>
+  <div class="notice"; style="color:red";><%= flash[:notice] %></div>
+<% end %>
+
 <body>
 <h1>Home</h1>
 
@@ -13,7 +17,11 @@
     <%= link_to "Access employee database", "/departments" %> 
 </p>
 
-<div>
+<p>
     <%= "Access meeting database"%>
-</div>
+</p>
+
+<p>
+    <%= link_to "Create new meeting", "/zoom" %>
+</p>
 </body>

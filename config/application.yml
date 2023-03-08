@@ -1,0 +1,17 @@
+development: 
+  CLIENT_ID: 'h5mCujLdRfubftjQt_f_0w'
+  CLIENT_SECRET: '7u9AhiGL7d406UftKG8NwaQbtOmqAmbl'
+  REDIRECT_URI: 'https://c68dc96b16ad48c6ba78dbbb297e85d4.vfs.cloud9.us-east-1.amazonaws.com/zoom/callback'
+  ZOOM_BASE_URL: 'https://api.zoom.us/'    
+  
+test:
+  CLIENT_ID: ''
+  CLIENT_SECRET: ''
+  REDIRECT_URI: ''
+  ZOOM_BASE_URL: ''
+
+production: 
+  CLIENT_ID: ''
+  CLIENT_SECRET: ''
+  REDIRECT_URI: ''
+  ZOOM_BASE_URL: ''
