@@ -1,22 +1,22 @@
 require 'oauth2'
 require 'digest'
 
-CONFIG = YAML.load_file("#{Rails.root}/config/application.yml")[Rails.env]
+CONFIG = YAML.load_file("#{Rails.root}/config/application.yml")[Rails.env] #links to enviromnent YAML file /app/config/application.yaml
 
 class ZoomOAuth
 
   def initialize #initializer, kept here for ease rather than in /config/initializers, instance variables are not accessible outside this class
+    @account_id = CONFIG['ACCOUNT_ID']
     @client_id = CONFIG['CLIENT_ID']
     @client_secret = CONFIG['CLIENT_SECRET']
-    @redirect_uri = CONFIG['REDIRECT_URI'] #/zoom/callback
+    @redirect_uri = CONFIG['REDIRECT_URI'] #routes to /zoom/callback
     @zoom_base_url = CONFIG['ZOOM_BASE_URL']  
+    @state = 'random' #preset state token
   end
-
-  #ZOOM_ADD_OAUTH = 'https://zoom.us/oauth/authorize?response_type=code&client_id=QlCPXZkQQoSJdwYjILLAiA&redirect_uri=https%3A%2F%2Fc68dc96b16ad48c6ba78dbbb297e85d4.vfs.cloud9.us-east-1.amazonaws.com%2Fzoom%2Fcallback'
-  #ZOOM_GET_AUTHCODE = 'https://zoom.us/oauth/token?grant_type=authorization_code&code='
-  #ZOOM_AUTH = 'https://zoom.us/oauth/authorize?response_type=code&client_id='
-  #Make it possible to change this 
   
+  def getstate
+    @state 
+  end
   def client
     @client ||= OAuth2::Client.new(
       @client_id, 
@@ -43,17 +43,20 @@ class ZoomOAuth
     )
   end
   
-  def check_state(state)
-    puts "checking"
-    expected_state = hash_state(params[state]) #checks if the recieved state is the same as the expected state token
-    unless expected_state == state
-      raise OAuth2::Error.new('Invalid state token') #raises an Oauth2 error - handled in controllers/zoom_controller.rb
+  def check_state(recievedstate)
+    
+    puts "Validating state token..."
+    puts "Token: #{recievedstate}"
+    
+    expected_state = hash_state(@state) #checks if the recieved state is the same as the expected state token after hashing it
+    unless expected_state == recievedstate
+      raise OAuth2::Error.new('OAuth failed: Invalid state token') #raises an Oauth2 error - handled in controllers/zoom_controller.rb
     end 
+    puts "Validation successful."
   end
 
   private 
     def hash_state(state)
-      Digest::SHA256.hexdigest("#{state}#{@client_secret}") #hashes the state token with the client secret
+      Digest::SHA256.hexdigest("#{state}#{@client_secret}") #hashes the state token with the client secret using SHA256 algorithm
     end
-    
 end

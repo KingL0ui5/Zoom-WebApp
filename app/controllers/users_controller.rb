@@ -8,7 +8,7 @@ class UsersController < ApplicationController
         begin
             @user = User.find(params[:EmployeeID])
         rescue => e 
-            redirect_to users_path, notice: e.message
+            redirect_to users_path, flash: { error: e.message }
         end
     end
     
@@ -30,17 +30,19 @@ class UsersController < ApplicationController
         
         @user = User.new(user_parameters.merge({ department: additional_parameter }))
         if @user.save
-            redirect_to user_path(@user), notice: "User created sucessfully"
+            redirect_to user_path(@user), flash: { success: "User created sucessfully" }
         else 
-            render :new, status: :unprocessable_entity, notice: "Creation of user failed"
+            render :new, status: :unprocessable_entity, flash: { error: "Creation of user failed" }
         end
         
-        @user.save
-        redirect_to user_path(@user), notice: "User sucessfully created"
+        #@user.save
+        #redirect_to user_path(@user), notice: "User sucessfully created"
         
     #rescue => e
     #        Rails.logger.error "Error creating user: #{e.message}"
-    #        render :new
+    #        render :
+    
+    #deal with lack of any departments exception
     end
     
     def update
@@ -61,13 +63,13 @@ class UsersController < ApplicationController
         i = User.last.id
         ActiveRecord::Base.connection.execute("ALTER TABLE users AUTO_INCREMENT = #{(i)} ")
         
-        redirect_to users_path, status: :see_other, notice: "User sucessfully destroyed"  
+        redirect_to users_path, status: :see_other, flash: { success: "User sucessfully destroyed" } 
         
     rescue ActiveRecord::RecordNotFound
-        redirect_to users_path, status: :see_other, notice: "User does not exist"
+        redirect_to users_path, status: :see_other, flash: { error: "User does not exist" } 
         
     rescue ActiveRecord::RecordNotDestroyed
-        redirect_to @user, status: :see_other, notice: "User could not be destroyed, please try again"
+        redirect_to @user, status: :see_other, flash: { error: "User could not be destroyed, please try again" }
         
     end 
     

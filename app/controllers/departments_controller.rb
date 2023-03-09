@@ -8,7 +8,7 @@ class DepartmentsController < ApplicationController
             @department = Department.find(params[:id])
             @users = @department.users
         rescue => e 
-            redirect_to department_path, notice: (e.message) #displays error passed by ruby
+            redirect_to department_path, flash: { error: (e.message) }#displays error passed by ruby
         end
     end
     
@@ -20,9 +20,9 @@ class DepartmentsController < ApplicationController
         begin 
             @department = Department.new(params.require(:department).permit(:name))
             @department.save!
-            redirect_to @department, notice: "Department sucessfully created"
+            redirect_to @department, flash: { success: "Department sucessfully created" }
         rescue => e
-            render :new, notice: (e.message) 
+            render :new, flash: { error: (e.message) }
         end
     end
     
@@ -33,7 +33,7 @@ class DepartmentsController < ApplicationController
             @Department.update(:name)
             redirect_to @Department
         rescue => e 
-            redirect_to department_path, notice: e.message
+            redirect_to department_path, flash: { error: e.message } 
 
         end
     end
@@ -46,13 +46,13 @@ class DepartmentsController < ApplicationController
         i = Department.last.id
         ActiveRecord::Base.connection.execute("ALTER TABLE departments AUTO_INCREMENT = #{(i)} ") #resets the auto-increment function to the previous largest ie the last ID
     
-        redirect_to @department, status: :see_other, notice: "Department sucessfully destroyed" #sucess (400 ok)
+        redirect_to @department, status: :see_other, flash: { success: "Department sucessfully destroyed" }  #sucess (400 ok)
         
     rescue ActiveRecord::RecordNotFound #department cannot be found 
-        redirect_to department_path, status: :see_other, notice: "Department does not exist"
+        redirect_to department_path, status: :see_other, flash: { error: "Department does not exist" }
 
     rescue ActiveRecord::RecordNotDestroyed #department not being destroyed 
-        redirect_to @department, status: :see_other, notice: "Department could not be destroyed, please try again"
+        redirect_to @department, status: :see_other, flash: { error: "Department could not be destroyed, please try again" } 
     end 
     
 end
