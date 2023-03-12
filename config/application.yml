@@ -1,9 +1,15 @@
 development: 
   ACCOUNT_ID: 'aEDeWyabSIejB839_Pnw2w'
-  CLIENT_ID: 'Ndm7Nt6WStuYgoEckNuYfQ'
-  CLIENT_SECRET: 'BxXE4xv7ChL6u5xEzWn0GX3lA0zrATHZ'
+  CLIENT_ID_S2S: 'Ndm7Nt6WStuYgoEckNuYfQ'
+  CLIENT_SECRET_S2S: 'lkW9IzW3TsCYR50dBTbbwd6CtN1ztdU6'
+  
+  CLIENT_ID_OAUTH: "h5mCujLdRfubftjQt_f_0w"
+  CLIENT_SECRET_OAUTH: "7u9AhiGL7d406UftKG8NwaQbtOmqAmbl"
   REDIRECT_URI: 'https://c68dc96b16ad48c6ba78dbbb297e85d4.vfs.cloud9.us-east-1.amazonaws.com/zoom/callback'
-  ZOOM_BASE_URL: 'https://api.zoom.us/'    
+  
+  ZOOM_BASE_URL: 'https://api.zoom.us/'  
+  MEETING_ENDPOINT: '/'
+  ZOOM_TOKEN_URL: '/oauth/token'
   
 test:
   CLIENT_ID: ''
@@ -22,5 +28,5 @@ production:
   #ZOOM_AUTH = 'https://zoom.us/oauth/authorize?response_type=code&client_id='
 
 
-#for server2server: ClientID = Ndm7Nt6WStuYgoEckNuYfQ, ClientSecret = BxXE4xv7ChL6u5xEzWn0GX3lA0zrATHZ, AccountID = aEDeWyabSIejB839_Pnw2w
+#for server2server: ClientID = Ndm7Nt6WStuYgoEckNuYfQ, ClientSecret = lkW9IzW3TsCYR50dBTbbwd6CtN1ztdU6, AccountID = aEDeWyabSIejB839_Pnw2w
 #for standard OAuth: ClientID = h5mCujLdRfubftjQt_f_0w, ClientSecret = 7u9AhiGL7d406UftKG8NwaQbtOmqAmbl

@@ -6,7 +6,10 @@ Rails.application.routes.draw do
   get "/departments/:id", to: "departments#show"
   get "/users/:id", to: "users#show"
   
-  get '/zoom/callback', to: 'zoom#callback'
+  get '/zooms2s/callback', to: 'zooms2s#callback' #for S2S OAuth procedures
+  get '/zooms2s', to: 'zooms2s#gettok' 
+  
+  get '/zoom/callback', to: 'zoom#callback' #for normal OAuth procedures 
   get '/zoom', to: 'zoom#index'
   
   resources :departments do 

@@ -55,3 +55,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'oauth2' #for oauth zoom compatibility 
 gem 'dotenv' #for environmental varables 
 gem 'digest' #for SHA-256 hashing
+gem 'httparty' #for building API requests

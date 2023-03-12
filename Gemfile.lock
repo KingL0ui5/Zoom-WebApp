@@ -64,6 +64,9 @@ GEM
     globalid (1.1.0)
       activesupport (>= 5.0)
     hashie (5.0.0)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     jbuilder (2.11.5)
@@ -199,6 +202,7 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   digest
   dotenv
+  httparty
   jbuilder (~> 2.5)
   jquery-rails
   listen (~> 3.0.5)
