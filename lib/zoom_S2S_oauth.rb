@@ -47,7 +47,7 @@ class ZoomS2SOAuth
     url, 
     body: URI.encode_www_form(payload),
     headers: headers,
-    debug_output: $stdout
+    #debug_output: $stdout
     )
     
     puts "Posted: \nHeaders: #{headers} \nBody: #{payload} \nAwaiting response..."

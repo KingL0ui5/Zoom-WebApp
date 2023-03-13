@@ -5,15 +5,17 @@ class Zooms2sController < ApplicationController
   end
   
   def gettok
-    Session.destroy_all #destroys all session entries to avoid overflow errors
+    Session.delete_all #destroys all session entries to avoid overflow errors
     puts "Sessions destroyed..."
+    puts Session.all
     begin 
       zoom_oauth = ZoomS2SOAuth.new
       resp_body = zoom_oauth.get_access_token #calls method to get access token 
       
-      e = resp_body['reason']
-      if e != nil
-        redirect_to root_path, flash: { error: "Authorisation failed: #{ e }" }
+      error = resp_body['reason'] #exception handling for errors on server end
+      if error != nil
+        puts "Error #{error}"
+        #redirect_to root_path, flash: { error: "Authorisation failed: #{error}" }
       end 
       
       session[:access_token] = resp_body['access_token']
