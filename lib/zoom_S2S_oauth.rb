@@ -30,7 +30,7 @@ class ZoomS2SOAuth
     url = @zoom_base_url << @zoom_token_url
     authorisation = "#{@client_id}:#{@client_secret}" 
     encoded_authorisation = Base64.strict_encode64(authorisation)
-    puts "Authorization: #{encoded_authorisation}"
+    puts "Authorization: #{encoded_authorisation}..."
     
     headers = {
       'Content-Type' => 'application/x-www-form-urlencoded',
@@ -47,7 +47,7 @@ class ZoomS2SOAuth
     url, 
     body: URI.encode_www_form(payload),
     headers: headers,
-    #debug_output: $stdout
+    debug_output: $stdout
     )
     
     puts "Posted: \nHeaders: #{headers} \nBody: #{payload} \nAwaiting response..."
@@ -59,7 +59,7 @@ class ZoomS2SOAuth
   def startmeeting(access_tok, parameters)
     url = @zoom_base_url << @meeting_endpoint
     headers = {
-      'Authorization' => "Bearer #(access_tok)",
+      'Authorization' => "Bearer #{access_tok}",
       'Content-Type' => "application/json"
     }
     payload = parameters.to_json

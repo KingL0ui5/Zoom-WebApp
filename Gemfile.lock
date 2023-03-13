@@ -33,6 +33,12 @@ GEM
       activemodel (= 5.0.7.2)
       activesupport (= 5.0.7.2)
       arel (~> 7.0)
+    activerecord-session_store (1.1.3)
+      actionpack (>= 4.0)
+      activerecord (>= 4.0)
+      multi_json (~> 1.11, >= 1.11.2)
+      rack (>= 1.5.2, < 3)
+      railties (>= 4.0)
     activesupport (5.0.7.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
@@ -92,6 +98,7 @@ GEM
     mini_mime (1.1.2)
     mini_portile2 (2.8.1)
     minitest (5.18.0)
+    multi_json (1.15.0)
     multi_xml (0.6.0)
     mysql2 (0.5.5)
     net-imap (0.3.4)
@@ -198,6 +205,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord-session_store
   byebug
   coffee-rails (~> 4.2)
   digest

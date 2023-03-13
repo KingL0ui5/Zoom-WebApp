@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get "/departments/:id", to: "departments#show"
   get "/users/:id", to: "users#show"
   
-  get '/zooms2s/callback', to: 'zooms2s#callback' #for S2S OAuth procedures
+  get '/zooms2s/new_meeting', to: 'zooms2s#new_meeting' #for S2S procedures
   get '/zooms2s', to: 'zooms2s#gettok' 
   
   get '/zoom/callback', to: 'zoom#callback' #for normal OAuth procedures 
