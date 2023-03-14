@@ -8,6 +8,15 @@
 </style>
 
 <body>
+<%= form_for @meeting do |f| %>
+  <%= f.label :Agenda %>
+  <%= f.text_field :Agenda %>
 
+  <%= f.label :Duration %>
+  <%= f.number_field :Duration, placeholder: 'Enter duration', class: 'form-control'%>
+  <small class="text-muted">Please enter the duration in minutes</small>
   
+  
+  <%= f.submit %>
+<% end %>
 </body>

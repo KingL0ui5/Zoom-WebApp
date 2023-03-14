@@ -14,7 +14,7 @@ class ZoomController < ApplicationController
       code = params[:code] #AUTHORISATION code
       puts "Authorisation code: #{code}" 
       token = zoom_oauth.get_access_token(code) #ACCESS token
-      session[:access_token] = token.token
+      session[:OAuth_access_token] = token.token
       redirect_to root_path, flash: { success: "Authentication sucessful, Access Token: #{token.token}" }
     
     rescue StandardError => e 

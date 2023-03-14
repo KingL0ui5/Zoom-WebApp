@@ -8,7 +8,7 @@ development:
   REDIRECT_URI: 'https://c68dc96b16ad48c6ba78dbbb297e85d4.vfs.cloud9.us-east-1.amazonaws.com/zoom/callback'
   
   ZOOM_BASE_URL: 'https://api.zoom.us/'  
-  MEETING_ENDPOINT: '/'
+  MEETING_ENDPOINT: '/users/liulouis1@gmail.com/meetings'
   ZOOM_TOKEN_URL: '/oauth/token'
   
 test:

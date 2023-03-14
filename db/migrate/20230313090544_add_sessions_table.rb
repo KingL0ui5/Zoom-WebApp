@@ -10,3 +10,5 @@ class AddSessionsTable < ActiveRecord::Migration[5.0]
     add_index :sessions, :updated_at
   end
 end
+
+#moves session storage to this table, check config/initializers/session_store.rb for configuration

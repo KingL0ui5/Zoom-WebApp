@@ -30,8 +30,6 @@ class ZoomS2SOAuth
     url = @zoom_base_url << @zoom_token_url
     authorisation = "#{@client_id}:#{@client_secret}" 
     encoded_authorisation = Base64.strict_encode64(authorisation)
-    puts "Authorization: #{encoded_authorisation}..."
-    
     headers = {
       'Content-Type' => 'application/x-www-form-urlencoded',
       'Host' => 'zoom.us',
@@ -47,10 +45,19 @@ class ZoomS2SOAuth
     url, 
     body: URI.encode_www_form(payload),
     headers: headers,
-    #debug_output: $stdout
+    debug_output: $stdout
     )
     
-    puts "Posted: \nHeaders: #{headers} \nBody: #{payload} \nAwaiting response..."
+    content_type = resp.headers['content-type'] #retrieves content type of response
+    
+    if content_type != 'application/json;charset=UTF-8'  #if the content type is not JSON, something has happened 
+      File.open('response.html.erb', 'w') do |file|
+        file.puts(resp.body)
+      end
+      raise StandardError, '404: Cannot get access token, please try again later'
+    end
+    
+    puts "Response: #{resp}"
     resp_body = JSON.parse(resp.body)
     puts "Response: #{resp_body}"
     return resp_body
@@ -72,7 +79,7 @@ class ZoomS2SOAuth
     )
     
     puts "Posted: \nHeaders: #{headers} \nBody: #{payload} \nAwaiting response..."
-    resp_body = JSON.parse(resp.body, parameters)
+    resp_body = JSON.parse(resp.body)
     puts "Response: #{resp_body}"
     return resp_body 
   end
