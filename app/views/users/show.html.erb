@@ -6,11 +6,15 @@
 <div class="centre jumbotron">
   <h1>EmployeeID: <%= @user.EmployeeID %></h1>
 
-  <p>Name: <%= @user.Name %></p>
-  <p>EmailAddress: <%= @user.EmailAddress %></p>
-  <p>Department: <%= @user.department.name%></p>
+  <p>  
+    Name: <%= @user.Name %><br>
+    EmailAddress: <%= @user.EmailAddress %><br>
+    Department: <%= @user.department.name%>
+  </p>
 
-  <li><%= link_to "Edit", edit_user_path(@user) %></li>
-  <li><%= link_to "Destroy", @user, method: :delete, data: { confirm: 'Are you sure?' } %></li>
-  <p><%= link_to "Go back", "/users" %></p>
+  <div>
+    <%= link_to "Edit", edit_user_path(@user) %><br>
+    <%= link_to "Destroy", @user, method: :delete, data: { confirm: 'Are you sure?' } %><br>
+    <%= link_to "Back", @user.department %>
+  </div>
 </body>

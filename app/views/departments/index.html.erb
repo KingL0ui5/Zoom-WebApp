@@ -3,19 +3,21 @@
   <div class="centre jumbotron">
     <h1>Departments</h1>
 
-    <ul style="text-align:left;">
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>ID</th>
+        <th>More Details</th>
+      </tr>
+      
       <% @departments.each do |department| %>
-        <li>
-          <div>
-            Name: <%= department.name %><br>
-            ID: <%= department.id %>
-          </div> 
-          <div>
-              <%= link_to "Details", department %><br>
-          </div>
-        </li>
-        <% end %>
-    </ul>
+        <tr>
+          <th><%= department.name %></th>
+          <th><%= department.id %></th>
+          <th><%= link_to "->", department %></th>
+        </tr>
+      <% end %>
+    </table>
 
     <p>
       <%= link_to "New Department", new_department_path %>

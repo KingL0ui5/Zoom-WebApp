@@ -7,25 +7,29 @@
 <body>
 <div class="centre jumbotron">
   <h1>Department: <%= @department.name %></h1>
-  <div>Department ID: <%= @department.id %></div>
+  <p>Department ID: <%= @department.id %></p>
 
-  <h2>Users</h2>
+  <h3>Users</h3>
+  
+  <table>
+    <th>Name</th>
+    <th>Employee ID</th>
+    <th>More Details</th> 
 
-  <% @users.each do |user| %>
-     <li>
-      <a href="<%= user_path(user) %>">
-      Employee ID: <%= user.id %><br>
-      Employee Name: <%= user.Name %>
-    </li><br>
-  <% end %>
-  <p>
-    <%= link_to "New User", new_user_path %>
-  </p>
+    <% @users.each do |user| %>
+      <tr>
+        <th><%= user.Name %></th>
+        <th><%= user.EmployeeID %></th>
+        <th><%= link_to "->", user %></th>
+      </tr>
+    <% end %>
+  </table>
 
-  <p>
-  <%= link_to "Edit", edit_department_path(@department) %><br>
-  <%= link_to "Destroy", @department, method: :delete, data: { confirm: 'Are you sure?' } %><br> 
-  <%= link_to "Back", "/departments" %>
-  </p>
+  <div>
+    <%= link_to "New User", new_user_path %><br>
+    <%= link_to "Edit", edit_department_path(@department) %><br>
+    <%= link_to "Destroy", @department, method: :delete, data: { confirm: 'Are you sure?' } %><br> 
+    <%= link_to "Back", "/departments" %>
+  </div>
 </div>
 </body>

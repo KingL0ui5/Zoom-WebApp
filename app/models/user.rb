@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base 
-    belongs_to :department# foreign_key: true 
+    belongs_to :department 
     
     validates :Name, :EmailAddress, :department_id, :password, presence: { message: "This field cannot be empty" }
     

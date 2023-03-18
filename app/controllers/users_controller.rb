@@ -55,7 +55,7 @@ class UsersController < ApplicationController
         @user = User.find(params[:id])
         @user.destroy
         
-        i = User.last.id
+        i = User.last.EmployeeID
         ActiveRecord::Base.connection.execute("ALTER TABLE users AUTO_INCREMENT = #{(i)}")
         
         redirect_to users_path, status: :see_other, flash: { success: "User sucessfully destroyed" } 

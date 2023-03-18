@@ -5,21 +5,21 @@
 </div>
 <div class="centre jumbotron">
   <h1>Users</h1>
+  
+  <table>
+    <th>Name</th>
+    <th>Employee ID</th>
+    <th>More Details</th> 
 
-  <% if flash[:notice] %>
-    <div class="notice"><%= flash[:notice] %></div>
-  <% end %>
-
-  <ul>
     <% @users.each do |user| %>
-      <li>
-        <a href="<%= user_path(user) %>">
-        Employee ID: <%= user.id %><br>
-        Employee Name: <%= user.Name %>
-      </li> 
+      <tr>
+        <th><%= user.Name %></th>
+        <th><%= user.EmployeeID %></th>
+        <th><%= link_to "->", user %></th>
+      </tr>
     <% end %>
-  </ul>
-
+  </table>
+  
   <p>
     <%= link_to "New User", new_user_path %>
   </p>
