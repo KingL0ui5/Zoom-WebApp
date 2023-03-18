@@ -3,20 +3,25 @@
   <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 <% end %> 
 
-<style>
-    body { font-family: Arial, sans-serif; }
-</style>
-
+<% provide(:title, "New Meeting") %> 
 <body>
-<%= form_for @meeting do |f| %>
-  <%= f.label :Agenda %>
-  <%= f.text_field :Agenda %>
+<div class ="container">
+    <%= yield %> 
+</div>
+<div class="centre jumbotron">
+  <%= form_for @meeting do |f| %>
+    <%= f.label :Agenda %>
+    <%= f.text_field :Agenda %>
 
-  <%= f.label :Duration %>
-  <%= f.number_field :Duration, placeholder: 'Enter duration', class: 'form-control'%>
-  <small class="text-muted">Please enter the duration in minutes</small>
+    <%= f.label :Duration %>
+    <%= f.number_field :Duration, placeholder: 'Enter duration', class: 'form-control'%>
+    <small class="text-muted">Please enter the duration in minutes</small>
+  
+    <%= f.label : %> 
+    <%= f.number_field :Duration, placeholder: 'Enter duration', class: 'form-control'%>
   
   
-  <%= f.submit %>
-<% end %>
+    <%= f.submit %>
+  <% end %>
+</div>
 </body>

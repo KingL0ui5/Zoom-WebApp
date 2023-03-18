@@ -1,24 +1,29 @@
+<% provide(:title, "Home") %> 
 <body>
-<h1>Home</h1>
-
-<p> 
-    (all features coming soon)
-</p>
-
-<p> 
-    <%= link_to "Access employee database", "/departments" %> 
-</p>
-
-<p>
-    <%= "Access meeting database"%>
-</p>
-
-<p>
-    <%= link_to "Create new meeting (S2S OAuth)", "/zooms2s" %>
-</p>
-
-<p> 
-    <%= link_to "Retrieve OAuth Access Tok (test)", "/zoom" %>
-</p>
+<div class ="container">
+    <%= yield %> 
+</div>
+<div class="centre jumbotron">
+    <h1>Welcome to the Vanishing Funds web application</h1>
+    <h2>This is a space where employees can sign in and create meetings using zoom.</h2>
+    
+    <%= link_to "Create Meeting Now!", '#', class: "btn btn-lg btn-primary" %>
+</div>
+<div> 
+    <pre>               
+ __     __                     __            __        __                            ________                          __           
+/  |   /  |                   /  |          /  |      /  |                          /        |                        /  |          
+$$ |   $$ | ______   _______  $$/   _______ $$ |____  $$/  _______    ______        $$$$$$$$/__    __  _______    ____$$ |  _______ 
+$$ |   $$ |/      \ /       \ /  | /       |$$      \ /  |/       \  /      \       $$ |__  /  |  /  |/       \  /    $$ | /       |
+$$  \ /$$/ $$$$$$  |$$$$$$$  |$$ |/$$$$$$$/ $$$$$$$  |$$ |$$$$$$$  |/$$$$$$  |      $$    | $$ |  $$ |$$$$$$$  |/$$$$$$$ |/$$$$$$$/ 
+ $$  /$$/  /    $$ |$$ |  $$ |$$ |$$      \ $$ |  $$ |$$ |$$ |  $$ |$$ |  $$ |      $$$$$/  $$ |  $$ |$$ |  $$ |$$ |  $$ |$$      \ 
+  $$ $$/  /$$$$$$$ |$$ |  $$ |$$ | $$$$$$  |$$ |  $$ |$$ |$$ |  $$ |$$ \__$$ |      $$ |    $$ \__$$ |$$ |  $$ |$$ \__$$ | $$$$$$  |
+   $$$/   $$    $$ |$$ |  $$ |$$ |/     $$/ $$ |  $$ |$$ |$$ |  $$ |$$    $$ |      $$ |    $$    $$/ $$ |  $$ |$$    $$ |/     $$/ 
+    $/     $$$$$$$/ $$/   $$/ $$/ $$$$$$$/  $$/   $$/ $$/ $$/   $$/  $$$$$$$ |      $$/      $$$$$$/  $$/   $$/  $$$$$$$/ $$$$$$$/  
+                                                                    /  \__$$ |                                                      
+                                                                    $$    $$/                                                       
+                                                                     $$$$$$/                                                        
+    </pre>
+</div>
 
 </body>

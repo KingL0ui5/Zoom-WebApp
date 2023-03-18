@@ -1,6 +1,10 @@
+<% provide(:title, "Edit User") %> 
 <body>
-<h1>Update User</h1>
-
-<%= render "form", user: @user %> <!-- renders _form.html.erb passing @user as user-->
-
+<div class ="container">
+    <%= yield %> 
+</div>
+<div class="centre jumbotron">
+  <h1>Update User</h1>
+  <%= render "form", user: @user %> <!-- renders _form.html.erb passing @user as user-->
+</div>
 </body>

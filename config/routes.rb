@@ -3,6 +3,10 @@ Rails.application.routes.draw do
   resources :users
   resources :departments
   
+  get '/login', to: "sessions#new" #for logins
+  post '/login', to: "sessions#create"
+  delete '/logout', to: "sessions#destroy"
+  
   get "/departments/:id", to: "departments#show"
   get "/users/:id", to: "users#show"
   

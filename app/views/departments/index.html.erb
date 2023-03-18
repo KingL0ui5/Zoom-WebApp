@@ -1,25 +1,27 @@
+<% provide(:title, "Employees") %> 
 <body>
-<h1>Departments</h1>
+  <div class="centre jumbotron">
+    <h1>Departments</h1>
 
-<ul>
-  <% @departments.each do |department| %>
-    <li>
-    <div>
-        Name: <%= department.name %><br>
-        ID: <%= department.id %>
-    </div> 
-    <div><br>
-        <%= link_to "Details", department %><br>
-    </div>
-    </li>
-    <% end %>
-</ul>
+    <ul style="text-align:left;">
+      <% @departments.each do |department| %>
+        <li>
+          <div>
+            Name: <%= department.name %><br>
+            ID: <%= department.id %>
+          </div> 
+          <div>
+              <%= link_to "Details", department %><br>
+          </div>
+        </li>
+        <% end %>
+    </ul>
 
-<p>
-  <%= link_to "New Department", new_department_path %>
-</p>
+    <p>
+      <%= link_to "New Department", new_department_path %>
+    </p>
 
-<p> 
-<%= link_to "Back", "/home" %> 
-</p>
-</body>
+    <p> 
+      <%= link_to "Back", "/home" %> 
+    </p>
+  </body>

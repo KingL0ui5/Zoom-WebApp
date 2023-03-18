@@ -63,13 +63,14 @@ class ZoomS2SOAuth
     return resp_body
   end 
   
-  def startmeeting(access_tok, parameters)
+  def startmeeting(access_tok, parameters, zoom_user_id)
     url = @zoom_base_url << @meeting_endpoint
     headers = {
       'Authorization' => "Bearer #{access_tok}",
+      'userId' => {zoom_user_id},
       'Content-Type' => "application/json"
     }
-    payload = parameters.to_json
+    payload = parameters
     
     puts "Posting Request..."
     resp = HTTParty.post(

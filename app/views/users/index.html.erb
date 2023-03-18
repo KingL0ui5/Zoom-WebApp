@@ -1,25 +1,31 @@
+<% provide(:title, "Users") %> 
 <body>
-<h1>Users</h1>
+<div class ="container">
+    <%= yield %> 
+</div>
+<div class="centre jumbotron">
+  <h1>Users</h1>
 
-<% if flash[:notice] %>
-  <div class="notice"><%= flash[:notice] %></div>
-<% end %>
-
-<ul>
-  <% @users.each do |user| %>
-    <li>
-      <a href="<%= user_path(user) %>">
-      Employee ID: <%= user.id %><br>
-      Employee Name: <%= user.Name %>
-    </li> 
+  <% if flash[:notice] %>
+    <div class="notice"><%= flash[:notice] %></div>
   <% end %>
-</ul>
 
-<p>
-  <%= link_to "New User", new_user_path %>
-</p>
+  <ul>
+    <% @users.each do |user| %>
+      <li>
+        <a href="<%= user_path(user) %>">
+        Employee ID: <%= user.id %><br>
+        Employee Name: <%= user.Name %>
+      </li> 
+    <% end %>
+  </ul>
 
-<p> 
-<%= link_to "Back", "/departments" %> 
-</p>
+  <p>
+    <%= link_to "New User", new_user_path %>
+  </p>
+
+  <p> 
+  <%= link_to "Back", "/departments" %> 
+  </p>
+</div>
 </body>

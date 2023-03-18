@@ -57,5 +57,13 @@ gem 'dotenv' #for environmental varables
 gem 'digest' #for SHA-256 hashing
 gem 'httparty' #for building API requests
 gem 'activerecord-session_store' #stores cookies client-side
+
+
 gem 'rspec-rails' #for rspec testing
-gem 'rails-controller-testing' #for testing
+gem 'rails-controller-testing' 
+
+gem 'redis' #for rate limiting on the API
+
+gem 'bcrypt' #for password sign in for users
+
+gem 'bootstrap-sass' #for nicer view pages 

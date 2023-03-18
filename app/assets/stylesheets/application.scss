@@ -1,0 +1,84 @@
+/* deals with notice types in redirect lines and default formats for text */ 
+@import "bootstrap-sprockets";
+@import "bootstrap";
+ 
+body {
+  padding-top: 50px;
+}
+section{
+  overflow: auto;
+}
+textarea{
+  resize: vertical;
+}
+.centre{
+  text-align: center;
+}
+.centre h1{
+  margin-bottom: 10px;
+}
+
+.flash {
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+.notice {
+  color: #000000;
+}
+.success { 
+  color: #008000;
+}
+.error {
+  color: #FF0000;
+}
+
+h1, h2, h3, h4, h5, h6{
+  line-height: 1;
+}
+h1 {
+  font-size: 3em;
+  letter-spacing: -2px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+h2{
+  font-size: 1.2em;
+  letter-spacing: -1px;
+  margin-bottom: 30px;
+  text-align: center;
+  font_weight: normal;
+  color: #777;
+}
+p {
+  font-size: 1.1em;
+  line-height: 1.7em;
+}
+
+#logo {
+  float: left;
+  margin-right: 10px;
+  font-size: 1.7em;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  padding-top: 9px;
+  font-weight: bold;
+}
+#logo:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+@mixin box_sizing {
+  -moz-box_sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.debug_dump{
+  clear: both;
+  float: left;
+  width: 100%;
+  margin-top: 45px;
+  @include box_sizing;
+}

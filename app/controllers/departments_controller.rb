@@ -28,14 +28,11 @@ class DepartmentsController < ApplicationController
     
     def update
         @department = Department.find([params(:id)])
+        @Department.update(:name)
+        redirect_to @Department
         
-        begin
-            @Department.update(:name)
-            redirect_to @Department
-        rescue => e 
-            redirect_to department_path, flash: { error: e.message } 
-
-        end
+    rescue => e 
+        redirect_to department_path, flash: { error: e.message } 
     end
     
     def destroy

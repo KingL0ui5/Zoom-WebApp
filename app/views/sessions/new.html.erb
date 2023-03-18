@@ -1,0 +1,19 @@
+<% provide(:title, "Log in") %> 
+<body style="padding-top: 90px;">
+  <h1>Log in</h1>
+  
+  <div style="padding-right: 300px; padding-left: 300px">
+  <form accept-charset="UTF-8" action="/login" method="post">
+    <input name="authenticity_token" type="hidden" value="NNb6+J/j46LcrgYUC60wQ2titMuJQ5lLqyAbnbAUkdo=" />
+    
+    <label for="session_EmailAddress">Email</label>
+    <input class= "form-control" id="session_EmailAddress" name="session[EmailAddress]", type="EmailAddress" /><br>
+        
+    <label for="session_password">Password</label>
+    <input class="form-control" id="session_password" name="session[password]" type="password" /><br>
+  
+    <input class="btn btn-primary" name="commit" type="submit" value="Log in" />
+  </form>
+  </div>
+  
+</body>

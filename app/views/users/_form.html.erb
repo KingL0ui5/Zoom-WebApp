@@ -25,6 +25,22 @@
   </div>
   
   <div>
+    <label for="user_password">Password</label><br>
+    <input type="text" name="user[password]" id="password">
+    <% user.errors.full_messages_for(:password).each do |message|%> 
+      <div style="color:red";><%= message[5,1000] %></div>
+    <% end %><br>
+  </div>
+  
+  <div>
+    <label for="user_password_confirmation">Confirm Password</label><br>
+    <input type="text" name="user[password_confirmation]" id="user_password_confirmation">
+    <% user.errors.full_messages_for(:password_confirmation).each do |message| %>
+      <div style="color:red";><%= message[25,1000] %></div>
+    <% end %><br>       
+  </div>
+  
+  <div>
     <label for="user_EmailAddress">Email Address</label><br>
     <input type="text" name="user[EmailAddress]" id="user_EmailAddress">
     <% user.errors.full_messages_for(:EmailAddress).each do |message| %>

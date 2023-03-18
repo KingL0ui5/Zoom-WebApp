@@ -1,6 +1,10 @@
+<% provide(:title, "New User") %> 
 <body>
-<h1>Create New User</h1> <!-- from app/app/controllers/user_controller.rb -->
-
-<%= render "form", user: @user %> <!-- renders _form.html.erb -->
-
+<div class ="container">
+    <%= yield %> 
+</div>
+<div class="centre jumbotron">
+  <h1>Create New User</h1> <!-- from app/app/controllers/user_controller.rb -->
+  <%= render "form", user: @user %> <!-- renders _form.html.erb -->
+</div>
 </body>

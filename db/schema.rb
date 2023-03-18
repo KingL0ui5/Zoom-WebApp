@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20230313090544) do
+ActiveRecord::Schema.define(version: 20230318162427) do
 
   create_table "departments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -30,9 +30,10 @@ ActiveRecord::Schema.define(version: 20230313090544) do
   create_table "users", primary_key: "EmployeeID", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "Name"
     t.string   "EmailAddress"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
     t.integer  "department_id"
+    t.string   "password_digest"
     t.index ["EmployeeID"], name: "index_users_on_EmployeeID", unique: true, using: :btree
     t.index ["department_id"], name: "index_users_on_department_id", using: :btree
   end

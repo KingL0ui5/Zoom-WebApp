@@ -38,14 +38,15 @@ class Zooms2sController < ApplicationController
   end
   
   def new_meeting
-    #gets parameters from form
-    parameters = params.to_json
-    meetinginfo = startmeeting(session[:access_token], parameters) #([access token], [parameters for new meeting request])
+    #zoom_EmailAddress = [email address of current user]
+    parameters = params.except(:auth_token, :password, :secret_field).to_json #gets required params from form 
+    meetinginfo = startmeeting(session[:access_token], parameters, zoom_EmailAddress)
   end
   
   private
     def set_session_expiration
       request.session_options[:expire_after] = @TTL.seconds #sets session timer to TTL of the access token
       puts "Set session expiration time to #{@TTL} seconds"
+      #make sure you figure out how to display session expiry error message
     end
 end

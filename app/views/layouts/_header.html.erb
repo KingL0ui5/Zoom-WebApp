@@ -1,0 +1,17 @@
+<html>
+  <header class="navbar navbar-fixed-top navbar-inverse">
+    <div class="container">
+        <%= link_to "Vanishing Funds", root_path, id: "Logo" %>
+        <nav>
+            <ul class="nav navbar-nav navbar-right">
+                <li><%= link_to "Home", root_path %></li>
+                <li><%= link_to "Employee Database", "/departments" %></li>
+                <li><%= link_to "Meeting Database",     '#' %></li>
+                <li><%= link_to "Create new meeting (S2S OAuth)", "/zooms2s" %></li>
+                <li><%= link_to "Retrieve OAuth Access Tok (test)", "/zoom" %></li>
+                <li><%= link_to "Log in", "/login" %></li>
+            </ul>
+        </nav>
+    </div>
+  </header>
+</html>

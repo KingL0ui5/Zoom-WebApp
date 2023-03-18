@@ -5,7 +5,7 @@ class UsersController < ApplicationController
     
     def show
         begin
-            @user = User.find(params[:EmployeeID])
+            @user = User.find(params[:id])
         rescue => e 
             redirect_to users_path, flash: { error: e.message }
         end
@@ -19,44 +19,40 @@ class UsersController < ApplicationController
     def create 
         
         i = user_parameters[:department_id] 
-        puts i
-        additional_parameter = Department.find_by(id: i)
-        puts "department: #{additional_parameter}" #for testing
+        department = Department.find_by(id: i)
         
+        puts "department: #{department}" #for testing
         
-        #department = Department.find_by(id: i)
-        #@user = department.users.build(user_parameters.except(:department_id))
+        hash = user_parameters.except(:department_id)
+        puts hash
+        new_user = User.new(hash)
+        new_user.department = department
+        new_user.save
+        redirect_to users_path, flash: { success: "User successfully created" }
         
-        @user = User.new(user_parameters.merge({ department: additional_parameter }))
-        if @user.save
-            redirect_to user_path(@user), flash: { success: "User created sucessfully" }
-        else 
-            render :new, status: :unprocessable_entity, flash: { error: "Creation of user failed" }
-        end
-        
-        #@user.save
-        #redirect_to user_path(@user), notice: "User sucessfully created"
-        
-    #rescue => e
-    #        Rails.logger.error "Error creating user: #{e.message}"
-    #        render :
+    rescue => e
+        puts e.message 
+        redirect_to users_path , flash: { error: e.message}
     
     #deal with lack of any departments exception
     end
     
     def update
-        @user = User.find([params(:EmployeeID)])
+        user = User.find([params(:id)])
+        department = Department.find_by([params(:department_id)])
         
-        begin
-            @user.update(user_parameters)
-            redirect_to @user
-        rescue => e 
-            redirect_to user_path, notice: e.message
-        end
+        user = user.update(user_parameters)
+        user.department = department
+        user.save
+        
+        redirect_to user, flash: { success: "Changes saved" } 
+        
+    rescue => e 
+        redirect_to users_path, flash: { error: e.message }
     end
     
     def destroy 
-        @user = User.find(params[:EmployeeID])
+        @user = User.find(params[:id])
         @user.destroy
         
         i = User.last.id
@@ -74,6 +70,6 @@ class UsersController < ApplicationController
     
     private
       def user_parameters
-          params.require(:user).permit(:Name, :EmailAddress, :EmailAddress_confirmation, :department_id, :department) #params are passed as hashes from the form
+          params.require(:user).permit(:Name, :EmailAddress, :EmailAddress_confirmation, :password, :password_confirmation, :department_id, :EmployeeID) #params are passed as hashes from the form
       end
 end 
