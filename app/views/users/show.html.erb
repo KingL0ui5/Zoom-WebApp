@@ -13,8 +13,11 @@
   </p>
 
   <div>
-    <%= link_to "Edit", edit_user_path(@user) %><br>
-    <%= link_to "Destroy", @user, method: :delete, data: { confirm: 'Are you sure?' } %><br>
+    <% if logged_in? %>
+      <%= link_to "Edit", edit_user_path(@user) %><br>
+      <%= link_to "Destroy", @user, method: :delete, data: { confirm: 'Are you sure?' } %><br>
+    <% end %>
+    
     <%= link_to "Back", @user.department %>
   </div>
 </body>

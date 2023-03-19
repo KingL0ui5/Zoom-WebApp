@@ -19,9 +19,11 @@
       <% end %>
     </table>
 
-    <p>
-      <%= link_to "New Department", new_department_path %>
-    </p>
+    <% if logged_in? %>
+      <p>
+        <%= link_to "New Department", new_department_path %>
+      </p>
+    <% end %>
 
     <p> 
       <%= link_to "Back", "/home" %> 
