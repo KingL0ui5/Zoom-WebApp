@@ -3,23 +3,13 @@
   <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 <% end %> 
 
-<style>
-    body { font-family: Arial, sans-serif; }
-</style>
-
-<body>
-
-<% if flash[:notice] %>
-  <div class="notice"><%= flash[:notice] %></div>
-<% end %>
-
 <form action="/users" accept-charset="UTF-8" method="post">
   <input type="hidden" name="authenticity_token" value="...">
   
   <div>
     <label for="user_Name">Name</label><br>
     <input type="text" name="user[Name]" id="user_Name">
-    <% user.errors.full_messages_for(:Name).each do |message|%> <!-- gets errors from validator see /app/app/models/user.rb --></%>
+    <% user.errors.full_messages_for(:Name).each do |message| %> <!-- gets errors from validator see /app/app/models/user.rb --></%>
       <div style="color:red";><%= message[5,1000] %></div>
     <% end %><br>
   </div>
@@ -27,8 +17,8 @@
   <div>
     <label for="user_password">Password</label><br>
     <input type="text" name="user[password]" id="password">
-    <% user.errors.full_messages_for(:password).each do |message|%> 
-      <div style="color:red";><%= message[5,1000] %></div>
+    <% user.errors.full_messages_for(:password).each do |message| %> 
+      <div style="color:red";><%= message[8,1000] %></div>
     <% end %><br>
   </div>
   
@@ -36,7 +26,7 @@
     <label for="user_password_confirmation">Confirm Password</label><br>
     <input type="text" name="user[password_confirmation]" id="user_password_confirmation">
     <% user.errors.full_messages_for(:password_confirmation).each do |message| %>
-      <div style="color:red";><%= message[25,1000] %></div>
+      <div style="color:red";><%= message[22,1000] %></div>
     <% end %><br>       
   </div>
   

@@ -17,24 +17,19 @@ class UsersController < ApplicationController
     end 
     
     def create 
-        
         i = user_parameters[:department_id] 
         department = Department.find_by(id: i)
         
-        puts "department: #{department}" #for testing
-        
         hash = user_parameters.except(:department_id)
-        puts hash
-        new_user = User.new(hash)
-        new_user.department = department
-        new_user.save
+        @user = User.new(hash)
+        @user.department = department
+        @user.save!
         redirect_to users_path, flash: { success: "User successfully created" }
         
     rescue => e
-        puts e.message 
-        redirect_to users_path , flash: { error: e.message}
-    
-    #deal with lack of any departments exception
+        puts e 
+        render :new , flash: { error: e.message }
+        #deal with lack of any departments exception
     end
     
     def update

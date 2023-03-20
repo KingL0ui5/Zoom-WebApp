@@ -13,6 +13,6 @@ class User < ActiveRecord::Base
     #validations for each field in the creation of a new user model
     
     has_secure_password
-    validates :password, length: { minimum: 6, message: "The password must be at least 6 characters in length" }
+    validates :password, length: { minimum: 6, message: "The password must be at least 6 characters in length" }, confirmation: {case_sensitive: false, message: "Passwords do not match"}
     validates :password_confirmation, presence: { message: "This field cannot be empty" }
 end 

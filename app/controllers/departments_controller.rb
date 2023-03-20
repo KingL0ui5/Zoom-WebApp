@@ -36,15 +36,22 @@ class DepartmentsController < ApplicationController
     end
     
     def destroy
-    
         @department = Department.find(params[:id])
+        if @department.users
+            raise StandardError.new "User(s) exist in database - cannot destroy"
+        end
+        
         @department.destroy
         
         i = Department.last.id
         ActiveRecord::Base.connection.execute("ALTER TABLE departments AUTO_INCREMENT = #{(i)} ") #resets the auto-increment function to the previous largest ie the last ID
     
         redirect_to @department, status: :see_other, flash: { success: "Department sucessfully destroyed" }  #sucess (400 ok)
-        
+  
+    rescue StandardError => e 
+        flash[:danger] = e.message
+        redirect_to @department, status: :see_other
+   
     rescue ActiveRecord::RecordNotFound #department cannot be found 
         redirect_to department_path, status: :see_other, flash: { error: "Department does not exist" }
 
