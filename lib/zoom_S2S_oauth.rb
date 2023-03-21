@@ -70,7 +70,7 @@ class ZoomS2SOAuth
       'userId' => {zoom_user_id},
       'Content-Type' => "application/json"
     }
-    payload = parameters
+    payload = parameters.to_json
     
     puts "Posting Request..."
     resp = HTTParty.post(

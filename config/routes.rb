@@ -8,7 +8,10 @@ Rails.application.routes.draw do
   delete '/logout', to: "sessions#destroy"
   
   get "/departments/:id", to: "departments#show"
+  patch "/departments", to: "departments#update"
+  
   get "/users/:id", to: "users#show"
+  patch "/users", to: "users#update"
   
   get '/zooms2s/new_meeting', to: 'zooms2s#new_meeting' #for S2S procedures
   get '/zooms2s', to: 'zooms2s#authorise' 

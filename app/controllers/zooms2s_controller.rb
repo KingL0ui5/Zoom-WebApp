@@ -38,9 +38,21 @@ class Zooms2sController < ApplicationController
   end
   
   def new_meeting
-    #zoom_EmailAddress = [email address of current user]
-    parameters = params.except(:auth_token, :password, :secret_field).to_json #gets required params from form 
-    meetinginfo = startmeeting(session[:access_token], parameters, zoom_EmailAddress)
+    zoom_id = params[:session][:EmailAddress]
+    parameters = params.except(:auth_token, :password, :secret_field, :userId) #gets required params from form 
+    
+    meetinginfo = startmeeting(session[:access_token], parameters, zoom_id)
+    
+    host = zoom_id
+    topic = meetinginfo['topic']
+    join_url = meetinginfo['join_url']
+    duration = meetinginfo['duration']
+    start_time = meetinginfo['start_time']
+    timezone = meetinginfo['timezone']
+    start_url = meetinginfo['start_time']
+    
+    puts "Meeting successfully created!"
+    
   end
   
   private

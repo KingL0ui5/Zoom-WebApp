@@ -32,18 +32,23 @@ class UsersController < ApplicationController
         #deal with lack of any departments exception
     end
     
+    def edit #FIX
+        puts "editing"
+        @user = User.find(params[:id])
+        @department = Department.find_by(params[:department_id])
+    end 
+    
     def update
-        user = User.find([params(:id)])
-        department = Department.find_by([params(:department_id)])
+        puts "updating"
+        @user = User.find(params[:id]) # this doesn't work - id is not sent in the params
+        if @user.update(user_parameters)
+            redirect_to users_path, flash: { success: "Changes saved" } 
+        else 
+            render 'edit'
+        end
         
-        user = user.update(user_parameters)
-        user.department = department
-        user.save
-        
-        redirect_to user, flash: { success: "Changes saved" } 
-        
-    rescue => e 
-        redirect_to users_path, flash: { error: e.message }
+    rescue => e
+        render :edit, flash: { error: e.message }
     end
     
     def destroy 

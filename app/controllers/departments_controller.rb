@@ -26,21 +26,29 @@ class DepartmentsController < ApplicationController
         end
     end
     
+    def edit #FIX
+        puts "editing"
+        @department = Department.find(params[:id])
+    end 
+    
     def update
-        @department = Department.find([params(:id)])
-        @Department.update(:name)
-        redirect_to @Department
-        
+        @department = Department.find(params[:id]) # this doesn't work - id is not sent in the params
+        puts "updating"
+        if @department.update(params.require(:department).permit(:name))
+            redirect_to @Department, flash: { success: "Changes saved" }
+        else 
+            render 'edit'
+        end 
     rescue => e 
         redirect_to department_path, flash: { error: e.message } 
     end
     
     def destroy
         @department = Department.find(params[:id])
-        if @department.users
-            raise StandardError.new "User(s) exist in database - cannot destroy"
+        @department.users do |user|
+            puts user
+            user.destroy
         end
-        
         @department.destroy
         
         i = Department.last.id
