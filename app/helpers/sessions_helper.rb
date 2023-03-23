@@ -1,6 +1,7 @@
 module SessionsHelper
   def log_in(user) #logs in user 
     session[:user_EmployeeID] = user.id
+    session[:EmailAddress] = user.EmailAddress
   end
   
   def current_user #gets current user 

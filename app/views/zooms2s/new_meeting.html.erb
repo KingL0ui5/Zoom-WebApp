@@ -9,28 +9,35 @@
     <%= yield %> 
 </div>
 <div class="centre jumbotron">
-  <%= form_for @meeting do |f| %>
-    <%= f.label :Topic %>
-    <%= f.text_field :Topic %>
-    <small class="text-muted">Enter the topic of the meeting (Max 200 chars)</small>
+  <%= form_tag "/zooms2s/create_meeting" do %>
+    <div>
+      <%= label_tag :Topic %>
+      <%= text_field_tag :Topic, nil, class: "form control" %><br>
+      <small class="text-muted">Enter the topic of the meeting (Max 200 chars)</small><br> 
+    </div>
 
-    <%= f.label :Duration %>
-    <%= f.number_field :Duration, placeholder: 'Enter duration', class: 'form-control'%>
-    <small class="text-muted">Please enter the duration in minutes</small>
+    <div>
+      <%= label_tag :Duration %>
+      <%= number_field_tag :Duration, placeholder: 'Enter duration', class: 'form-control'%><br>
+      <small class="text-muted">Please enter the duration in minutes</small><br>
+    </div>  
   
-    <%= f.label :password %> 
-    <%= f.number_field :password, placeholder: 'Enter Meeting Password (optional)', class: 'form-control'%>
-    <small class="text-muted">Max 10 alphanumeric characters</small>
+    <div>
+      <%= label_tag :password %>
+      <%= number_field_tag :password, placeholder: 'Enter Meeting Password (optional)', class: 'form-control'%><br>
+      <small class="text-muted">Max 10 alphanumeric characters</small><br>
+    </div>
     
-    <%= f.radio_button :type, '1' %> 
-    <%= f.label :type, "Instant meeting" %> 
-    <%= f.radio_button :type, '2' %>
-    <%= f.label :type, "Scheduled meeting" %>
-    <%= f.radio_button :type, '3' %>
-    <%= f.label :type "Recurring meeting (no fixed time)" %>
+    <div>
+      <%= radio_button_tag :type, '1' %> 
+      <%= label_tag :type, "Instant meeting" %><br> 
+      <%= radio_button_tag :type, '2' %>
+      <%= label_tag :type, "Scheduled meeting" %><br>
+      <%= radio_button_tag :type, '3' %>
+      <%= label_tag :type, "Recurring meeting (no fixed time)" %><br>
+    </div>
   
-  
-    <%= f.submit %>
+    <%= submit_tag "Create Meeting", class: "btn btn-primary" %>
   <% end %>
 </div>
 </body>

@@ -40,12 +40,10 @@ class UsersController < ApplicationController
     
     def update
         puts "updating"
-        @user = User.find(params[:id]) # this doesn't work - id is not sent in the params
-        if @user.update(user_parameters)
-            redirect_to users_path, flash: { success: "Changes saved" } 
-        else 
-            render 'edit'
-        end
+        @user = User.find_by(EmployeeID: params[:id]) # this doesn't work - id is not sent in the params
+        @user.update(user_parameters)
+        @user.valid?
+        redirect_to users_path, flash: { success: "Changes saved" } 
         
     rescue => e
         render :edit, flash: { error: e.message }

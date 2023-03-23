@@ -8,7 +8,7 @@
                 <li><%= link_to "Employee Database", "/departments" %></li>
                 <% if logged_in? %>
                     <li><%= link_to "Meeting Database",     '#' %></li>
-                    <li><%= link_to "Create new meeting (S2S OAuth)", "/zooms2s" %></li>
+                    <li><%= link_to "Create new meeting (S2S OAuth)", "/zooms2s/" %></li>
                     <li><%= link_to "Retrieve OAuth Access Tok (test)", "/zoom" %></li>
                     <li><%= link_to "Log out", logout_path, method: "delete" %></li>
                 <% else %>

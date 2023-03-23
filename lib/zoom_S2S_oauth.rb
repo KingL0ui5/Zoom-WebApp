@@ -40,7 +40,7 @@ class ZoomS2SOAuth
       account_id: @account_id
     }
     
-    puts "Posting request... Size: #{ payload.to_s.length }"
+    puts "Posting request..."
     resp = HTTParty.post(
     url, 
     body: URI.encode_www_form(payload),
@@ -64,22 +64,32 @@ class ZoomS2SOAuth
   end 
   
   def startmeeting(access_tok, parameters, zoom_user_id)
-    url = @zoom_base_url << @meeting_endpoint
+    url = @zoom_base_url << @meeting_endpoint #in deployment replace with @zoom_base_url << @meeting_endpoint << zoom_user_id << "meetings" assuming that the logged in user has an account with zoom 
     headers = {
       'Authorization' => "Bearer #{access_tok}",
-      'userId' => {zoom_user_id},
+      'userId' => "liulouis1@gmail.com",
       'Content-Type' => "application/json"
     }
-    payload = parameters.to_json
-    
+
     puts "Posting Request..."
+    puts "Parameters #{parameters}"
     resp = HTTParty.post(
       url, 
-      body: URI.encode_www_form(payload),
-      headers: headers
+      body: URI.encode_www_form(parameters),
+      headers: headers,
+      debug_output: $stdout
     )
     
-    puts "Posted: \nHeaders: #{headers} \nBody: #{payload} \nAwaiting response..."
+    content_type = resp.headers['content-type'] #retrieves content type of response
+    
+    if content_type != 'application/json;charset=UTF-8'  #if the content type is not JSON, something has happened 
+      File.open('response.html.erb', 'w') do |file|
+        file.puts(resp.body)
+      end
+      raise StandardError, '404: Cannot creat meeting, please try again later'
+    end
+    
+    puts "Posted: \nHeaders: #{headers} \nBody: #{parameters} \nAwaiting response..."
     resp_body = JSON.parse(resp.body)
     puts "Response: #{resp_body}"
     return resp_body 

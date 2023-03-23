@@ -9,7 +9,7 @@
   <div>
     <label for="user_Name">Name</label><br>
     <input type="text" name="user[Name]" id="user_Name">
-    <% user.errors.full_messages_for(:Name).each do |message| %> <!-- gets errors from validator see /app/app/models/user.rb --></%>
+    <% @user.errors.full_messages_for(:Name).each do |message| %> <!-- gets errors from validator see /app/app/models/user.rb --></%>
       <div style="color:red";><%= message[5,1000] %></div>
     <% end %><br>
   </div>
@@ -17,7 +17,7 @@
   <div>
     <label for="user_password">Password</label><br>
     <input type="text" name="user[password]" id="password">
-    <% user.errors.full_messages_for(:password).each do |message| %> 
+    <% @user.errors.full_messages_for(:password).each do |message| %> 
       <div style="color:red";><%= message[8,1000] %></div>
     <% end %><br>
   </div>
@@ -25,7 +25,7 @@
   <div>
     <label for="user_password_confirmation">Confirm Password</label><br>
     <input type="text" name="user[password_confirmation]" id="user_password_confirmation">
-    <% user.errors.full_messages_for(:password_confirmation).each do |message| %>
+    <% @user.errors.full_messages_for(:password_confirmation).each do |message| %>
       <div style="color:red";><%= message[22,1000] %></div>
     <% end %><br>       
   </div>
@@ -33,7 +33,7 @@
   <div>
     <label for="user_EmailAddress">Email Address</label><br>
     <input type="text" name="user[EmailAddress]" id="user_EmailAddress">
-    <% user.errors.full_messages_for(:EmailAddress).each do |message| %>
+    <% @user.errors.full_messages_for(:EmailAddress).each do |message| %>
       <div style="color:red";><%= message[13,1000] %></div>
     <% end %><br> 
   </div>
@@ -41,7 +41,7 @@
   <div>
     <label for="user_EmailAddress_confirmation">Confirm Email Address</label><br>
     <input type="text" name="user[EmailAddress_confirmation]" id="user_EmailAddress_confirmation">
-    <% user.errors.full_messages_for(:EmailAddress_confirmation).each do |message| %>
+    <% @user.errors.full_messages_for(:EmailAddress_confirmation).each do |message| %>
       <div style="color:red";><%= message[25,1000] %></div>
     <% end %><br>       
   </div>

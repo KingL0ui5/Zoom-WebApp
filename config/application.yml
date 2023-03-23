@@ -18,14 +18,17 @@ test:
   ZOOM_BASE_URL: ''
 
 production: 
-  CLIENT_ID: ''
-  CLIENT_SECRET: ''
-  REDIRECT_URI: ''
-  ZOOM_BASE_URL: ''
+  ACCOUNT_ID: 'aEDeWyabSIejB839_Pnw2w'
+  CLIENT_ID_S2S: 'Ndm7Nt6WStuYgoEckNuYfQ'
+  CLIENT_SECRET_S2S: 'lkW9IzW3TsCYR50dBTbbwd6CtN1ztdU6'
   
-  #ZOOM_ADD_OAUTH = 'https://zoom.us/oauth/authorize?response_type=code&client_id=QlCPXZkQQoSJdwYjILLAiA&redirect_uri=https%3A%2F%2Fc68dc96b16ad48c6ba78dbbb297e85d4.vfs.cloud9.us-east-1.amazonaws.com%2Fzoom%2Fcallback'
-  #ZOOM_GET_AUTHCODE = 'https://zoom.us/oauth/token?grant_type=authorization_code&code='
-  #ZOOM_AUTH = 'https://zoom.us/oauth/authorize?response_type=code&client_id='
+  CLIENT_ID_OAUTH: "h5mCujLdRfubftjQt_f_0w"
+  CLIENT_SECRET_OAUTH: "7u9AhiGL7d406UftKG8NwaQbtOmqAmbl"
+  REDIRECT_URI: 'https://c68dc96b16ad48c6ba78dbbb297e85d4.vfs.cloud9.us-east-1.amazonaws.com/zoom/callback'
+  
+  ZOOM_BASE_URL: 'https://api.zoom.us/'  
+  MEETING_ENDPOINT: '/users/'
+  ZOOM_TOKEN_URL: '/oauth/token'
 
 
 #for server2server: ClientID = Ndm7Nt6WStuYgoEckNuYfQ, ClientSecret = lkW9IzW3TsCYR50dBTbbwd6CtN1ztdU6, AccountID = aEDeWyabSIejB839_Pnw2w
