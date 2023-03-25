@@ -67,3 +67,5 @@ gem 'redis' #for rate limiting on the API
 gem 'bcrypt' #for password sign in for users
 
 gem 'bootstrap-sass' #for nicer view pages 
+
+gem 'rails-ujs'

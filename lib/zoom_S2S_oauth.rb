@@ -86,7 +86,7 @@ class ZoomS2SOAuth
       File.open('response.html.erb', 'w') do |file|
         file.puts(resp.body)
       end
-      raise StandardError, '404: Cannot creat meeting, please try again later'
+      raise StandardError, '404: Cannot create meeting, please try again later'
     end
     
     puts "Posted: \nHeaders: #{headers} \nBody: #{parameters} \nAwaiting response..."

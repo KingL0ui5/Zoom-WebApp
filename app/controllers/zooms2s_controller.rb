@@ -3,23 +3,29 @@ require 'zoom_S2S_oauth'
 class Zooms2sController < ApplicationController
   
   def initialize
-    @zoom_oauth = ZoomS2SOAuth.new
+    @zoom_oauth = ZoomS2SOAuth.new #new instance of zoom s2s functions under base method
   end
   
   def index
   end
 
   def new_meeting
+    render layout: 'application'
     puts "new_meeting"
-    authorise
-    puts "Successfully authenticated\nAccess Token: #{session[:access_token]}\nTTL: #{@TTL}" 
   end
   
   def create_meeting
+    authorise
+    puts "Successfully authenticated\nAccess Token: #{session[:access_token]}\nTTL: #{@TTL}"
+    
     puts "Creating meeting...."
     zoom_id = session[:EmailAddress]
-    parameters = params.except(:auth_token, :password, :secret_field, :userId, :commit, :controller, :action) #gets required params from form 
-
+    parameters = meetingparameters.except(:utf8, :authenticity_token, :commit)
+    
+    if parameters[:start_time]
+      parameters[:start_time] = DateTime.parse(parameters[:start_time]) #parsing from ISO 8601 format to DateTime object
+    end 
+    
     meetinginfo = @zoom_oauth.startmeeting(session[:access_token], parameters, zoom_id)
     
     host = zoom_id
@@ -61,13 +67,16 @@ class Zooms2sController < ApplicationController
       @scope = resp_body['scope']
       
       set_session_expiration
-
-    rescue StandardError => e
-      render file: "#{Rails.root}/response.html.erb", layout: true, content_type: 'text/html'
-      puts "Error: #{ e.message }"
       #redirect_to root_path, flash: { error: e.message } 
     rescue OAuth2::Error => e
       puts "Error: #{ e.message }"
       redirect_to root_path, flash: { error: e.message }
     end
+    
+    def meetingparameters
+      params.permit(:topic, :duration, :password, :type, :start_time, :timezone, :utf8, :authenticity_token, :commit)
+      
+      params.require(:duration, :type, :timezone).presence    
+    end
+
 end
