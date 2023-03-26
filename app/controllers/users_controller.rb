@@ -7,7 +7,7 @@ class UsersController < ApplicationController
         begin
             @user = User.find(params[:id])
         rescue => e 
-            redirect_to users_path, flash: { error: e.message }
+            redirect_to users_path, flash[:danger] = e.message 
         end
     end
     
@@ -24,11 +24,11 @@ class UsersController < ApplicationController
         @user = User.new(hash)
         @user.department = department
         @user.save!
-        redirect_to users_path, flash: { success: "User successfully created" }
+        redirect_to users_path, flash[:success] = "User successfully created" 
         
     rescue => e
         puts e 
-        render :new , flash: { error: e.message }
+        render :new , flash[:danger] = e.message
         #deal with lack of any departments exception
     end
     
@@ -43,10 +43,10 @@ class UsersController < ApplicationController
         @user = User.find_by(EmployeeID: params[:id]) # this doesn't work - id is not sent in the params
         @user.update(user_parameters)
         @user.valid?
-        redirect_to users_path, flash: { success: "Changes saved" } 
+        redirect_to users_path, flash[:success] = "Changes saved"  
         
     rescue => e
-        render :edit, flash: { error: e.message }
+        render :edit, flash[:danger] = e.message
     end
     
     def destroy 

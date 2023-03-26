@@ -4,18 +4,45 @@ class Zooms2sController < ApplicationController
   
   def initialize
     @zoom_oauth = ZoomS2SOAuth.new #new instance of zoom s2s functions under base method
+    
+    puts "Initializing"
+    
+    @errors = {
+      topic: [], 
+      type: [], 
+      duration: [],
+      timezone: []
+    }
   end
   
   def index
   end
 
   def new_meeting
+    @errors = session.delete(:errors)&.transform_keys(&:to_sym) || { 
+      topic: [], 
+      type: [], 
+      duration: [],
+      timezone: []
+    } #any errors in the hash will be stored into @errors - otherwise @errors is initialized and session[:errors] is deleted
+    puts @errors
     render layout: 'application'
     puts "new_meeting"
   end
   
   def create_meeting
-    authorise
+    if check_for_errors
+      puts @errors
+      session[:errors] = @errors #stores hash in session to retain it
+      puts "redirecting with errors"
+      redirect_to '/zooms2s/new_meeting'
+      return 
+    end 
+    
+    if !session[:access_token] #only runs if access token is required
+      authorise
+    end
+    
     puts "Successfully authenticated\nAccess Token: #{session[:access_token]}\nTTL: #{@TTL}"
     
     puts "Creating meeting...."
@@ -23,7 +50,10 @@ class Zooms2sController < ApplicationController
     parameters = meetingparameters.except(:utf8, :authenticity_token, :commit)
     
     if parameters[:start_time]
-      parameters[:start_time] = DateTime.parse(parameters[:start_time]) #parsing from ISO 8601 format to DateTime object
+      parameters[:start_time] = DateTime.parse(parameters[:start_time]).strftime('%Y-%m-%dT%H:%M:%S') #parsing from ISO 8601 format to yyyy-MM-ddTHH:mm:ss format as required by zoom
+      if parameters[:timezone] == "GMT"
+        parameters[:start_time] << "Z" #adding "Z" to the end for GMT timezone as required by zoom 
+      end
     end 
     
     meetinginfo = @zoom_oauth.startmeeting(session[:access_token], parameters, zoom_id)
@@ -38,15 +68,16 @@ class Zooms2sController < ApplicationController
     
     puts "Meeting successfully created!"
 
-  rescue StandardError => e
+  rescue StandardError => e 
+    puts e.message
+  
+  rescue FormatError 
     render file: "#{Rails.root}/response.html.erb", layout: true, content_type: 'text/html'
-    puts "Error: #{ e.message }"
   end
   
   private
     def set_session_expiration
-      request.session_options[:expire_after] = @TTL.seconds #sets session timer to TTL of the access token
-      puts "Set session expiration time to #{@TTL} seconds"
+      session[:access_token_expiry] = @TTL.seconds.from_now
       #make sure you figure out how to display session expiry error message
     end
     
@@ -75,8 +106,31 @@ class Zooms2sController < ApplicationController
     
     def meetingparameters
       params.permit(:topic, :duration, :password, :type, :start_time, :timezone, :utf8, :authenticity_token, :commit)
-      
-      params.require(:duration, :type, :timezone).presence    
     end
-
+    
+    def check_for_errors
+      puts "Checking for errors"
+      
+      [:duration, :type].each do |field|
+        if params[field].blank?
+          @errors[field] = "This field must not be blank"
+        end
+      end
+      
+      if params[:topic].length > 200 
+        @errors[:topic] = "Length cannot be greater than 200 characters"
+      end
+      
+      if params[:type] == 2 && params[:start_time] == nil
+        @errors[:start_time] = "Cannot be blank if meeting type is scheduled "
+      end 
+      
+      if params[:type] == 2 && params[:timezome] == nil
+        @errors[:timezone] = "Cannot be blank if meeting type is scheduled "
+      end 
+      
+      if !@errors.empty?
+        true
+      end
+    end   
 end

@@ -1,36 +1,40 @@
-<%= form_tag do %>
-  <%= csrf_meta_tags %>
-  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-<% end %> 
-
 <% provide(:title, "New Meeting") %> 
 <body>
 <div class ="container">
     <%= yield %> 
 </div>
-
 <div class="centre jumbotron">
   <h1>Create New Meeting</h1>
   <div class='layouts'>
   <%= form_tag "/zooms2s/create_meeting", method: 'post', validate: true do %>
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %> <!--Submits random authenticity token for csrf checks in parameters (see applicaton controller)-->
   
     <div>
       <%= label_tag :topic %>
-      <%= text_field_tag :topic, "(max 200 chars)", class: "form-control" %>
+      <%= text_field_tag :topic, nil, class: "form-control" %>
       <small class="text-muted">Enter the topic of the meeting (optional)</small><br> 
+      <% if @errors[:topic].present? %> 
+          <div style="color:red";><%= @errors[:topic] %></div>
+      <% end %>
     </div><br>
 
     <div>
       <%= label_tag :duration %>
       <%= number_field_tag :duration, nil, class: 'form-control'%>
       <small class="text-muted">Enter the duration in minutes</small><br>
+      <% if @errors[:duration].present? %> 
+          <div style="color:red";><%= @errors[:duration] %></div>
+      <% end %>
     </div><br>
   
     <div>
       <%= label_tag :password %>
-      <%= text_field_tag :password, "(max 10 chars)", class: 'form-control'%>
+      <%= text_field_tag :password, nil, class: 'form-control'%>
       <small class="text-muted">(optional)</small><br>
-    </div><br>
+      <% if @errors[:password].present? %> 
+          <div style="color:red";><%= @errors[:password] %></div>
+      <% end %>
+      </div><br>
     
     <div>
       <%= label_tag :type %><br>
@@ -40,12 +44,18 @@
       <%= label_tag :type, "Scheduled meeting", id:"Scheduled" %><br>
       <%= radio_button_tag :type, '3', id: "Recurring" %>
       <%= label_tag :type, "Recurring meeting (no fixed time)", id: "Recurring" %><br>
+      <% if @errors[:type].present? %> 
+          <div style="color:red";><%= @errors[:type] %></div>
+      <% end %>
     </div><br>
     
     <div> 
       <%= label_tag :start_time %><br>
-      <%= datetime_select :start_time, nil, class: 'form-control'%><br>
+      <%= datetime_field_tag :start_time, nil, min: Time.now.iso8601, class: 'form-control'%><br>
       <small class="text-muted">Enter only if meeting type is scheduled</small><br>
+      <% if @errors[:start_time].present? %> 
+          <div style="color:red";><%= @errors[:start_time] %></div>
+      <% end %>
     </div><br>
     
     <div>
@@ -54,6 +64,9 @@
       <%= label_tag :timezone, "UTC" %><br> 
       <%= radio_button_tag :timezone, 'GMT' %> 
       <%= label_tag :timezone, "GMT" %>
+      <% if @errors[:timezone].present? %> 
+          <div style="color:red";><%= @errors[:timezone] %></div>
+      <% end %>
     </div><br>
     
     <div style="padding-left: 10%;">

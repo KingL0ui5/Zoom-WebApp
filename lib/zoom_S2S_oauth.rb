@@ -54,7 +54,7 @@ class ZoomS2SOAuth
       File.open('response.html.erb', 'w') do |file|
         file.puts(resp.body)
       end
-      raise StandardError, '404: Cannot get access token, please try again later'
+      raise FormatError.new("Authentication Error")
     end
     
     puts "Response: #{resp}"
@@ -86,7 +86,7 @@ class ZoomS2SOAuth
       File.open('response.html.erb', 'w') do |file|
         file.puts(resp.body)
       end
-      raise StandardError, '404: Cannot create meeting, please try again later'
+      raise FormatError.new("New Meeting POST Error")
     end
     
     puts "Posted: \nHeaders: #{headers} \nBody: #{parameters} \nAwaiting response..."

@@ -3,19 +3,20 @@
   <h1>Log in</h1>
   
   <div style="padding-right: 300px; padding-left: 300px">
-  <form accept-charset="UTF-8" action="/login" method="post">
-    <input name="authenticity_token" type="hidden" value="NNb6+J/j46LcrgYUC60wQ2titMuJQ5lLqyAbnbAUkdo=" />
+    <form accept-charset="UTF-8" action="/login" method="post">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %> <!--Submits random authenticity token for csrf checks in parameters (see applicaton controller)-->
     
-    <label for="session_EmailAddress">Email</label>
-    <input class= "form-control" id="session_EmailAddress" name="session[EmailAddress]", type="EmailAddress" /><br>
+      <label for="session_EmailAddress">Email</label>
+      <input class= "form-control" id="session_EmailAddress" name="session[EmailAddress]", type="EmailAddress" /><br>
         
-    <label for="session_password">Password</label>
-    <input class="form-control" id="session_password" name="session[password]" type="password" /><br>
+      <label for="session_password">Password</label>
+      <input class="form-control" id="session_password" name="session[password]" type="password" /><br>
     
-    <div style="padding-left: 10%;">
-      <input class="btn btn-primary" name="commit" type="submit" value="Log in" />
-    </div>
-  </form>
+      <div style="padding-left: 10%;">
+        <input class="btn btn-primary" name="commit" type="submit" value="Log in" />
+      </div>
+      
+    </form>
   </div>
   
 </body>
