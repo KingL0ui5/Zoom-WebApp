@@ -1,6 +1,7 @@
 require 'zoom_S2S_oauth'
 
 class Zooms2sController < ApplicationController
+  layout 'application'
   
   def initialize
     @zoom_oauth = ZoomS2SOAuth.new #new instance of zoom s2s functions under base method
@@ -47,7 +48,7 @@ class Zooms2sController < ApplicationController
     
     puts "Creating meeting...."
     zoom_id = session[:EmailAddress]
-    parameters = meetingparameters.except(:utf8, :authenticity_token, :commit)
+    parameters = meetingparameters.except(:department_id, :utf8, :authenticity_token, :commit)
     
     if parameters[:start_time]
       parameters[:start_time] = DateTime.parse(parameters[:start_time]).strftime('%Y-%m-%dT%H:%M:%S') #parsing from ISO 8601 format to yyyy-MM-ddTHH:mm:ss format as required by zoom
@@ -56,15 +57,22 @@ class Zooms2sController < ApplicationController
       end
     end 
     
+    i = parameters[:department_id] 
+    department = Department.find_by(id: i)
+    
     meetinginfo = @zoom_oauth.startmeeting(session[:access_token], parameters, zoom_id)
     
-    host = zoom_id
-    topic = meetinginfo['topic']
-    join_url = meetinginfo['join_url']
-    duration = meetinginfo['duration']
-    start_time = meetinginfo['start_time']
-    timezone = meetinginfo['timezone']
-    start_url = meetinginfo['start_time']
+    details = {
+      host: [zoom_id],
+      topic: [meetinginfo['topic']],
+      join_url: [meetinginfo['join_url']],
+      duration: [meetinginfo['duration']],
+      start_time: [meetinginfo['start_time']],
+      timezone: [meetinginfo['timezone']],
+      start_url: [meetinginfo['start_url']]
+    }
+    
+    send_emails(department, details)
     
     puts "Meeting successfully created!"
 
@@ -105,7 +113,7 @@ class Zooms2sController < ApplicationController
     end
     
     def meetingparameters
-      params.permit(:topic, :duration, :password, :type, :start_time, :timezone, :utf8, :authenticity_token, :commit)
+      params.permit(:topic, :duration, :password, :type, :start_time, :timezone, :department_id, :utf8, :authenticity_token, :commit)
     end
     
     def check_for_errors
@@ -132,5 +140,13 @@ class Zooms2sController < ApplicationController
       if !@errors.empty?
         true
       end
-    end   
+    end  
+    
+    def send_emails(department, details)
+      users = department.users 
+      username = (User.find_by(session[:user_EmployeeID])).Name
+      users.each do |user| #iterates through all users in department 
+        MeetingMailer.meeting_email(user.Name, user.EmailAddress, details, username).deliver_now
+      end
+    end 
 end

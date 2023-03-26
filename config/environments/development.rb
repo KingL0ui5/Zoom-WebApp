@@ -55,4 +55,7 @@ Rails.application.configure do
   config.web_console.whitelisted_ips = '149.86.60.126'
   config.web_console.whitelisted_ips = '171.33.196.184'
 
+ # config.action_mailer.raise_delivery_errors = false #for sending emails 
+  host = 'https://c68dc96b16ad48c6ba78dbbb297e85d4.vfs.cloud9.us-east-1.amazonaws.com/'
+  config.action_mailer.default_url_options = { host: host, protocol: 'https' }
 end
