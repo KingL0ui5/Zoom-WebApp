@@ -1,0 +1,23 @@
+<html>
+  <body>
+    <div>
+      <p>Hello <%= @name %>, here are the details of your meeting and your unique join link</p>
+      <p> 
+        This is the message that you have sent to all of the partipiants:<br>
+        <%= @meetinginfo[:message] %>
+      </p>
+      <p>Meeting description: <%= @meetinginfo[:topic] %></p>
+      </p>
+        Meeting starts at <%= @meetinginfo[:start_time] %> <%= @meetinginfo[:timezone] %>.
+        Meeting duration: <%= @meetinginfo[:duration] %> minutes
+      </p>
+      <p>
+        Here is your unique host link - you must join from this link to start the new meeting.<br>
+        <a href=https:/<%= @meetinginfo[:start_url] %> target="_blank">Press here to join the meeting!</a>
+      </p>  
+    </div>
+  </body>
+</html>
+
+
+<!-- note to self: change this so get_meeting returns all of the data -->

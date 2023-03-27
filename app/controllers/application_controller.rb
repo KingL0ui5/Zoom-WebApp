@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :set_csrf_meta_tags
+  before_action :check_access_tok_expiry
   
   include SessionsHelper
   layout 'application'

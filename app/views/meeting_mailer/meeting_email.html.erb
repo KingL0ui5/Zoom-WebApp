@@ -1,8 +1,18 @@
 <html>
   <body>
-    <div>
-      Hello <%= @recipitent_name %> you have been invited to a meeting!
-    </div>
+    <p>
+      Hello <%= @recipitent_name %>, <%= @sender_name %> has invited you to a meeting!<br>
+      <div> 
+        <%= @meetinginfo[:message] %> 
+      </div>
+      
+      Meeting description: <%= @meetinginfo[:topic] %>
+      <div> 
+        Please join at <%= @meetinginfo[:start_time] %> <%= @meetinginfo[:timezone] %>.
+        The meeting will last for <%= @meetinginfo[:duration] %> minutes
+      </div>
+      <a href=https:/<%= @meetinginfo[:join_url] %> target="_blank">Press here to join the meeting!</a>
+    </p>
     
   </body>
 </html>

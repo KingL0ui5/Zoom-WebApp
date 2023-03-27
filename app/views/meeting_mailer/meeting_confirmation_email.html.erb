@@ -1,0 +1,22 @@
+<html>
+  <body>
+    <p>
+      Hello <%= @name %>, your meeting has been scheduled<br>
+      
+      <div> 
+        This is the message that you have sent to all of the partipiants:<br>
+        <%= @meetinginfo[:message] %> 
+      </div>
+      
+      Meeting description: <%= @meetinginfo[:topic] %>
+      
+      <div> 
+        Meeting starts at <%= @meetinginfo[:start_time] %> <%= @meetinginfo[:timezone] %>.
+        Meeting duration: <%= @meetinginfo[:duration] %> minutes
+      </div>
+        
+      Your unique join link will be sent one hour before the start of the meeting.
+    </p>
+    
+  </body>
+</html>

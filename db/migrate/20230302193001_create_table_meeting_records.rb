@@ -4,8 +4,6 @@ class CreateTableMeetingRecords < ActiveRecord::Migration[5.0]
       t.datetime :StartTime, null: false 
       t.datetime :Endtime, null: false
       t.references :user, foreign_key: true
-      t.references :department, foreign_key: true
-      
       t.timestamps
     end
     

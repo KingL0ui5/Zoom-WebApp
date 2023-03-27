@@ -27,6 +27,7 @@ class ZoomS2SOAuth
   end
   
   def get_access_token
+    puts "Requesting access token"
     url = @zoom_base_url << @zoom_token_url
     authorisation = "#{@client_id}:#{@client_secret}" 
     encoded_authorisation = Base64.strict_encode64(authorisation)
@@ -64,6 +65,7 @@ class ZoomS2SOAuth
   end 
   
   def startmeeting(access_tok, parameters, zoom_user_id)
+    puts "Creating meeting...."
     url = @zoom_base_url << @meeting_endpoint #in deployment replace with @zoom_base_url << @meeting_endpoint << zoom_user_id << "meetings" assuming that the logged in user has an account with zoom 
     headers = {
       'Authorization' => "Bearer #{access_tok}",

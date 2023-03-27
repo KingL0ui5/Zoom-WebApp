@@ -41,7 +41,7 @@
           <%= radio_button_tag :type, '1', id: "Instant" %> 
           <%= label_tag :type, "Instant meeting", id: "Instant" %><br> 
           <%= radio_button_tag :type, '2', id: "Scheduled"  %>
-          <%= label_tag :type, "Scheduled meeting", id:"Scheduled" %><br>
+          <%= label_tag :type, "Scheduled meeting", id: "Scheduled" %><br>
           <%= radio_button_tag :type, '3', id: "Recurring" %>
           <%= label_tag :type, "Recurring meeting (no fixed time)", id: "Recurring" %><br>
           <% if @errors[:type].present? %> 
@@ -51,7 +51,7 @@
     
         <div> 
           <%= label_tag :start_time %><br>
-          <%= datetime_field_tag :start_time, nil, min: Time.now.iso8601, class: 'form-control'%><br>
+          <%= datetime_field_tag :start_time, nil, min: Time.now.iso8601, class: 'form-control'%>
           <small class="text-muted">Enter only if meeting type is scheduled</small><br>
           <% if @errors[:start_time].present? %> 
             <div style="color:red";><%= @errors[:start_time] %></div>
@@ -60,10 +60,10 @@
     
         <div>
           <%= label_tag :timezone %><br>
-          <%= radio_button_tag :timezone, 'UTC' %> 
-          <%= label_tag :timezone, "UTC" %><br> 
           <%= radio_button_tag :timezone, 'GMT' %> 
-          <%= label_tag :timezone, "GMT" %>
+          <%= label_tag :timezone, "GMT" %><br> 
+          <%= radio_button_tag :timezone, 'UTC' %> 
+          <%= label_tag :timezone, "UTC" %>
           <% if @errors[:timezone].present? %> 
             <div style="color:red";><%= @errors[:timezone] %></div>
           <% end %>
@@ -73,8 +73,13 @@
           <%= label_tag :participants %> 
           <%= collection_select(:participants, :department_id, Department.all, :id, :name, { prompt: "Select department" }, class: 'form-control') %><br>
         </div>
+        
+        <div> 
+          <%= label_tag :message %><small class="text-muted"> (optional)</small>
+          <%= text_area_tag :message, "(message for meeting participants)", class: 'form-control', :cols => 30, :rows => 10 %> 
+        </div>
     
-        <div style="padding-left: 10%;">
+        <div style="padding-left: 40%;">
           <%= submit_tag "Create Meeting", class: "btn btn-primary" %>
         </div>
   
