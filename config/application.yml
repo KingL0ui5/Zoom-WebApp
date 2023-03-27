@@ -6,10 +6,12 @@ development:
   CLIENT_ID_OAUTH: "h5mCujLdRfubftjQt_f_0w"
   CLIENT_SECRET_OAUTH: "7u9AhiGL7d406UftKG8NwaQbtOmqAmbl"
   REDIRECT_URI: 'https://c68dc96b16ad48c6ba78dbbb297e85d4.vfs.cloud9.us-east-1.amazonaws.com/zoom/callback'
+  ZOOM_BASE_URL: 'https://zoom.us'  
   
-  ZOOM_BASE_URL: 'https://api.zoom.us/'  
   MEETING_ENDPOINT: '/users/liulouis1@gmail.com/meetings'
   ZOOM_TOKEN_URL: '/oauth/token'
+  
+  GETUSERSURL: '/users/'
   
 test:
   CLIENT_ID: ''

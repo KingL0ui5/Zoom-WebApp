@@ -1,19 +1,13 @@
 require 'zoom_S2S_oauth'
+require 'Custom_errors'
 
 class Zooms2sController < ApplicationController
   layout 'application'
   
   def initialize
-    @zoom_oauth = ZoomS2SOAuth.new #new instance of zoom s2s functions under base method
-    
-    puts "Initializing"
-    
-    @errors = {
-      topic: [], 
-      type: [], 
-      duration: [],
-      timezone: []
-    }
+    @meeting = Zoom_Meetings.new #new instance of zoom s2s functions under base method
+    @zoom_user = Zoom_Users.new
+    @errors = { }
   end
   
   def index
@@ -21,35 +15,41 @@ class Zooms2sController < ApplicationController
 
   def new_meeting
     #using form_tag methods for simplified params hash
-    @errors = session.delete(:errors)&.transform_keys(&:to_sym) || { 
-      topic: [], 
-      type: [], 
-      duration: [],
-      timezone: []
-    } #any errors in the hash will be stored into @errors - otherwise @errors is initialized and session[:errors] is deleted
+    @errors = session.delete(:errors)&.transform_keys(&:to_sym) || { } #any errors in the hash will be stored into @errors - otherwise @errors is initialized and session[:errors] is deleted
     render layout: 'application'
   end
   
   def create_meeting
+    puts meetingparameters
     if check_for_errors
       session[:errors] = @errors #stores hash in session to retain it
       redirect_to '/zooms2s/new_meeting'
       return 
     end 
     
+    authorise
     if !session[:access_token] #only runs if access token is missing
       authorise
     end
     
     flash[:success] = "Successfully authenticated\nAccess Token: #{session[:access_token]}\nTTL: #{@Expires_in}"
     
-    zoom_id = session[:EmailAddress]
+    check = check_if_user_exists(session[:access_token], session[:user_EmailAddress])
+    puts check
+    
+    if !check
+      flash[:danger] = "Host user does not have an account with zoom. Ensure that host has an account before creating a new meeting"
+      redirect_to '/zooms2s/new_meeting'
+      return
+    end
+    
     i = meetingparameters[:department_id] 
     department = Department.find_by(id: i)
+    zoom_id = session[:user_EmailAddress]
     
-    parameters = meetingparameters.except(:message, :department_id, :utf8, :authenticity_token, :commit) #removing clutter and fields that are not submitted to the zoom api
+    parameters = meetingparameters.except(:message, :department_id, :utf8, :authenticity_token, :commit).symbolize_keys #removing clutter and fields that are not submitted to the zoom api & symbolizes keys
     
-    meetinginfo = meeting(parameters)
+    meetinginfo = meeting(parameters, zoom_id)
     
     details = {
       message: meetingparameters[:message],
@@ -68,20 +68,17 @@ class Zooms2sController < ApplicationController
 
   rescue StandardError => e 
     puts e.message
-  
-  rescue FormatError 
-    render file: "#{Rails.root}/response.html.erb", layout: true, content_type: 'text/html'
-  end
+  end 
   
   private
-    def set_session_expiration
-      session[:access_token_expiry] = @Expires_in.seconds.from_now
+    def set_session_expiration(expires_in)
+      session[:access_token_expiry] = expires_in.seconds.from_now
       #make sure you figure out how to display session expiry error message
     end
     
     def authorise
       session.delete(:access_token)
-      resp_body = @zoom_oauth.get_access_token #calls method to get access token 
+      resp_body = @meeting.get_access_token #calls method to get access token 
     
       error = resp_body['reason'] #exception handling for errors on server end
       if error != nil
@@ -89,15 +86,17 @@ class Zooms2sController < ApplicationController
         redirect_to root_path, flash: { error: "Authorisation failed: #{error}" }
       end 
       
-      session[:access_token] = resp_body['Access_token'] #use of global variable local to session. Is reset when token expires.
-      @token_type = resp_body['Token_type']
-      @Expires_in = resp_body['Expires_in']
-      @scope = resp_body['scope']
+      session[:access_token] = resp_body['access_token'] #session variable is reset when token expires.
+      token_type = resp_body['token_type'] #currently redundant
+      expires_in = resp_body['expires_in']
+      scopes = resp_body['scope'] #currently redundant 
       
-      set_session_expiration
+      set_session_expiration(expires_in)
     rescue OAuth2::Error => e #specifically for authentication errors
       puts "Error: #{ e.message }"
       redirect_to root_path, flash: { error: e.message }
+    rescue FormatError 
+      render file: "#{Rails.root}/response.html.erb", layout: true, content_type: 'text/html'
     end
     
     def meetingparameters
@@ -105,8 +104,6 @@ class Zooms2sController < ApplicationController
     end
     
     def check_for_errors
-      puts "Checking for errors"
-      
       [:duration, :type].each do |field|
         if params[field].blank?
           @errors[field] = "This field must not be blank"
@@ -126,6 +123,7 @@ class Zooms2sController < ApplicationController
       end 
       
       if !@errors.empty?
+        puts "errors found #{@errors}"
         true
       end
     end  
@@ -148,7 +146,7 @@ class Zooms2sController < ApplicationController
       end
     end 
     
-    def meeting(parameters)
+    def meeting(parameters, zoom_id)
       if parameters[:start_time]
         parameters[:start_time] = DateTime.parse(parameters[:start_time]).strftime('%Y-%m-%dT%H:%M:%S') #parsing from ISO 8601 format to yyyy-MM-ddTHH:mm:ss format as required by zoom
         if parameters[:timezone] == "GMT"
@@ -156,8 +154,33 @@ class Zooms2sController < ApplicationController
           parameters[:start_time] << "Z" #adding "Z" to the end for GMT timezone as required by zoom 
         end
       end
+  
+      return @meeting.startmeeting(session[:access_token], parameters, zoom_id) #returns details of new meeting
       
-      parameters.to_json #parses form params to JSON
-      return @zoom_oauth.startmeeting(session[:access_token], parameters, zoom_id) #returns details of new meeting
+    rescue FormatError 
+      render file: "#{Rails.root}/response.html.erb", layout: true, content_type: 'text/html'
     end 
+    
+    def check_if_user_exists(access_token, zoom_user_id)
+      puts "checking user"
+      begin resp = @zoom_user.get_user(access_token, zoom_user_id)
+        code = resp.code
+        body = JSON.parse(resp.body)
+        
+        puts "code: #{code}\nbody: #{body}" #for debugging
+        
+        if code == 200
+          return true 
+        else if code == 1001
+          return false
+        else 
+          raise StandardError,"Error: #{code} - #{body['message']}"
+        end
+      end
+      
+      rescue StandardError => e 
+        puts e.message
+        flash[:danger] = e.message
+      end
+    end
 end

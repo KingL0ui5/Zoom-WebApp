@@ -4,7 +4,8 @@ class User < ActiveRecord::Base
     validates :Name, :EmailAddress, :department_id, :password, presence: { message: "This field cannot be empty" }
     
     validates :EmailAddress, confirmation: {case_sensitive: false, message: "Email addresses do not match"},
-                             format: {with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, message: "This is not a valid email address"} #regex for email address
+                             format: {with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, message: "This is not a valid email address"}, #regex for email address
+                             uniqueness: { message: "This Email Address is already in use" }
     
     validates :EmailAddress_confirmation, presence: {message: "This field cannot be empty"} 
     
