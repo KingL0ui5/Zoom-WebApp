@@ -10,17 +10,18 @@ class Zooms2sController < ApplicationController
     @errors = { }
   end
   
-  def index
+  def testing
+    authorise
+    check_if_user_exists(session[:access_token], "test")
   end
 
   def new_meeting
-    #using form_tag methods for simplified params hash
     @errors = session.delete(:errors)&.transform_keys(&:to_sym) || { } #any errors in the hash will be stored into @errors - otherwise @errors is initialized and session[:errors] is deleted
     render layout: 'application'
   end
   
   def create_meeting
-    puts meetingparameters
+    puts meetingparameters #for debugging
     if check_for_errors
       session[:errors] = @errors #stores hash in session to retain it
       redirect_to '/zooms2s/new_meeting'
@@ -34,7 +35,7 @@ class Zooms2sController < ApplicationController
     
     flash[:success] = "Successfully authenticated\nAccess Token: #{session[:access_token]}\nTTL: #{@Expires_in}"
     
-    if !check_if_user_exists(session[:access_token], session[:user_EmailAddress])
+    if !check_if_user_exists(session[:access_token], session[:user_EmailAddress]) #check that user exists before attempting to create meeting
       flash[:danger] = "Host user does not have an account with zoom. Ensure that host has an account before creating a new meeting"
       redirect_to '/zooms2s/new_meeting'
       return
@@ -48,7 +49,7 @@ class Zooms2sController < ApplicationController
     
     meetinginfo = meeting(parameters, zoom_id)
     
-    details = {
+    details = { #hash to be passed to subroutines
       message: meetingparameters[:message],
       host: zoom_id,
       topic: meetinginfo['topic'],
@@ -64,7 +65,8 @@ class Zooms2sController < ApplicationController
     flash[:success] = "Meeting successfully created!"
 
   rescue StandardError => e 
-    puts e.message
+    flash[:danger] = e.message
+    redirect_to '/zooms2s/new_meeting'
   end 
   
   private
@@ -90,11 +92,9 @@ class Zooms2sController < ApplicationController
       
       set_session_expiration(expires_in)
     rescue OAuth2::Error => e #specifically for authentication errors
-      puts "Error: #{ e.message }"
-      redirect_to root_path, flash: { error: e.message }
-    rescue FormatError 
-      render file: "#{Rails.root}/response.html.erb", layout: true, content_type: 'text/html'
-    end
+      flash[:danger] = "OAuth error: #{e.message}"
+      redirect_to '/zooms2s/new_meeting'
+    end 
     
     def meetingparameters
       params.permit(:message, :topic, :duration, :password, :type, :start_time, :timezone, :department_id, :utf8, :authenticity_token, :commit)
@@ -130,13 +130,15 @@ class Zooms2sController < ApplicationController
       username = (User.find_by(id: session[:user_EmployeeID])).Name
       users.each do |user| #iterates through all users in department 
         if user.EmailAddress == session[:user_EmailAddress]
+          MeetingMailer.meeting_host_email(session[:user_EmailAddress], details, username).deliver_now #delivers seperate email to meetinghost
+          #should then deliver seperate message in time frame
         else
           MeetingMailer.meeting_email(user.Name, user.EmailAddress, details, username).deliver_now
         end
       end
       
       if type == 1
-        MeetingMailer.meeting_host_email(session[:user_EmailAddress], details, username)
+        MeetingMailer.meeting_host_email(session[:user_EmailAddress], details, username).deliver_now
       else 
         #get meeting request
         MeetingMailer.meeting_confirmation_email(session[:user_EmailAddress], details, username).deliver_now
@@ -153,34 +155,22 @@ class Zooms2sController < ApplicationController
       end
   
       return @meeting.startmeeting(session[:access_token], parameters, zoom_id) #returns details of new meeting
-      
-    rescue FormatError 
-      render file: "#{Rails.root}/response.html.erb", layout: true, content_type: 'text/html'
-    end 
+    end
     
     def check_if_user_exists(access_token, zoom_user_id)
-      puts "checking user"
       begin resp = @zoom_user.get_user(access_token, zoom_user_id)
         code = resp.code
         body = JSON.parse(resp.body)
         
-        puts "code: #{code}\nbody: #{body}" #for debugging
-        
-        if code == 200
-          return true 
-        else if code == 1001
-          return false
-        else 
-          raise StandardError,"Error: #{code} - #{body['message']}"
-        end
-      end
-      
-      rescue FormatError 
-        render file: "#{Rails.root}/response.html.erb", layout: true, content_type: 'text/html'
-      
       rescue StandardError => e 
         puts e.message
         flash[:danger] = e.message
+      
+      ensure 
+        if code == 1001
+          return false
+        end
+        return true 
       end
     end
 end

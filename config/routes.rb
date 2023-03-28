@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get "/users/:id", to: "users#show"
   patch "/users", to: "users#update"
 
+  get '/zooms2s/testing', to: 'zooms2s#testing'
   get '/zooms2s/new_meeting', to: 'zooms2s#new_meeting' #for S2S procedures
   post '/zooms2s/create_meeting', to: 'zooms2s#create_meeting'
   #get '/zooms2s/authorise', to: 'zooms2s#authorise' 

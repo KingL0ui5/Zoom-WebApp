@@ -15,21 +15,11 @@ class ZoomS2SOAuth
     
     @zoom_base_url = CONFIG['ZOOM_BASE_URL'] 
     @zoom_token_url = CONFIG['ZOOM_TOKEN_URL']
-    
-    #session[:access_token] = nil
-  end  
-  
-  def client #currently redundant
-    @client ||= OAuth2::Client.new(
-      @client_id, 
-      @client_secret, 
-      site: 'https://zoom.us'
-    )
-  end  
+  end
   
   def get_access_token
     puts "Requesting access token"
-    url = @zoom_base_url + @zoom_token_url
+    url = 'https://api.zoom.us' + '/oauth/token'
     authorisation = "#{@client_id}:#{@client_secret}" 
     encoded_authorisation = Base64.strict_encode64(authorisation)
     headers = {
@@ -49,19 +39,13 @@ class ZoomS2SOAuth
     headers: headers,
     debug_output: $stdout
     )
-    
-    content_type = resp.headers['content-type'] #retrieves content type of response
-    
-    if content_type != 'application/json;charset=UTF-8'  #if the content type is not JSON, something has happened 
-      File.open('response.html.erb', 'w') do |file|
-        file.puts(resp.body)
-      end
-      raise FormatError.new("Authentication Error")
+    status = resp.code
+    if status == 400
+      raise OAuth2::Error, "Error: #{resp['error']}, please check parameters"
     end
     
     puts "Response: #{resp}"
     resp_body = JSON.parse(resp.body)
-    puts "Response: #{resp_body}"
     return resp_body
   end 
 end 
@@ -74,7 +58,7 @@ class Zoom_Meetings < ZoomS2SOAuth
   
   def startmeeting(access_tok, parameters, zoom_user_id)
     puts "Creating meeting...."
-    url = @zoom_base_url + @meeting_endpoint #in deployment replace with @zoom_base_url + @meeting_endpoint + zoom_user_id + "meetings" assuming that the logged in user has an account with zoom 
+    url = 'https://api.zoom.us' + '/v2/users/liulouis1@gmail.com/meetings' #in deployment replace with @zoom_base_url + @meeting_endpoint + zoom_user_id + "meetings" assuming that the logged in user has an account with zoom 
     payload = JSON.generate(parameters) #parses form params to JSON
     headers = {
       'Authorization' => "Bearer #{access_tok}",
@@ -89,14 +73,10 @@ class Zoom_Meetings < ZoomS2SOAuth
       debug_output: $stdout
     )
     
-    content_type = resp.headers['content-type'] #retrieves content type of response
-    
-    if content_type != 'application/json;charset=UTF-8'  #if the content type is not JSON, something has happened 
-      File.open('response.html.erb', 'w') do |file|
-        file.puts(resp.body)
-      end
-      raise FormatError.new("New Meeting POST Error")
-    end
+    status = resp.code 
+    if status != 201
+      raise StandardError, "Status: #{resp['code']},\nError: #{resp['message']}"
+    end 
     
     puts "Posted: \nHeaders: #{headers} \nBody: #{parameters} \nAwaiting response..."
     resp_body = JSON.parse(resp.body)
@@ -104,20 +84,33 @@ class Zoom_Meetings < ZoomS2SOAuth
     return resp_body 
   end
   
-  def get_meeting
-      
+  def get_meeting(access_tok, meeting_id)
+    url = 'https://api.zoom.us' + "/v2/meetings/" + meeting_id
+    headers = {
+      'Authorization' => "Bearer #{access_tok}",
+      'Content-Type' => "application/json"
+    }
+    
+    resp = HTTParty.get(
+      url,
+      headers: headers,
+      debut_output: $stdout
+      )
+    if resp.code != 200
+      raise StandardError, "Status: #{resp['code']},\nError: #{resp['message']}"
+    end
   end
 end
 
 class Zoom_Users < ZoomS2SOAuth
   def initialize
-    @users_url = CONFIG['GETUSERSURL']
+    @users_url = CONFIG['USERSURL']
     super
   end
   
   def get_user(access_tok, zoom_user_id)
     puts "Requesting user information..."
-    url = @zoom_base_url + @users_url + "liulouis1@gmail.com"#?encrypted_email=false&search_by_unique_id=false"#zoom_user_id?encrypted_email=false&search_by_unique_id=false
+    url = 'https://api.zoom.us' + '/v2/users/' + "liulouis1@gmail.com"#zoom_user_id
     puts "get user url: #{url}"
     headers = {
       'Authorization' => "Bearer #{access_tok}",
@@ -135,25 +128,103 @@ class Zoom_Users < ZoomS2SOAuth
     headers: headers,
     debug_output: $stdout
     )
-    
+    if resp.code != 200 
+      raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
+    end 
     return resp
   end
     
-  def create_user(access_tok)
-    url = @zoom_base_url + @users_url
+  def create_user(access_tok, details) #test
+    url = 'https://api.zoom.us' + '/v2/users/'
+    details[:type] = 2
+    headers = {
+      'Authorization' => "Bearer #{access_tok}",
+      'Content-Type' => "application/json"
+    }
     
+    payload = {
+      action: "create", 
+      user_info: details #nested hash for zoom api
+    }
+      
     resp = HTTParty.post(
       url,
+      headers: headers,
+      body: JSON.generate(payload),
       debug_output: $stdout
       )
+      if resp.code != 201 
+        raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
+      end 
+    return resp
   end
   
-  def delete_user(access_tok, zoom_user_id)
-    url = @zoom_base_url + @users_url + zoom_user_id
+  def patch_user(access_tok, zoom_user_id, details) #test
+    url = 'https://api.zoom.us' + '/v2/users/' + zoom_user_id
+    
+    headers = {
+      'Authorization' => "Bearer #{access_tok}",
+      'Content-Type' => "application/json"
+    }
+    
+    resp = HTTParty.patch(
+      url,
+      headers: headers,
+      body: JSON.generate(details)
+      debug_output
+      )
+    if resp.code != 204
+      raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
+    end       
+    return resp 
+  end 
+  
+  def delete_user(access_tok, zoom_user_id, transfer_to) #CHECK, test
+    url = 'https://api.zoom.us' + '/v2/users/' + zoom_user_id
+    
+    headers = {
+      'Authorization' => "Bearer #{access_tok}",
+      'Content-Type' => "application/json"
+    }
+    payload = {
+      action: "delete",
+      encrypted_email: "false",
+      transfer_email: "#{transfer_to}" #not sure whether to include or not
+    }
     
     resp = HTTParty.delete(
       url,
+      headers: headers, 
+      query: JSON.generate(payload),
       debug_output: $stdout
       )
+    if resp.code != 204
+      raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
+    end 
+    return resp 
+  end
+  
+  def list_meetings(access_tok, zoom_user_id) #test
+    url = 'https://api.zoom.us' + '/v2/users/' + zoom_user_id
+    
+    headers = {
+      'Authorization' => "Bearer #{access_tok}",
+      'Content-Type' => "application/json"
+    }
+    payload = {
+      page_size: 300
+    }
+    
+    resp = HTTParty.get(
+      url,
+      headers: headers 
+      query: JSON.generate(payload),
+      debug_output: $stdout
+      )
+    
+    if resp.code != 200
+      raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
+    end 
+    return resp 
   end
 end

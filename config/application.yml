@@ -1,7 +1,7 @@
 development: 
   ACCOUNT_ID: 'aEDeWyabSIejB839_Pnw2w'
-  CLIENT_ID_S2S: 'Ndm7Nt6WStuYgoEckNuYfQ'
-  CLIENT_SECRET_S2S: 'lkW9IzW3TsCYR50dBTbbwd6CtN1ztdU6'
+  CLIENT_ID_S2S: 'Ndm7Nt6WStuYgoEckNuYfQ' #configured in app, does not change
+  CLIENT_SECRET_S2S: 'lkW9IzW3TsCYR50dBTbbwd6CtN1ztdU6' #confugured in app, can be regenerated
   
   CLIENT_ID_OAUTH: "h5mCujLdRfubftjQt_f_0w"
   CLIENT_SECRET_OAUTH: "7u9AhiGL7d406UftKG8NwaQbtOmqAmbl"
@@ -11,7 +11,7 @@ development:
   MEETING_ENDPOINT: '/v2/users/liulouis1@gmail.com/meetings'
   ZOOM_TOKEN_URL: '/oauth/token'
   
-  GETUSERSURL: '/v2/users/'
+  USERSURL: '/v2/users/'
   
 test:
   CLIENT_ID: ''
