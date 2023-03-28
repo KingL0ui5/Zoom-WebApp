@@ -34,10 +34,7 @@ class Zooms2sController < ApplicationController
     
     flash[:success] = "Successfully authenticated\nAccess Token: #{session[:access_token]}\nTTL: #{@Expires_in}"
     
-    check = check_if_user_exists(session[:access_token], session[:user_EmailAddress])
-    puts check
-    
-    if !check
+    if !check_if_user_exists(session[:access_token], session[:user_EmailAddress])
       flash[:danger] = "Host user does not have an account with zoom. Ensure that host has an account before creating a new meeting"
       redirect_to '/zooms2s/new_meeting'
       return
@@ -177,6 +174,9 @@ class Zooms2sController < ApplicationController
           raise StandardError,"Error: #{code} - #{body['message']}"
         end
       end
+      
+      rescue FormatError 
+        render file: "#{Rails.root}/response.html.erb", layout: true, content_type: 'text/html'
       
       rescue StandardError => e 
         puts e.message

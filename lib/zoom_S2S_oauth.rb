@@ -76,7 +76,6 @@ class Zoom_Meetings < ZoomS2SOAuth
     puts "Creating meeting...."
     url = @zoom_base_url + @meeting_endpoint #in deployment replace with @zoom_base_url + @meeting_endpoint + zoom_user_id + "meetings" assuming that the logged in user has an account with zoom 
     payload = JSON.generate(parameters) #parses form params to JSON
-    puts payload
     headers = {
       'Authorization' => "Bearer #{access_tok}",
       'Content-Type' => "application/json"
@@ -118,8 +117,8 @@ class Zoom_Users < ZoomS2SOAuth
   
   def get_user(access_tok, zoom_user_id)
     puts "Requesting user information..."
-    url = @zoom_base_url + @users_url + "liulouis1@gmail.com"#zoom_user_id
-    
+    url = @zoom_base_url + @users_url + "liulouis1@gmail.com"#?encrypted_email=false&search_by_unique_id=false"#zoom_user_id?encrypted_email=false&search_by_unique_id=false
+    puts "get user url: #{url}"
     headers = {
       'Authorization' => "Bearer #{access_tok}",
       'Content-Type' => "application/json"     
@@ -127,12 +126,11 @@ class Zoom_Users < ZoomS2SOAuth
     
     payload = {
       encrypted_email: false,
-      search_by_unique_id: true #can search by unique email adderess to find employee 
+      search_by_unique_id: false #can search by unique email adderess to find employee 
     }
     
-    puts "Posting request..."
     resp = HTTParty.get(
-    url, 
+    url,
     query: JSON.generate(payload),
     headers: headers,
     debug_output: $stdout

@@ -1,0 +1,159 @@
+=> Booting Puma
+=> Rails 5.0.7.2 application starting in development on http://localhost:8080
+=> Run `rails server -h` for more startup options
+Puma starting in single mode...
+* Puma version: 6.1.1 (ruby 2.6.3-p62) ("The Way Up")
+*  Min threads: 5
+*  Max threads: 5
+*  Environment: development
+*          PID: 10465
+* Listening on http://127.0.0.1:8080
+* Listening on http://[::1]:8080
+Use Ctrl-C to stop
+Started GET "/zooms2s/new_meeting" for 171.33.196.184 at 2023-03-28 09:10:34 +0000
+  [1m[36mActiveRecord::SchemaMigration Load (0.3ms)[0m  [1m[34mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+Processing by Zooms2sController#new_meeting as HTML
+  Rendering zooms2s/new_meeting.html.erb within layouts/application
+  [1m[36mDepartment Load (0.3ms)[0m  [1m[34mSELECT `departments`.* FROM `departments`[0m
+  Rendered zooms2s/new_meeting.html.erb within layouts/application (21.1ms)
+  Rendered layouts/_shim.html.erb (0.3ms)
+  [1m[36mUser Load (6.0ms)[0m  [1m[34mSELECT  `users`.* FROM `users` WHERE `users`.`EmployeeID` = 2 LIMIT 1[0m
+  Rendered layouts/_header.html.erb (25.6ms)
+Completed 200 OK in 392ms (Views: 369.8ms | ActiveRecord: 9.4ms)
+
+
+Started POST "/zooms2s/create_meeting" for 171.33.196.184 at 2023-03-28 09:10:52 +0000
+Processing by Zooms2sController#create_meeting as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"WI7jKS+k5NBp7B0pL+3doQLdSVLlSQ1G2CVVz1C4gFaK0y0TsGEmIzs2dPHkDAY/Q1IeJ5yRkXS90b3aYgibtg==", "topic"=>"", "duration"=>"60", "password"=>"[FILTERED]", "type"=>"2", "start_time"=>"2023-04-08T10:10", "department_id"=>{"department_id"=>""}, "message"=>"(message for meeting participants)", "commit"=>"Create Meeting"}
+Unpermitted parameter: department_id
+{"message"=>"(message for meeting participants)", "topic"=>"", "duration"=>"60", "password"=>"", "type"=>"2", "start_time"=>"2023-04-08T10:10", "utf8"=>"✓", "authenticity_token"=>"WI7jKS+k5NBp7B0pL+3doQLdSVLlSQ1G2CVVz1C4gFaK0y0TsGEmIzs2dPHkDAY/Q1IeJ5yRkXS90b3aYgibtg==", "commit"=>"Create Meeting"}
+checking user
+Requesting user information...
+get user url: https://api.zoom.us/v2/users/liulouis1@gmail.com?encrypted_email=false&search_by_unique_id=false
+opening connection to api.zoom.us:443...
+opened
+starting SSL for api.zoom.us:443...
+SSL established, protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384
+<- "GET /v2/users/liulouis1@gmail.com?encrypted_email=false&search_by_unique_id=false HTTP/1.1\r\nAuthorization: Bearer eyJhbGciOiJIUzUxMiIsInYiOiIyLjAiLCJraWQiOiJmMDI4NGZhNS01ZjdhLTQ0MDUtOTEyNi1kZjFlOGY5Y2M1NDYifQ.eyJ2ZXIiOjgsImF1aWQiOiJkMWYxN2RhOTUyMzZlMTY4ODg5N2UxNjI2YTdiNmFkMyIsImNvZGUiOiJQWVVLMkRSc1RGZUt2cDk3aFFteEhnNkhPRFVvZkJ1MjgiLCJpc3MiOiJ6bTpjaWQ6TmRtN050NldTdHVZZ29FY2tOdVlmUSIsImdubyI6MCwidHlwZSI6MywiYXVkIjoiaHR0cHM6Ly9vYXV0aC56b29tLnVzIiwidWlkIjoiT2RoR2RvSEZUakthOTZ2MHl5R194dyIsIm5iZiI6MTY3OTk5MjgxMiwiZXhwIjoxNjc5OTk2NDEyLCJpYXQiOjE2Nzk5OTI4MTIsImFpZCI6ImFFRGVXeWFiU0llakI4MzlfUG53MnciLCJqdGkiOiJjM2IyNTI3YS03NjhiLTQ1ODAtYTI2OC01Y2QwMmZjOTJiMGIifQ.uyhx9MamC1M6ORrZ5LrLk14Z0i8u7SLYVjrgRV6S2QesMa89ya6ib4Zhd9qGgnbA9zqIkBjVnN9MGlT96GQkEA\r\nContent-Type: application/json\r\nAccept-Encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3\r\nAccept: */*\r\nUser-Agent: Ruby\r\nConnection: close\r\nHost: api.zoom.us\r\n\r\n"
+-> "HTTP/1.1 200 OK\r\n"
+-> "Date: Tue, 28 Mar 2023 09:10:52 GMT\r\n"
+-> "Content-Type: application/json;charset=UTF-8\r\n"
+-> "Content-Length: 915\r\n"
+-> "Connection: close\r\n"
+-> "x-zm-trackingid: v=2.0;clid=us05;rid=WEB_12a7f18a3c26aedf73946314fb8339c4\r\n"
+-> "x-content-type-options: nosniff\r\n"
+-> "Cache-Control: no-cache, no-store, must-revalidate, no-transform\r\n"
+-> "pragma: no-cache\r\n"
+-> "expires: Thu, 01 Jan 1970 00:00:00 GMT\r\n"
+-> "set-cookie: zm_aid=\"\"; Domain=.zoom.us; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; Secure; HttpOnly\r\n"
+-> "vary: Origin\r\n"
+-> "vary: Access-Control-Request-Method\r\n"
+-> "vary: Access-Control-Request-Headers\r\n"
+-> "x-ratelimit-category: Light\r\n"
+-> "x-ratelimit-limit: 6000\r\n"
+-> "x-ratelimit-remaining: 5991\r\n"
+-> "x-zm-zoneid: VA2\r\n"
+-> "content-disposition: inline;filename=f.txt\r\n"
+-> "strict-transport-security: max-age=31536000; includeSubDomains\r\n"
+-> "x-xss-protection: 1; mode=block\r\n"
+-> "referrer-policy: strict-origin-when-cross-origin\r\n"
+-> "CF-Cache-Status: DYNAMIC\r\n"
+-> "Set-Cookie: zm_haid=\"\"; Domain=.zoom.us; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; Secure; HttpOnly\r\n"
+-> "Set-Cookie: zm_tmaid=\"\"; Domain=.zoom.us; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; Secure; HttpOnly\r\n"
+-> "Set-Cookie: zm_htmaid=\"\"; Domain=.zoom.us; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; Secure; HttpOnly\r\n"
+-> "Set-Cookie: cred=F3B48909EF67A4FE4891D921E3BDB1A6; Path=/; Secure; HttpOnly\r\n"
+-> "Set-Cookie: _zm_ctaid=\"\"; Domain=.zoom.us; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; Secure; HttpOnly\r\n"
+-> "Set-Cookie: _zm_chtaid=\"\"; Domain=.zoom.us; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; Secure; HttpOnly\r\n"
+-> "Set-Cookie: _zm_mtk_guid=75ea60d0ba3942be86b8c0848c4fd6ae; Domain=.zoom.us; Expires=Thu, 27-Mar-2025 09:10:52 GMT; Path=/; Secure\r\n"
+-> "Set-Cookie: TS01f92dc5=011792258e6f27812206ac7c41791bea11343c833e99edb146444286c7e7f96c2a9302a98d956e780d1188524ba245356a34875b21; Path=/; Secure; HttpOnly; SameSite=Strict;\r\n"
+-> "Set-Cookie: TS018dd1ba=011792258e6f27812206ac7c41791bea11343c833e99edb146444286c7e7f96c2a9302a98d956e780d1188524ba245356a34875b21; path=/; domain=.zoom.us\r\n"
+-> "Set-Cookie: __cf_bm=lnFhjfFSmWzjwi9nsMuZbdl0q0TE2.zVSf0pcryDCmg-1679994652-0-Af0N1TUuE5ROgagEi2aOt1phQxuwcm+ED9ZC4Kbt9bSR0Qp3ysuKj7ZIx3SHD3eC8uv8Pn7R0Z6nYLd3sKRLing=; path=/; expires=Tue, 28-Mar-23 09:40:52 GMT; domain=.zoom.us; HttpOnly; Secure; SameSite=None\r\n"
+-> "Report-To: {\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v3?s=D5mHliQ1c4rAcZb4I7J5oK85C2CvcpK%2FB7r1eKLSopulr7sFiyRsbOx9cKvgINbl45N7m5%2BSGBGhVeLAXzSqHup1AApDwY4u8L%2BCamUkJgaDEXWhm38kVmahtIyl\"}],\"group\":\"cf-nel\",\"max_age\":604800}\r\n"
+-> "NEL: {\"success_fraction\":0.01,\"report_to\":\"cf-nel\",\"max_age\":604800}\r\n"
+-> "Server: cloudflare\r\n"
+-> "CF-RAY: 7aeebe0feace3817-IAD\r\n"
+-> "alt-svc: h3=\":443\"; ma=86400, h3-29=\":443\"; ma=86400\r\n"
+-> "\r\n"
+reading 915 bytes...
+-> "{\"id\":\"OdhGdoHFTjKa96v0yyG_xw\",\"first_name\":\"Louis\",\"last_name\":\"Liu\",\"display_name\":\"Louis"
+-> " Liu\",\"email\":\"liulouis1@gmail.com\",\"type\":1,\"role_name\":\"Owner\",\"pmi\":8047573273,\"use_pmi\":false,\"personal_meeting_url\":\"https://us05web.zoom.us/j/8047573273?pwd=QUcwbzlLY1JHUWx0MDhQMC9HZWE0Zz09\",\"timezone\":\"Europe/London\",\"verified\":1,\"dept\":\"\",\"created_at\":\"2022-01-14T17:53:16Z\",\"last_login_time\":\"2023-03-28T08:30:33Z\",\"last_client_version\":\"5.9.1.2581(win)\",\"pic_url\":\"https://us05web.zoom.us/p/OdhGdoHFTjKa96v0yyG_xw/0416dabd-5fd0-45ae-91bc-0c4f5c706ec5-9179\",\"cms_user_id\":\"\",\"jid\":\"odhgdohftjka96v0yyg_xw@xmpp.zoom.us\",\"group_ids\":[],\"im_group_ids\":[],\"account_id\":\"aEDeWyabSIejB839_Pnw2w\",\"language\":\"en-US\",\"phone_country\":\"\",\"phone_number\":\"\",\"status\":\"active\",\"job_title\":\"\",\"location\":\"\",\"login_types\":[1,100],\"role_id\":\"0\",\"account_number\":5048619757,\"cluster\":\"us05\",\"user_created_at\":\"2022-01-14T17:52:13Z\"}"
+read 915 bytes
+Conn close
+code: 200
+body: {"id"=>"OdhGdoHFTjKa96v0yyG_xw", "first_name"=>"Louis", "last_name"=>"Liu", "display_name"=>"Louis Liu", "email"=>"liulouis1@gmail.com", "type"=>1, "role_name"=>"Owner", "pmi"=>8047573273, "use_pmi"=>false, "personal_meeting_url"=>"https://us05web.zoom.us/j/8047573273?pwd=QUcwbzlLY1JHUWx0MDhQMC9HZWE0Zz09", "timezone"=>"Europe/London", "verified"=>1, "dept"=>"", "created_at"=>"2022-01-14T17:53:16Z", "last_login_time"=>"2023-03-28T08:30:33Z", "last_client_version"=>"5.9.1.2581(win)", "pic_url"=>"https://us05web.zoom.us/p/OdhGdoHFTjKa96v0yyG_xw/0416dabd-5fd0-45ae-91bc-0c4f5c706ec5-9179", "cms_user_id"=>"", "jid"=>"odhgdohftjka96v0yyg_xw@xmpp.zoom.us", "group_ids"=>[], "im_group_ids"=>[], "account_id"=>"aEDeWyabSIejB839_Pnw2w", "language"=>"en-US", "phone_country"=>"", "phone_number"=>"", "status"=>"active", "job_title"=>"", "location"=>"", "login_types"=>[1, 100], "role_id"=>"0", "account_number"=>5048619757, "cluster"=>"us05", "user_created_at"=>"2022-01-14T17:52:13Z"}
+trace 1 
+Unpermitted parameter: department_id
+  [1m[36mDepartment Load (0.3ms)[0m  [1m[34mSELECT  `departments`.* FROM `departments` WHERE `departments`.`id` IS NULL LIMIT 1[0m
+trace 2
+Unpermitted parameter: department_id
+DEPRECATION WARNING: Method symbolize_keys is deprecated and will be removed in Rails 5.1, as `ActionController::Parameters` no longer inherits from hash. Using this deprecated behavior exposes potential security problems. If you continue to use this method you may be creating a security vulnerability in your app that can be exploited. Instead, consider using one of these documented methods which are not deprecated: http://api.rubyonrails.org/v5.0.7.2/classes/ActionController/Parameters.html (called from create_meeting at /home/ubuntu/environment/app/app/controllers/zooms2s_controller.rb:48)
+trace 3
+Creating meeting....
+payload: {"topic":"","duration":"60","password":"","type":"2","start_time":"2023-04-08T10:10:00"}
+headers {"Authorization"=>"Bearer eyJhbGciOiJIUzUxMiIsInYiOiIyLjAiLCJraWQiOiJmMDI4NGZhNS01ZjdhLTQ0MDUtOTEyNi1kZjFlOGY5Y2M1NDYifQ.eyJ2ZXIiOjgsImF1aWQiOiJkMWYxN2RhOTUyMzZlMTY4ODg5N2UxNjI2YTdiNmFkMyIsImNvZGUiOiJQWVVLMkRSc1RGZUt2cDk3aFFteEhnNkhPRFVvZkJ1MjgiLCJpc3MiOiJ6bTpjaWQ6TmRtN050NldTdHVZZ29FY2tOdVlmUSIsImdubyI6MCwidHlwZSI6MywiYXVkIjoiaHR0cHM6Ly9vYXV0aC56b29tLnVzIiwidWlkIjoiT2RoR2RvSEZUakthOTZ2MHl5R194dyIsIm5iZiI6MTY3OTk5MjgxMiwiZXhwIjoxNjc5OTk2NDEyLCJpYXQiOjE2Nzk5OTI4MTIsImFpZCI6ImFFRGVXeWFiU0llakI4MzlfUG53MnciLCJqdGkiOiJjM2IyNTI3YS03NjhiLTQ1ODAtYTI2OC01Y2QwMmZjOTJiMGIifQ.uyhx9MamC1M6ORrZ5LrLk14Z0i8u7SLYVjrgRV6S2QesMa89ya6ib4Zhd9qGgnbA9zqIkBjVnN9MGlT96GQkEA", "Content-Type"=>"application/json"}
+Posting Request...
+opening connection to api.zoom.us:443...
+opened
+starting SSL for api.zoom.us:443...
+SSL established, protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384
+<- "POST /v2/users/liulouis1@gmail.com/meetings HTTP/1.1\r\nAuthorization: Bearer eyJhbGciOiJIUzUxMiIsInYiOiIyLjAiLCJraWQiOiJmMDI4NGZhNS01ZjdhLTQ0MDUtOTEyNi1kZjFlOGY5Y2M1NDYifQ.eyJ2ZXIiOjgsImF1aWQiOiJkMWYxN2RhOTUyMzZlMTY4ODg5N2UxNjI2YTdiNmFkMyIsImNvZGUiOiJQWVVLMkRSc1RGZUt2cDk3aFFteEhnNkhPRFVvZkJ1MjgiLCJpc3MiOiJ6bTpjaWQ6TmRtN050NldTdHVZZ29FY2tOdVlmUSIsImdubyI6MCwidHlwZSI6MywiYXVkIjoiaHR0cHM6Ly9vYXV0aC56b29tLnVzIiwidWlkIjoiT2RoR2RvSEZUakthOTZ2MHl5R194dyIsIm5iZiI6MTY3OTk5MjgxMiwiZXhwIjoxNjc5OTk2NDEyLCJpYXQiOjE2Nzk5OTI4MTIsImFpZCI6ImFFRGVXeWFiU0llakI4MzlfUG53MnciLCJqdGkiOiJjM2IyNTI3YS03NjhiLTQ1ODAtYTI2OC01Y2QwMmZjOTJiMGIifQ.uyhx9MamC1M6ORrZ5LrLk14Z0i8u7SLYVjrgRV6S2QesMa89ya6ib4Zhd9qGgnbA9zqIkBjVnN9MGlT96GQkEA\r\nContent-Type: application/json\r\nAccept-Encoding: gzip;q=1.0,deflate;q=0.6,identity;q=0.3\r\nAccept: */*\r\nUser-Agent: Ruby\r\nConnection: close\r\nHost: api.zoom.us\r\nContent-Length: 88\r\n\r\n"
+<- "{\"topic\":\"\",\"duration\":\"60\",\"password\":\"\",\"type\":\"2\",\"start_time\":\"2023-04-08T10:10:00\"}"
+-> "HTTP/1.1 201 Created\r\n"
+-> "Date: Tue, 28 Mar 2023 09:10:52 GMT\r\n"
+-> "Content-Type: application/json;charset=UTF-8\r\n"
+-> "Content-Length: 1943\r\n"
+-> "Connection: close\r\n"
+-> "x-zm-trackingid: v=2.0;clid=us05;rid=WEB_8d4158e9560d883d99c3912488bfbf1a\r\n"
+-> "x-content-type-options: nosniff\r\n"
+-> "Cache-Control: no-cache, no-store, must-revalidate, no-transform\r\n"
+-> "pragma: no-cache\r\n"
+-> "expires: Thu, 01 Jan 1970 00:00:00 GMT\r\n"
+-> "set-cookie: zm_aid=\"\"; Domain=.zoom.us; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; Secure; HttpOnly\r\n"
+-> "vary: Origin\r\n"
+-> "vary: Access-Control-Request-Method\r\n"
+-> "vary: Access-Control-Request-Headers\r\n"
+-> "x-ratelimit-category: Light\r\n"
+-> "x-ratelimit-limit: 100\r\n"
+-> "x-ratelimit-remaining: 99\r\n"
+-> "x-zm-zoneid: VA2\r\n"
+-> "strict-transport-security: max-age=31536000; includeSubDomains\r\n"
+-> "x-xss-protection: 1; mode=block\r\n"
+-> "referrer-policy: strict-origin-when-cross-origin\r\n"
+-> "CF-Cache-Status: DYNAMIC\r\n"
+-> "Set-Cookie: zm_haid=\"\"; Domain=.zoom.us; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; Secure; HttpOnly\r\n"
+-> "Set-Cookie: zm_tmaid=\"\"; Domain=.zoom.us; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; Secure; HttpOnly\r\n"
+-> "Set-Cookie: zm_htmaid=\"\"; Domain=.zoom.us; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; Secure; HttpOnly\r\n"
+-> "Set-Cookie: cred=E7E07B265CE38CD8EB942F6528621294; Path=/; Secure; HttpOnly\r\n"
+-> "Set-Cookie: _zm_ctaid=\"\"; Domain=.zoom.us; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; Secure; HttpOnly\r\n"
+-> "Set-Cookie: _zm_chtaid=\"\"; Domain=.zoom.us; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; Secure; HttpOnly\r\n"
+-> "Set-Cookie: _zm_mtk_guid=bced3bedf8704039a50b149561b6f47a; Domain=.zoom.us; Expires=Thu, 27-Mar-2025 09:10:52 GMT; Path=/; Secure\r\n"
+-> "Set-Cookie: TS01f92dc5=01862eb16c95e13c8b2d885f8f20f3d764de1acecc3833d6e84aff00d2142a8f6187827f2da9e2925c818e1328821a4ad76698d8fb; Path=/; Secure; HttpOnly; SameSite=Strict;\r\n"
+-> "Set-Cookie: TS018dd1ba=01862eb16c95e13c8b2d885f8f20f3d764de1acecc3833d6e84aff00d2142a8f6187827f2da9e2925c818e1328821a4ad76698d8fb; path=/; domain=.zoom.us\r\n"
+-> "Set-Cookie: __cf_bm=_pB6pOlzz5X7Bmm3qt9imoi2zDmvwasUT5vLmHx6J3M-1679994652-0-AU3JsgaoBn/a8K004oyDjLP7B9jiTOJEk+Fjro1t3iQhrCG1Upi0pT1V9BhOJROSeTMxy6J/OEqN66tqvVPlmck=; path=/; expires=Tue, 28-Mar-23 09:40:52 GMT; domain=.zoom.us; HttpOnly; Secure; SameSite=None\r\n"
+-> "Report-To: {\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v3?s=j%2FrdaXUpykkXH1sUeaLBO9Rsc04q5kWUy5e4siQf5qeqkQwAZlhqFyTWsIk%2Fpy0Ub7IskQhJ%2FrDWiXD1Vq1sEEHtApQA%2Bo3Em8rjN9MgZEQnSspuV1Dj%2FFdOKEDX\"}],\"group\":\"cf-nel\",\"max_age\":604800}\r\n"
+-> "NEL: {\"success_fraction\":0.01,\"report_to\":\"cf-nel\",\"max_age\":604800}\r\n"
+-> "Server: cloudflare\r\n"
+-> "CF-RAY: 7aeebe10ff0c7fa6-IAD\r\n"
+-> "alt-svc: h3=\":443\"; ma=86400, h3-29=\":443\"; ma=86400\r\n"
+-> "\r\n"
+reading 1943 bytes...
+-> "{\"uuid\":\"FddYevDDR8qU/wKxXmv+Tw==\",\"id\":88337454952,\"host_id\":\"OdhGdoHFTjKa96v0yyG_xw\",\"host_email\":\"liulouis1@gmail.com\",\"topic"
+-> "\":\"Zoom Meeting\",\"type\":2,\"status\":\"waiting\",\"start_time\":\"2023-04-08T09:10:00Z\",\"duration\":60,\"timezone\":\"Europe/London\",\"created_at\":\"2023-03-28T09:10:52Z\",\"start_url\":\"https://us05web.zoom.us/s/88337454952?zak=eyJ0eXAiOiJKV1QiLCJzdiI6IjAwMDAwMSIsInptX3NrbSI6InptX28ybSIsImFsZyI6IkhTMjU2In0.eyJhdWQiOiJjbGllbnRzbSIsInVpZCI6Ik9kaEdkb0hGVGpLYTk2djB5eUdfeHciLCJpc3MiOiJ3ZWIiLCJzayI6IjM2NjkzNjkwMTk4MjQ0Mjc0NjMiLCJzdHkiOjEwMCwid2NkIjoidXMwNSIsImNsdCI6MCwibW51bSI6Ijg4MzM3NDU0OTUyIiwiZXhwIjoxNjgwMDAxODUyLCJpYXQiOjE2Nzk5OTQ2NTIsImFpZCI6ImFFRGVXeWFiU0llakI4MzlfUG53MnciLCJjaWQiOiIifQ.LZKl9g4tBu4OI-FNpfQBV66_nzBAXnrxnuuFNzcnS1c\",\"join_url\":\"https://us05web.zoom.us/j/88337454952?pwd=cDgvc1RPVUtld0NEVEphdHlsa0U0Zz09\",\"password\":\"eR7SAk\",\"h323_password\":\"059331\",\"pstn_password\":\"059331\",\"encrypted_password\":\"cDgvc1RPVUtld0NEVEphdHlsa0U0Zz09\",\"settings\":{\"host_video\":false,\"participant_video\":false,\"cn_meeting\":false,\"in_meeting\":false,\"join_before_host\":false,\"jbh_time\":0,\"mute_upon_entry\":false,\"watermark\":false,\"use_pmi\":false,\"approval_type\":2,\"audio\":\"voip\",\"auto_recording\":\"none\",\"enforce_login\":false,\"enforce_login_domains\":\"\",\"alternative_hosts\":\"\",\"alternative_host_update_polls\":false,\"close_registration\":false,\"show_share_button\":false,\"allow_multiple_devices\":false,\"registrants_confirmation_email\":true,\"waiting_room\":false,\"request_permission_to_unmute"
+-> "_participants\":false,\"registrants_email_notification\":true,\"meeting_authentication\":false,\"encryption_type\":\"enhanced_encryption\",\"approved_or_denied_countries_or_regions\":{\"enable\":false},\"breakout_room\":{\"enable\":false},\"alternative_hosts_email_notification\":true,\"device_testing\":false,\"focus_mode\":false,\"enable_dedicated_group_chat\":false,\"private_meeting\":false,\"email_notification\":true,\"host_save_video_order\":false},\"pre_schedule\":false}"
+read 1943 bytes
+Conn close
+Posted: 
+Headers: {"Authorization"=>"Bearer eyJhbGciOiJIUzUxMiIsInYiOiIyLjAiLCJraWQiOiJmMDI4NGZhNS01ZjdhLTQ0MDUtOTEyNi1kZjFlOGY5Y2M1NDYifQ.eyJ2ZXIiOjgsImF1aWQiOiJkMWYxN2RhOTUyMzZlMTY4ODg5N2UxNjI2YTdiNmFkMyIsImNvZGUiOiJQWVVLMkRSc1RGZUt2cDk3aFFteEhnNkhPRFVvZkJ1MjgiLCJpc3MiOiJ6bTpjaWQ6TmRtN050NldTdHVZZ29FY2tOdVlmUSIsImdubyI6MCwidHlwZSI6MywiYXVkIjoiaHR0cHM6Ly9vYXV0aC56b29tLnVzIiwidWlkIjoiT2RoR2RvSEZUakthOTZ2MHl5R194dyIsIm5iZiI6MTY3OTk5MjgxMiwiZXhwIjoxNjc5OTk2NDEyLCJpYXQiOjE2Nzk5OTI4MTIsImFpZCI6ImFFRGVXeWFiU0llakI4MzlfUG53MnciLCJqdGkiOiJjM2IyNTI3YS03NjhiLTQ1ODAtYTI2OC01Y2QwMmZjOTJiMGIifQ.uyhx9MamC1M6ORrZ5LrLk14Z0i8u7SLYVjrgRV6S2QesMa89ya6ib4Zhd9qGgnbA9zqIkBjVnN9MGlT96GQkEA", "Content-Type"=>"application/json"} 
+Body: {:topic=>"", :duration=>"60", :password=>"", :type=>"2", :start_time=>"2023-04-08T10:10:00"} 
+Awaiting response...
+Response: {"uuid"=>"FddYevDDR8qU/wKxXmv+Tw==", "id"=>88337454952, "host_id"=>"OdhGdoHFTjKa96v0yyG_xw", "host_email"=>"liulouis1@gmail.com", "topic"=>"Zoom Meeting", "type"=>2, "status"=>"waiting", "start_time"=>"2023-04-08T09:10:00Z", "duration"=>60, "timezone"=>"Europe/London", "created_at"=>"2023-03-28T09:10:52Z", "start_url"=>"https://us05web.zoom.us/s/88337454952?zak=eyJ0eXAiOiJKV1QiLCJzdiI6IjAwMDAwMSIsInptX3NrbSI6InptX28ybSIsImFsZyI6IkhTMjU2In0.eyJhdWQiOiJjbGllbnRzbSIsInVpZCI6Ik9kaEdkb0hGVGpLYTk2djB5eUdfeHciLCJpc3MiOiJ3ZWIiLCJzayI6IjM2NjkzNjkwMTk4MjQ0Mjc0NjMiLCJzdHkiOjEwMCwid2NkIjoidXMwNSIsImNsdCI6MCwibW51bSI6Ijg4MzM3NDU0OTUyIiwiZXhwIjoxNjgwMDAxODUyLCJpYXQiOjE2Nzk5OTQ2NTIsImFpZCI6ImFFRGVXeWFiU0llakI4MzlfUG53MnciLCJjaWQiOiIifQ.LZKl9g4tBu4OI-FNpfQBV66_nzBAXnrxnuuFNzcnS1c", "join_url"=>"https://us05web.zoom.us/j/88337454952?pwd=cDgvc1RPVUtld0NEVEphdHlsa0U0Zz09", "password"=>"eR7SAk", "h323_password"=>"059331", "pstn_password"=>"059331", "encrypted_password"=>"cDgvc1RPVUtld0NEVEphdHlsa0U0Zz09", "settings"=>{"host_video"=>false, "participant_video"=>false, "cn_meeting"=>false, "in_meeting"=>false, "join_before_host"=>false, "jbh_time"=>0, "mute_upon_entry"=>false, "watermark"=>false, "use_pmi"=>false, "approval_type"=>2, "audio"=>"voip", "auto_recording"=>"none", "enforce_login"=>false, "enforce_login_domains"=>"", "alternative_hosts"=>"", "alternative_host_update_polls"=>false, "close_registration"=>false, "show_share_button"=>false, "allow_multiple_devices"=>false, "registrants_confirmation_email"=>true, "waiting_room"=>false, "request_permission_to_unmute_participants"=>false, "registrants_email_notification"=>true, "meeting_authentication"=>false, "encryption_type"=>"enhanced_encryption", "approved_or_denied_countries_or_regions"=>{"enable"=>false}, "breakout_room"=>{"enable"=>false}, "alternative_hosts_email_notification"=>true, "device_testing"=>false, "focus_mode"=>false, "enable_dedicated_group_chat"=>false, "private_meeting"=>false, "email_notification"=>true, "host_save_video_order"=>false}, "pre_schedule"=>false}
+Unpermitted parameter: department_id
+undefined method `users' for nil:NilClass
+No template found for Zooms2sController#create_meeting, rendering head :no_content
+Completed 204 No Content in 418ms (ActiveRecord: 0.3ms)
+
+
+- Gracefully stopping, waiting for requests to finish
+=== puma shutdown: 2023-03-28 09:33:43 +0000 ===
+- Goodbye!
+Exiting
