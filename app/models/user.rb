@@ -9,11 +9,20 @@ class User < ActiveRecord::Base
     
     validates :EmailAddress_confirmation, presence: {message: "This field cannot be empty"} 
     
-    #validations for each field in the creation of a new user model
     has_secure_password
-    validates :password, length: { minimum: 6, message: "The password must be at least 6 characters in length" }
+    validates :password, format: { with: password_requirements, message: "Min: 8 chars, max: 32 chars. Password must have at least one letter, at least one number (1, 2, 3...) and include uppercase and lowercase letters. It should not contain only one identical character repeatedly and it cannot contain consecutive characters" }
     validates :password_confirmation, presence: { message: "This field cannot be empty" }
 
-#User password. Only used for the "autoCreate" function. The password has to have a minimum of 8 characters and maximum of 32 characters. By default (basic requirement), password must have at least one letter (a, b, c..), at least one number (1, 2, 3...) and include both uppercase and lowercase letters. It should not contain only one identical character repeatedly ('11111111' or 'aaaaaaaa') and it cannot contain consecutive characters ('12345678' or 'abcdefgh').
-
+    password_requirements = /\A
+        (?=.*\d) #Must contain a digit
+        (?=.*[a-z]) #Must contain a lowercase letter
+        (?=.*[A-Z]) #Must contain an uppercase letter
+        (?=.*[[:^alnum:]]) #Must contain a special character
+        (?!(.)\1{7}) #Must not contain a single repeated character
+        (?!(?:.*[a-zA-Z]){4})  #Must not contain four consecutive letters
+        (?!(?:.*\d){4})  #Must not contain four consecutive digits
+        .{8,32} #Must be between 8 and 32 characters
+     \z/x
+     #according to zoom spec
+     
 end 

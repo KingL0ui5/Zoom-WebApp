@@ -13,12 +13,26 @@ class UsersController < ApplicationController
     end
     
     def show
+        @user = User.find(params[:id])
         begin
-            @user = User.find(params[:id])
-        rescue => e 
+            resp = @zoom_user.get_user(session[:access_token], @user.EmailAddress)
+            meetings = @zoom_user.list_meetings(session[:access_token], @user.EmailAddress)
+        rescue OAuth2::Error => e #specifically for authentication errors
+            flash[:danger] = "OAuth error: #{e.message}"
+            render :new
+            return
+        rescue StandardError => e
             flash[:danger] = e.message
-            redirect_to users_path
+            render :new
+            return
         end
+        @resp_body = JSON.parse(resp.body) #response body hash
+        meetings_body = JSON.parse(meetings.body)
+        @meetings = meetings_body['meetings']
+        
+    rescue => e
+        flash[:danger] = e.message
+        redirect_to request.referer || root_path
     end
     
     def new
@@ -39,7 +53,7 @@ class UsersController < ApplicationController
         details = zoom_formatting(user_parameters)
         
         begin 
-            resp = @zoom_user.create_user(session[:access_token], details)
+            @zoom_user.create_user(session[:access_token], details)
         rescue OAuth2::Error => e #specifically for authentication errors
             flash[:danger] = "OAuth error: #{e.message}"
             render :new
@@ -50,7 +64,7 @@ class UsersController < ApplicationController
             return
         end
         flash[:success] = "User successfully created" 
-        redirect_to users_path
+        redirect_to @user.department
         
     rescue 
         render :new 
@@ -72,7 +86,7 @@ class UsersController < ApplicationController
         details = zoom_formatting(user_parameters)
         
         begin 
-            resp = @zoom_user.patch_user(session[:access_token], details)
+            @zoom_user.patch_user(session[:access_token], details)
         rescue OAuth2::Error => e #specifically for authentication errors
             flash[:danger] = "OAuth error: #{e.message}"
             render :new
@@ -94,7 +108,7 @@ class UsersController < ApplicationController
         @user = User.find(params[:id])
         
         begin
-            resp = @zoom_user.delete_user(session[:access_token], @user.EmailAddress, transfer_to) #not sure whether to include or not
+            @zoom_user.delete_user(session[:access_token], @user.EmailAddress, transfer_to) #not sure whether to include or not
         rescue OAuth2::Error => e #specifically for authentication errors
             flash[:danger] = "OAuth error: #{e.message}"
             render :new
@@ -133,6 +147,7 @@ class UsersController < ApplicationController
             formatted_zoom_params[:display_name] = hash[:Name]
             return formatted_zoom_params
         end 
+        
         def check_access_tok
             if !session[:access_token] 
                 session[:access_token], session[:access_token_expiry] = @zoom_user.authorise

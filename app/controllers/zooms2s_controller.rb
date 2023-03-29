@@ -107,18 +107,15 @@ class Zooms2sController < ApplicationController
       username = (User.find_by(id: session[:user_EmployeeID])).Name
       users.each do |user| #iterates through all users in department 
         if user.EmailAddress == session[:user_EmailAddress]
-          MeetingMailer.meeting_host_email(session[:user_EmailAddress], details, username).deliver_now #delivers seperate email to meetinghost
-          hold_email(details[:start_time])
+          if type == 1
+            MeetingMailer.meeting_host_email(session[:user_EmailAddress], details, username).deliver_now
+          else 
+            MeetingMailer.meeting_confirmation_email(session[:user_EmailAddress], details, username).deliver_now #delivers seperate email to meetinghost
+            hold_email(details[:start_time])
+          end
         else
           MeetingMailer.meeting_email(user.Name, user.EmailAddress, details, username).deliver_now
         end
-      end
-      
-      if type == 1
-        MeetingMailer.meeting_host_email(session[:user_EmailAddress], details, username).deliver_now
-      else 
-        #get meeting request
-        MeetingMailer.meeting_confirmation_email(session[:user_EmailAddress], details, username).deliver_now
       end
     end 
     

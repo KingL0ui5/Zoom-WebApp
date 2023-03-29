@@ -1,9 +1,11 @@
 class CreateTableMeetingRecords < ActiveRecord::Migration[5.0]
   def change
     create_table :MeetingRecords, id: :integer do |t|
-      t.datetime :StartTime, null: false 
-      t.datetime :Endtime, null: false
-      t.references :user, foreign_key: true
+      t.string :zoom_meeting_id, null: false
+      t.datetime :start_time, null: false 
+      t.integer :duration, null: false
+      t.references :user, foreign_key: true #host
+      t.references :department, foreign_key: true #participants
       t.timestamps
     end
     

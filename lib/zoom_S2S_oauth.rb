@@ -26,48 +26,48 @@ class ZoomS2SOAuth
       redirect_to root_path, flash: { error: "Authorisation failed: #{error}" }
     end 
       
-    access_token = resp_body['access_token'] #session variable is reset when token expires.
-    token_type = resp_body['token_type'] #currently redundant
+    access_token = resp_body['access_token']
     expires_in = resp_body['expires_in']
-    scopes = resp_body['scope'] #currently redundant 
     
     return access_token, set_session_expiration(expires_in)
   end
   
-  def get_access_token
-    puts "Requesting access token"
-    url = 'https://api.zoom.us' + '/oauth/token'
-    authorisation = "#{@client_id}:#{@client_secret}" 
-    encoded_authorisation = Base64.strict_encode64(authorisation)
-    headers = {
-      'Content-Type' => 'application/x-www-form-urlencoded',
-      'Host' => 'zoom.us',
-      'Authorization' => "Basic #{encoded_authorisation}"
-    }
-    payload = {
-      grant_type: 'account_credentials',
-      account_id: @account_id
-    }
+  private 
+    def get_access_token
+      puts "Requesting access token"
+      url = 'https://api.zoom.us' + '/oauth/token'
+      authorisation = "#{@client_id}:#{@client_secret}" 
+      encoded_authorisation = Base64.strict_encode64(authorisation)
+      headers = {
+        'Content-Type' => 'application/x-www-form-urlencoded',
+        'Host' => 'zoom.us',
+        'Authorization' => "Basic #{encoded_authorisation}"
+      }
+      payload = {
+        grant_type: 'account_credentials',
+        account_id: @account_id
+      }
+      
+      puts "Posting request..."
+      resp = HTTParty.post(
+      url, 
+      body: URI.encode_www_form(payload),
+      headers: headers,
+      debug_output: $stdout
+      )
+      status = resp.code
+      if status == 400
+        raise OAuth2::Error, "Error: #{resp['error']}, please check parameters"
+      end
+      
+      puts "Response: #{resp}"
+      resp_body = JSON.parse(resp.body)
+      return resp_body
+    end 
     
-    puts "Posting request..."
-    resp = HTTParty.post(
-    url, 
-    body: URI.encode_www_form(payload),
-    headers: headers,
-    debug_output: $stdout
-    )
-    status = resp.code
-    if status == 400
-      raise OAuth2::Error, "Error: #{resp['error']}, please check parameters"
+    def set_session_expiration(expires_in)
+      expires_in.seconds.from_now
     end
-    
-    puts "Response: #{resp}"
-    resp_body = JSON.parse(resp.body)
-    return resp_body
-  end 
-  def set_session_expiration(expires_in)
-    expires_in.seconds.from_now
-  end
 end 
 
 class Zoom_Meetings < ZoomS2SOAuth
@@ -177,11 +177,10 @@ class Zoom_Users < ZoomS2SOAuth
       if resp.code != 201 
         raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
       end 
-    return resp
   end
   
   def patch_user(access_tok, details) #test
-    url = 'https://api.zoom.us' + '/v2/users/' + details[:email]
+    url = 'https://api.zoom.us' + '/v2/users/' + details[:email ]
     
     headers = {
       'Authorization' => "Bearer #{access_tok}",
@@ -196,8 +195,7 @@ class Zoom_Users < ZoomS2SOAuth
       )
     if resp.code != 204
       raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
-    end       
-    return resp 
+    end
   end 
   
   def delete_user(access_tok, zoom_user_id, transfer_to) #CHECK, test
@@ -222,11 +220,10 @@ class Zoom_Users < ZoomS2SOAuth
     if resp.code != 204
       raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
     end 
-    return resp 
   end
   
   def list_meetings(access_tok, zoom_user_id) #test
-    url = 'https://api.zoom.us' + '/v2/users/' + zoom_user_id
+    url = 'https://api.zoom.us' + '/v2/users/' + zoom_user_id + "/meetings"
     
     headers = {
       'Authorization' => "Bearer #{access_tok}",

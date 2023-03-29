@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
     def check_access_tok_expiry #removes expired access tokens after TTL see set_session_expiration method 
       if session[:access_token_expiry] && session[:access_token_expiry] < Time.now
         session[:access_token] = nil
-        flash[:danger] = "Warning Session Timeout: access token expired."
+        puts "access token has expired"
       end
     end
     
@@ -27,8 +27,15 @@ class ApplicationController < ActionController::Base
     end
     
     def check_timer
-      if session[:email_timer] - Time.now <= 1.hour
-        #send email
+      if session[:email_timer].present? && session[:email_timer] - Time.now <= 1.hour
+        
+        #meeting_id = request to meetingrecords table
+        
+        resp = Zoom_Meetings.get_meeting(session[:access_token], meeting_id)
+        response_body = JSON.parse(resp.body)
+        username = (User.find_by(id: response_body['host_email'])).Name
+        
+        MeetingMailer.meeting_host_email(response_body['email'], response_body, username).deliver_now
       end
     end
 end
