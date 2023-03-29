@@ -13,4 +13,7 @@ class User < ActiveRecord::Base
     has_secure_password
     validates :password, length: { minimum: 6, message: "The password must be at least 6 characters in length" }
     validates :password_confirmation, presence: { message: "This field cannot be empty" }
+
+#User password. Only used for the "autoCreate" function. The password has to have a minimum of 8 characters and maximum of 32 characters. By default (basic requirement), password must have at least one letter (a, b, c..), at least one number (1, 2, 3...) and include both uppercase and lowercase letters. It should not contain only one identical character repeatedly ('11111111' or 'aaaaaaaa') and it cannot contain consecutive characters ('12345678' or 'abcdefgh').
+
 end 

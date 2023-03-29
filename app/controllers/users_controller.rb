@@ -1,4 +1,8 @@
+require 'zoom_S2S_oauth'
+
 class UsersController < ApplicationController
+    before_action :check_if_logged_in, only: [:update, :create, :destroy] #ensures that user is logged in first
+    
     def index
         @users = User.all
     end
@@ -7,7 +11,8 @@ class UsersController < ApplicationController
         begin
             @user = User.find(params[:id])
         rescue => e 
-            redirect_to users_path, flash[:danger] = e.message 
+            flash[:danger] = e.message
+            redirect_to users_path
         end
     end
     
@@ -17,18 +22,48 @@ class UsersController < ApplicationController
     end 
     
     def create 
+        @zoom_user = Zoom_Users.new
+        
         i = user_parameters[:department_id] 
         department = Department.find_by(id: i)
         
         hash = user_parameters.except(:department_id)
+        puts hash
         @user = User.new(hash)
         @user.department = department
         @user.save!
-        redirect_to users_path, flash[:success] = "User successfully created" 
         
-    rescue => e
-        puts e 
-        render :new , flash[:danger] = e.message
+        zoom_params = hash.except(:EmailAddress, :EmailAddress_confirmation, :password_confirmation, :password)
+        
+        zoom_params[:email] = hash[:EmailAddress] #foramatting for zoom
+        zoom_params[:first_name], zoom_params[:last_name] = hash[:Name].split(" ") 
+        formatted_zoom_params = {}
+        zoom_params.each do |key, value| 
+            formatted_zoom_params[key.downcase] = value
+        end
+        formatted_zoom_params[:display_name] = hash[:Name]
+        puts formatted_zoom_params
+        
+        begin 
+            if !session[:access_token] 
+                session[:access_token], session[:access_token_expiry] = @zoom_user.authorise
+            end
+            resp = @zoom_user.create_user(session[:access_token], formatted_zoom_params)
+        
+        rescue OAuth2::Error => e #specifically for authentication errors
+            flash[:danger] = "OAuth error: #{e.message}"
+            render :new
+            return
+        rescue StandardError => e
+            flash[:danger] = e.message
+            render :new
+            return
+        end
+        flash[:success] = "User successfully created" 
+        redirect_to users_path
+        
+    rescue 
+        render :new 
         #deal with lack of any departments exception
     end
     
@@ -36,17 +71,22 @@ class UsersController < ApplicationController
         puts "editing"
         @user = User.find(params[:id])
         @department = Department.find_by(params[:department_id])
+        session[:user] = @user
     end 
     
     def update
         puts "updating"
-        @user = User.find_by(EmployeeID: params[:id]) # this doesn't work - id is not sent in the params
+        @user = session[:user]
+        session[:user] = nil
+        
         @user.update(user_parameters)
         @user.valid?
-        redirect_to users_path, flash[:success] = "Changes saved"  
+        flash[:success] = "Changes saved"
+        redirect_to users_path   
         
-    rescue => e
-        render :edit, flash[:danger] = e.message
+    rescue StandardError => e
+        flash[:danger] = e.message
+        render :edit 
     end
     
     def destroy 

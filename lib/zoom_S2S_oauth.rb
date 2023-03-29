@@ -17,6 +17,23 @@ class ZoomS2SOAuth
     @zoom_token_url = CONFIG['ZOOM_TOKEN_URL']
   end
   
+  def authorise
+    resp_body = get_access_token #calls method to get access token 
+  
+    error = resp_body['reason'] #exception handling for errors on server end
+    if error != nil
+      puts "Error #{error}"
+      redirect_to root_path, flash: { error: "Authorisation failed: #{error}" }
+    end 
+      
+    access_token = resp_body['access_token'] #session variable is reset when token expires.
+    token_type = resp_body['token_type'] #currently redundant
+    expires_in = resp_body['expires_in']
+    scopes = resp_body['scope'] #currently redundant 
+    
+    return access_token, set_session_expiration(expires_in)
+  end
+  
   def get_access_token
     puts "Requesting access token"
     url = 'https://api.zoom.us' + '/oauth/token'
@@ -48,6 +65,9 @@ class ZoomS2SOAuth
     resp_body = JSON.parse(resp.body)
     return resp_body
   end 
+  def set_session_expiration(expires_in)
+    expires_in.seconds.from_now
+  end
 end 
 
 class Zoom_Meetings < ZoomS2SOAuth
@@ -146,7 +166,8 @@ class Zoom_Users < ZoomS2SOAuth
       action: "create", 
       user_info: details #nested hash for zoom api
     }
-      
+    puts payload
+    puts JSON.generate(payload)
     resp = HTTParty.post(
       url,
       headers: headers,
@@ -170,8 +191,8 @@ class Zoom_Users < ZoomS2SOAuth
     resp = HTTParty.patch(
       url,
       headers: headers,
-      body: JSON.generate(details)
-      debug_output
+      body: JSON.generate(details),
+      debug_output: $stdout
       )
     if resp.code != 204
       raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
@@ -217,7 +238,7 @@ class Zoom_Users < ZoomS2SOAuth
     
     resp = HTTParty.get(
       url,
-      headers: headers 
+      headers: headers,
       query: JSON.generate(payload),
       debug_output: $stdout
       )

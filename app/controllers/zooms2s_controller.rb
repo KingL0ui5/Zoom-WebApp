@@ -1,5 +1,4 @@
 require 'zoom_S2S_oauth'
-require 'Custom_errors'
 
 class Zooms2sController < ApplicationController
   layout 'application'
@@ -11,7 +10,7 @@ class Zooms2sController < ApplicationController
   end
   
   def testing
-    authorise
+    session[:access_token], session[:access_token_expiry] = @meeting.authorise
     check_if_user_exists(session[:access_token], "test")
   end
 
@@ -28,9 +27,8 @@ class Zooms2sController < ApplicationController
       return 
     end 
     
-    authorise
-    if !session[:access_token] #only runs if access token is missing
-      authorise
+    if !session[:access_token] 
+      session[:access_token], session[:access_token_expiry] = @meeting.authorise
     end
     
     flash[:success] = "Successfully authenticated\nAccess Token: #{session[:access_token]}\nTTL: #{@Expires_in}"
@@ -67,35 +65,11 @@ class Zooms2sController < ApplicationController
   rescue StandardError => e 
     flash[:danger] = e.message
     redirect_to '/zooms2s/new_meeting'
+  rescue OAuth2::Error => e #specifically for authentication errors
+    flash[:danger] = "OAuth error: #{e.message}"
+    redirect_to 'zooms2s/new_meeting'
   end 
-  
-  private
-    def set_session_expiration(expires_in)
-      session[:access_token_expiry] = expires_in.seconds.from_now
-      #make sure you figure out how to display session expiry error message
-    end
-    
-    def authorise
-      session.delete(:access_token)
-      resp_body = @meeting.get_access_token #calls method to get access token 
-    
-      error = resp_body['reason'] #exception handling for errors on server end
-      if error != nil
-        puts "Error #{error}"
-        redirect_to root_path, flash: { error: "Authorisation failed: #{error}" }
-      end 
-      
-      session[:access_token] = resp_body['access_token'] #session variable is reset when token expires.
-      token_type = resp_body['token_type'] #currently redundant
-      expires_in = resp_body['expires_in']
-      scopes = resp_body['scope'] #currently redundant 
-      
-      set_session_expiration(expires_in)
-    rescue OAuth2::Error => e #specifically for authentication errors
-      flash[:danger] = "OAuth error: #{e.message}"
-      redirect_to '/zooms2s/new_meeting'
-    end 
-    
+  private 
     def meetingparameters
       params.permit(:message, :topic, :duration, :password, :type, :start_time, :timezone, :department_id, :utf8, :authenticity_token, :commit)
     end

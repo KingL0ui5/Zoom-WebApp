@@ -17,5 +17,12 @@ class ApplicationController < ActionController::Base
         flash[:danger] = "Warning Session Timeout: access token expired."
       end
     end
+    
+    def check_if_logged_in
+      unless logged_in?
+        flash[:danger] = "Please log in"
+        redirect_to login_url
+      end
+    end
 end
 
