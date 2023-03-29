@@ -180,8 +180,8 @@ class Zoom_Users < ZoomS2SOAuth
     return resp
   end
   
-  def patch_user(access_tok, zoom_user_id, details) #test
-    url = 'https://api.zoom.us' + '/v2/users/' + zoom_user_id
+  def patch_user(access_tok, details) #test
+    url = 'https://api.zoom.us' + '/v2/users/' + details[:email]
     
     headers = {
       'Authorization' => "Bearer #{access_tok}",

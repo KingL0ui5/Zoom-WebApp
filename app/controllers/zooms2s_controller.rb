@@ -2,6 +2,7 @@ require 'zoom_S2S_oauth'
 
 class Zooms2sController < ApplicationController
   layout 'application'
+  before_action :check_access_tok, except: [:initialize]
   
   def initialize
     @meeting = Zoom_Meetings.new #new instance of zoom s2s functions under base method
@@ -10,8 +11,8 @@ class Zooms2sController < ApplicationController
   end
   
   def testing
-    session[:access_token], session[:access_token_expiry] = @meeting.authorise
     check_if_user_exists(session[:access_token], "test")
+    session[:access_token] = nil
   end
 
   def new_meeting
@@ -26,10 +27,6 @@ class Zooms2sController < ApplicationController
       redirect_to '/zooms2s/new_meeting'
       return 
     end 
-    
-    if !session[:access_token] 
-      session[:access_token], session[:access_token_expiry] = @meeting.authorise
-    end
     
     flash[:success] = "Successfully authenticated\nAccess Token: #{session[:access_token]}\nTTL: #{@Expires_in}"
     
@@ -70,6 +67,12 @@ class Zooms2sController < ApplicationController
     redirect_to 'zooms2s/new_meeting'
   end 
   private 
+    def check_access_tok
+      if !session[:access_token] 
+        session[:access_token], session[:access_token_expiry] = @zoom_user.authorise
+      end
+    end 
+  
     def meetingparameters
       params.permit(:message, :topic, :duration, :password, :type, :start_time, :timezone, :department_id, :utf8, :authenticity_token, :commit)
     end
