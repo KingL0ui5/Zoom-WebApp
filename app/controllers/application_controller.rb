@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :set_csrf_meta_tags
   before_action :check_access_tok_expiry
+  before_action :check_timer
   
   include SessionsHelper
   layout 'application'
@@ -22,6 +23,12 @@ class ApplicationController < ActionController::Base
       unless logged_in?
         flash[:danger] = "Please log in"
         redirect_to login_url
+      end
+    end
+    
+    def check_timer
+      if session[:email_timer] - Time.now <= 1.hour
+        #send email
       end
     end
 end

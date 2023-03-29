@@ -108,7 +108,7 @@ class Zooms2sController < ApplicationController
       users.each do |user| #iterates through all users in department 
         if user.EmailAddress == session[:user_EmailAddress]
           MeetingMailer.meeting_host_email(session[:user_EmailAddress], details, username).deliver_now #delivers seperate email to meetinghost
-          #should then deliver seperate message in time frame
+          hold_email(details[:start_time])
         else
           MeetingMailer.meeting_email(user.Name, user.EmailAddress, details, username).deliver_now
         end
@@ -150,4 +150,8 @@ class Zooms2sController < ApplicationController
         return true 
       end
     end
+    
+    def hold_email(start_time)
+      session[:email_timer] = DateTime.parse(start_time)
+    end 
 end
