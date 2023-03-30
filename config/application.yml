@@ -6,32 +6,13 @@ development:
   CLIENT_ID_OAUTH: "h5mCujLdRfubftjQt_f_0w"
   CLIENT_SECRET_OAUTH: "7u9AhiGL7d406UftKG8NwaQbtOmqAmbl"
   REDIRECT_URI: 'https://c68dc96b16ad48c6ba78dbbb297e85d4.vfs.cloud9.us-east-1.amazonaws.com/zoom/callback'
-  ZOOM_BASE_URL: 'https://api.zoom.us'  
+  ZOOM_BASE_URL: 'https://api.zoom.us/v2/'  
   
   MEETING_ENDPOINT: '/v2/users/liulouis1@gmail.com/meetings'
-  ZOOM_TOKEN_URL: '/oauth/token'
-  
-  USERSURL: '/v2/users/'
+  ZOOM_TOKEN_URL: 'https://api.zoom.us/oauth/token'
   
 test:
   CLIENT_ID: ''
   CLIENT_SECRET: ''
   REDIRECT_URI: ''
   ZOOM_BASE_URL: ''
-
-production: 
-  ACCOUNT_ID: 'aEDeWyabSIejB839_Pnw2w'
-  CLIENT_ID_S2S: 'Ndm7Nt6WStuYgoEckNuYfQ'
-  CLIENT_SECRET_S2S: 'lkW9IzW3TsCYR50dBTbbwd6CtN1ztdU6'
-  
-  CLIENT_ID_OAUTH: "h5mCujLdRfubftjQt_f_0w"
-  CLIENT_SECRET_OAUTH: "7u9AhiGL7d406UftKG8NwaQbtOmqAmbl"
-  REDIRECT_URI: 'https://c68dc96b16ad48c6ba78dbbb297e85d4.vfs.cloud9.us-east-1.amazonaws.com/zoom/callback'
-  
-  ZOOM_BASE_URL: 'https://api.zoom.us/'  
-  MEETING_ENDPOINT: '/users/'
-  ZOOM_TOKEN_URL: '/oauth/token'
-
-
-#for server2server: ClientID = Ndm7Nt6WStuYgoEckNuYfQ, ClientSecret = lkW9IzW3TsCYR50dBTbbwd6CtN1ztdU6, AccountID = aEDeWyabSIejB839_Pnw2w
-#for standard OAuth: ClientID = h5mCujLdRfubftjQt_f_0w, ClientSecret = 7u9AhiGL7d406UftKG8NwaQbtOmqAmbl

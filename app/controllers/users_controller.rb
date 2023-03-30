@@ -12,19 +12,15 @@ class UsersController < ApplicationController
         @users = User.all
     end
     
-    def show
+    def show #test
         @user = User.find(params[:id])
         begin
             resp = @zoom_user.get_user(session[:access_token], @user.EmailAddress)
             meetings = @zoom_user.list_meetings(session[:access_token], @user.EmailAddress)
-        rescue OAuth2::Error => e #specifically for authentication errors
-            flash[:danger] = "OAuth error: #{e.message}"
-            render :new
-            return
         rescue StandardError => e
             flash[:danger] = e.message
-            render :new
-            return
+            redirect_to index_path
+            return 
         end
         @resp_body = JSON.parse(resp.body) #response body hash
         meetings_body = JSON.parse(meetings.body)
@@ -32,20 +28,20 @@ class UsersController < ApplicationController
         
     rescue => e
         flash[:danger] = e.message
-        redirect_to request.referer || root_path
+        redirect_to index_path
     end
     
-    def new
+    def new 
         @user = User.new
         @departments = Department.all
     end 
     
-    def create 
+    def create #test
         i = user_parameters[:department_id] 
         department = Department.find_by(id: i)
         
         hash = user_parameters.except(:department_id)
-        puts hash
+        
         @user = User.new(hash)
         @user.department = department
         @user.save!
@@ -54,10 +50,6 @@ class UsersController < ApplicationController
         
         begin 
             @zoom_user.create_user(session[:access_token], details)
-        rescue OAuth2::Error => e #specifically for authentication errors
-            flash[:danger] = "OAuth error: #{e.message}"
-            render :new
-            return
         rescue StandardError => e
             flash[:danger] = e.message
             render :new
@@ -66,7 +58,8 @@ class UsersController < ApplicationController
         flash[:success] = "User successfully created" 
         redirect_to @user.department
         
-    rescue 
+    rescue => e
+        flash[:danger] = e.message
         render :new 
     end
     
@@ -87,19 +80,15 @@ class UsersController < ApplicationController
         
         begin 
             @zoom_user.patch_user(session[:access_token], details)
-        rescue OAuth2::Error => e #specifically for authentication errors
-            flash[:danger] = "OAuth error: #{e.message}"
-            render :new
-            return
         rescue StandardError => e
             flash[:danger] = e.message
-            render :new
+            render :edit
             return
         end
         flash[:success] = "Changes saved"
         redirect_to users_path   
         
-    rescue StandardError => e
+    rescue => e
         flash[:danger] = e.message
         render :edit 
     end
@@ -109,10 +98,6 @@ class UsersController < ApplicationController
         
         begin
             @zoom_user.delete_user(session[:access_token], @user.EmailAddress, transfer_to) #not sure whether to include or not
-        rescue OAuth2::Error => e #specifically for authentication errors
-            flash[:danger] = "OAuth error: #{e.message}"
-            render :new
-            return
         rescue StandardError => e
             flash[:danger] = e.message
             render :new
@@ -121,10 +106,10 @@ class UsersController < ApplicationController
         
         @user.destroy
         i = User.last.EmployeeID
-        ActiveRecord::Base.connection.execute("ALTER TABLE users AUTO_INCREMENT = #{(i)}")
+        ActiveRecord::Base.connection.execute("ALTER TABLE users AUTO_INCREMENT = #{(i)}") #resets auto increment of primary key
         
         flash[:success] = "User successfully destroyed"
-        redirect_to users_path, status: :see_other
+        redirect_to department_path, status: :see_other
         
     rescue => e
         flash[:danger] = e.message
@@ -135,6 +120,7 @@ class UsersController < ApplicationController
         def user_parameters
           params.require(:user).permit(:Name, :EmailAddress, :EmailAddress_confirmation, :password, :password_confirmation, :department_id, :EmployeeID) #params are passed as hashes from the form
         end
+        
         def zoom_formatting(form_hash)
             zoom_params = form_hash.except(:EmailAddress, :EmailAddress_confirmation, :password_confirmation, :department_id)
         
@@ -152,5 +138,10 @@ class UsersController < ApplicationController
             if !session[:access_token] 
                 session[:access_token], session[:access_token_expiry] = @zoom_user.authorise
             end
+            
+        rescue OAuth2::Error => e #specifically for authentication errors
+            flash[:danger] = "OAuth error: #{e.message}"
+            redirect_to request.referer || root_path
+            return
         end 
 end 

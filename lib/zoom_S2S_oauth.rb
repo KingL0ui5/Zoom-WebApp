@@ -2,7 +2,6 @@ require 'oauth2'
 require 'digest'
 require 'base64'
 require 'httparty'
-require 'Custom_errors'
 require 'json'
 
 CONFIG = YAML.load_file("#{Rails.root}/config/application.yml")[Rails.env] #links to enviromnent YAML file /app/config/application.yaml
@@ -34,10 +33,9 @@ class ZoomS2SOAuth
   
   private 
     def get_access_token
-      puts "Requesting access token"
-      url = 'https://api.zoom.us' + '/oauth/token'
+      url = @zoom_token_url
       authorisation = "#{@client_id}:#{@client_secret}" 
-      encoded_authorisation = Base64.strict_encode64(authorisation)
+      encoded_authorisation = Base64.strict_encode64(authorisation) #encoding authorisation code 
       headers = {
         'Content-Type' => 'application/x-www-form-urlencoded',
         'Host' => 'zoom.us',
@@ -48,7 +46,6 @@ class ZoomS2SOAuth
         account_id: @account_id
       }
       
-      puts "Posting request..."
       resp = HTTParty.post(
       url, 
       body: URI.encode_www_form(payload),
@@ -72,20 +69,18 @@ end
 
 class Zoom_Meetings < ZoomS2SOAuth
   def initialize 
-    @meeting_endpoint = CONFIG['MEETING_ENDPOINT']
+    @meeting_endpoint = @zoom_base_url + 'meetings/'
     super 
   end 
   
-  def startmeeting(access_tok, parameters, zoom_user_id)
-    puts "Creating meeting...."
-    url = 'https://api.zoom.us' + '/v2/users/liulouis1@gmail.com/meetings' #in deployment replace with @zoom_base_url + @meeting_endpoint + zoom_user_id + "meetings" assuming that the logged in user has an account with zoom 
+  def startmeeting(access_tok, parameters, host_id)
+    url = @zoom_base_url + 'users/liulouis1@gmail.com/meetings' #'users/#{host_id}/meetings'
     payload = JSON.generate(parameters) #parses form params to JSON
     headers = {
       'Authorization' => "Bearer #{access_tok}",
       'Content-Type' => "application/json"
     }
 
-    puts "Posting Request..."
     resp = HTTParty.post(
       url, 
       body: payload,
@@ -98,14 +93,13 @@ class Zoom_Meetings < ZoomS2SOAuth
       raise StandardError, "Status: #{resp['code']},\nError: #{resp['message']}"
     end 
     
-    puts "Posted: \nHeaders: #{headers} \nBody: #{parameters} \nAwaiting response..."
     resp_body = JSON.parse(resp.body)
     puts "Response: #{resp_body}"
     return resp_body 
   end
   
   def get_meeting(access_tok, meeting_id)
-    url = 'https://api.zoom.us' + "/v2/meetings/" + meeting_id
+    url = @meeting_endpoint + meeting_id
     headers = {
       'Authorization' => "Bearer #{access_tok}",
       'Content-Type' => "application/json"
@@ -124,14 +118,12 @@ end
 
 class Zoom_Users < ZoomS2SOAuth
   def initialize
-    @users_url = CONFIG['USERSURL']
+    @users_url = @zoom_base_url + 'users/'
     super
   end
   
   def get_user(access_tok, zoom_user_id)
-    puts "Requesting user information..."
-    url = 'https://api.zoom.us' + '/v2/users/' + "liulouis1@gmail.com"#zoom_user_id
-    puts "get user url: #{url}"
+    url = @users_url + "liulouis1@gmail.com"#zoom_user_id
     headers = {
       'Authorization' => "Bearer #{access_tok}",
       'Content-Type' => "application/json"     
@@ -148,6 +140,7 @@ class Zoom_Users < ZoomS2SOAuth
     headers: headers,
     debug_output: $stdout
     )
+    puts resp
     if resp.code != 200 
       raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
     end 
@@ -155,7 +148,7 @@ class Zoom_Users < ZoomS2SOAuth
   end
     
   def create_user(access_tok, details) #test
-    url = 'https://api.zoom.us' + '/v2/users/'
+    url = @users_url
     details[:type] = 2
     headers = {
       'Authorization' => "Bearer #{access_tok}",
@@ -164,24 +157,24 @@ class Zoom_Users < ZoomS2SOAuth
     
     payload = {
       action: "create", 
-      user_info: details #nested hash for zoom api
+      user_info: details #nest user_info for zoom api
     }
-    puts payload
-    puts JSON.generate(payload)
+    
     resp = HTTParty.post(
       url,
       headers: headers,
       body: JSON.generate(payload),
       debug_output: $stdout
       )
-      if resp.code != 201 
-        raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
-      end 
+      
+    puts resp 
+    if resp.code != 201 
+      raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
+    end 
   end
   
   def patch_user(access_tok, details) #test
-    url = 'https://api.zoom.us' + '/v2/users/' + details[:email ]
-    
+    url = @users_url + details[:email ]
     headers = {
       'Authorization' => "Bearer #{access_tok}",
       'Content-Type' => "application/json"
@@ -193,18 +186,21 @@ class Zoom_Users < ZoomS2SOAuth
       body: JSON.generate(details),
       debug_output: $stdout
       )
+      
+    puts resp   
     if resp.code != 204
       raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
     end
   end 
   
   def delete_user(access_tok, zoom_user_id, transfer_to) #CHECK, test
-    url = 'https://api.zoom.us' + '/v2/users/' + zoom_user_id
+    url = @users_url + zoom_user_id
     
     headers = {
       'Authorization' => "Bearer #{access_tok}",
       'Content-Type' => "application/json"
     }
+    
     payload = {
       action: "delete",
       encrypted_email: "false",
@@ -217,18 +213,21 @@ class Zoom_Users < ZoomS2SOAuth
       query: JSON.generate(payload),
       debug_output: $stdout
       )
+      
+    puts resp 
     if resp.code != 204
       raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
     end 
   end
   
   def list_meetings(access_tok, zoom_user_id) #test
-    url = 'https://api.zoom.us' + '/v2/users/' + zoom_user_id + "/meetings"
+    url = @users_url + zoom_user_id + "/meetings"
     
     headers = {
       'Authorization' => "Bearer #{access_tok}",
       'Content-Type' => "application/json"
     }
+    
     payload = {
       page_size: 300
     }
@@ -239,7 +238,8 @@ class Zoom_Users < ZoomS2SOAuth
       query: JSON.generate(payload),
       debug_output: $stdout
       )
-    
+      
+    puts resp 
     if resp.code != 200
       raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
     end 

@@ -10,67 +10,70 @@ class Zooms2sController < ApplicationController
     @errors = { }
   end
   
-  def testing
+  def testing #for testing
     check_if_user_exists(session[:access_token], "test")
     session[:access_token] = nil
   end
 
   def new_meeting
-    @errors = session.delete(:errors)&.transform_keys(&:to_sym) || { } #any errors in the hash will be stored into @errors - otherwise @errors is initialized and session[:errors] is deleted
+    @errors = session.delete(:errors)&.transform_keys(&:to_sym) || { } #keys are transformed into strings when stored in session 
     render layout: 'application'
   end
   
   def create_meeting
-    puts meetingparameters #for debugging
     if check_for_errors
-      session[:errors] = @errors #stores hash in session to retain it
+      session[:errors] = @errors #stores hash in session to retain it across subroutines
       redirect_to '/zooms2s/new_meeting'
-      return 
+      return
     end 
-    
-    flash[:success] = "Successfully authenticated\nAccess Token: #{session[:access_token]}\nTTL: #{@Expires_in}"
-    
+  
     if !check_if_user_exists(session[:access_token], session[:user_EmailAddress]) #check that user exists before attempting to create meeting
-      flash[:danger] = "Host user does not have an account with zoom. Ensure that host has an account before creating a new meeting"
+      flash[:danger] = "Host user is not registered under zoom"
       redirect_to '/zooms2s/new_meeting'
       return
     end
     
     i = meetingparameters[:department_id] 
-    department = Department.find_by(id: i)
-    zoom_id = session[:user_EmailAddress]
+    department = Department.find_by(id: i) #no need for exceptions - form only allows existing departments
+    zoom_user_id = session[:user_EmailAddress]
     
     parameters = meetingparameters.except(:message, :department_id, :utf8, :authenticity_token, :commit).symbolize_keys #removing clutter and fields that are not submitted to the zoom api & symbolizes keys
     
-    meetinginfo = meeting(parameters, zoom_id)
-    
-    details = { #hash to be passed to subroutines
-      message: meetingparameters[:message],
-      host: zoom_id,
-      topic: meetinginfo['topic'],
-      join_url: meetinginfo['join_url'],
-      duration: meetinginfo['duration'],
-      start_time: meetinginfo['start_time'],
-      timezone: meetinginfo['timezone'],
-      start_url: meetinginfo['start_url']
-    }
-    
-    send_emails(department, details, parameters[:type])
-    
-    flash[:success] = "Meeting successfully created!"
-
-  rescue StandardError => e 
-    flash[:danger] = e.message
-    redirect_to '/zooms2s/new_meeting'
-  rescue OAuth2::Error => e #specifically for authentication errors
-    flash[:danger] = "OAuth error: #{e.message}"
-    redirect_to 'zooms2s/new_meeting'
+    begin
+      parameters[:start_time], parameters[:timezone] = format_date(parameters[:start_time], parameters[:timezone])
+      meetinginfo = @meeting.startmeeting(session[:access_token], parameters, zoom_user_id)
+      
+      details = { 
+        message: meetingparameters[:message],
+        host: zoom_user_id,
+        topic: meetinginfo['topic'],
+        join_url: meetinginfo['join_url'],
+        duration: meetinginfo['duration'],
+        start_time: meetinginfo['start_time'],
+        timezone: meetinginfo['timezone'],
+        start_url: meetinginfo['start_url']
+      }
+      
+      send_emails(department, details, parameters[:type])
+      
+      flash[:success] = "Meeting successfully created!"
+      redirect_to root_path
+  
+    rescue StandardError => e #any errors from zoom
+      flash[:danger] = e.message
+      redirect_to '/zooms2s/new_meeting'
+    end
   end 
+
   private 
     def check_access_tok
       if !session[:access_token] 
         session[:access_token], session[:access_token_expiry] = @zoom_user.authorise
       end
+      
+    rescue OAuth2::Error => e #specifically for authentication errors
+      flash[:danger] = "OAuth error: #{e.message}"
+      redirect_to 'zooms2s/new_meeting'  
     end 
   
     def meetingparameters
@@ -89,29 +92,29 @@ class Zooms2sController < ApplicationController
       end
       
       if params[:type] == 2 && params[:start_time] == nil
-        @errors[:start_time] = "Cannot be blank if meeting type is scheduled "
+        @errors[:start_time] = "Cannot be blank if meeting type is scheduled"
       end 
       
-      if params[:type] == 2 && params[:timezome] == nil
-        @errors[:timezone] = "Cannot be blank if meeting type is scheduled "
+      if params[:type] == 2 && params[:timezone] == nil
+        @errors[:timezone] = "Cannot be blank if meeting type is scheduled"
       end 
       
       if !@errors.empty?
-        puts "errors found #{@errors}"
-        true
+        return true
       end
     end  
     
     def send_emails(department, details, type)
       users = department.users 
-      username = (User.find_by(id: session[:user_EmployeeID])).Name
+      username = (User.find_by(EmailAddress: details['host'])).Name
+      host_email = details['host']
       users.each do |user| #iterates through all users in department 
-        if user.EmailAddress == session[:user_EmailAddress]
-          if type == 1
-            MeetingMailer.meeting_host_email(session[:user_EmailAddress], details, username).deliver_now
-          else 
-            MeetingMailer.meeting_confirmation_email(session[:user_EmailAddress], details, username).deliver_now #delivers seperate email to meetinghost
-            hold_email(details[:start_time])
+        if user.EmailAddress == host_email
+          if type == 1 #instant meeting so join link needed now
+            MeetingMailer.meeting_host_email(host_email, details, username).deliver_now
+          else #join link not needed
+            MeetingMailer.meeting_confirmation_email(host_email, details, username).deliver_now #delivers seperate email to meetinghost
+            hold_email(details)
           end
         else
           MeetingMailer.meeting_email(user.Name, user.EmailAddress, details, username).deliver_now
@@ -119,16 +122,16 @@ class Zooms2sController < ApplicationController
       end
     end 
     
-    def meeting(parameters, zoom_id)
-      if parameters[:start_time]
-        parameters[:start_time] = DateTime.parse(parameters[:start_time]).strftime('%Y-%m-%dT%H:%M:%S') #parsing from ISO 8601 format to yyyy-MM-ddTHH:mm:ss format as required by zoom
-        if parameters[:timezone] == "GMT"
-          parameters[:timezone] = nil
-          parameters[:start_time] << "Z" #adding "Z" to the end for GMT timezone as required by zoom 
+    def format_date(start_time, timezone)
+      if start_time
+        start_time = DateTime.parse(start_time).strftime('%Y-%m-%dT%H:%M:%S') #parsing from ISO 8601 format to yyyy-MM-ddTHH:mm:ss format as required by zoom
+        if timezone == "GMT"
+          timezone = nil
+          start_time << "Z" #adding "Z" to the end for GMT timezone as required by zoom 
         end
       end
   
-      return @meeting.startmeeting(session[:access_token], parameters, zoom_id) #returns details of new meeting
+      return start_time, timezone
     end
     
     def check_if_user_exists(access_token, zoom_user_id)
@@ -148,7 +151,9 @@ class Zooms2sController < ApplicationController
       end
     end
     
-    def hold_email(start_time)
+    def hold_email(meeting_details)
+      start_time = meeting_details['start_time']
+      
       session[:email_timer] = DateTime.parse(start_time)
     end 
 end

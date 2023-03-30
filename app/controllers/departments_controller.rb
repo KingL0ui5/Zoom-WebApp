@@ -6,43 +6,45 @@ class DepartmentsController < ApplicationController
     end 
     
     def show
-        begin
-            @department = Department.find(params[:id])
-            @users = @department.users
-        rescue => e 
-            redirect_to department_path, flash: { error: (e.message) }#displays error passed by ruby
-        end
+        @department = Department.find(params[:id])
+        @users = @department.users 
+        
+    rescue => e 
+        flash[:danger] = e.message
+        redirect_to department_path
     end
     
     def new
         @department = Department.new
+        session[:department] = @department
     end 
     
     def create 
-        begin 
-            @department = Department.new(params.require(:department).permit(:name))
-            @department.save!
-            redirect_to @department, flash: { success: "Department sucessfully created" }
-        rescue => e
-            render :new, flash: { error: (e.message) }
-        end
+        @department = Department.new(params.require(:department).permit(:name))
+        @department.save!
+        flash[:success] = "Department created successfully"
+        redirect_to @department
+        
+    rescue => e
+        flash[:danger] = e.message
+        render :new
     end
     
     def edit #FIX
-        puts "editing"
         @department = Department.find(params[:id])
+        session[:department] = @department
     end 
     
     def update
-        @department = Department.find(params[:id]) # this doesn't work - id is not sent in the params
-        puts "updating"
-        if @department.update(params.require(:department).permit(:name))
-            redirect_to @Department, flash: { success: "Changes saved" }
-        else 
-            render 'edit'
-        end 
+        @department = session[:department]
+        session[:department] = nil
+        
+        @department.update(params.require(:department).permit(:name))
+        @department.valid?
+    
     rescue => e 
-        redirect_to department_path, flash: { error: e.message } 
+        flash[:danger] = e.message
+        render :edit
     end
     
     def destroy
@@ -51,22 +53,19 @@ class DepartmentsController < ApplicationController
             puts user
             user.destroy
         end
+        i = User.last.EmployeeID
+        ActiveRecord::Base.connection.execute("ALTER TABLE users AUTO_INCREMENT = #{(i)}") #in case any users are destroyed 
+        
         @department.destroy
         
         i = Department.last.id
         ActiveRecord::Base.connection.execute("ALTER TABLE departments AUTO_INCREMENT = #{(i)} ") #resets the auto-increment function to the previous largest ie the last ID
     
-        redirect_to @department, status: :see_other, flash: { success: "Department sucessfully destroyed" }  #sucess (400 ok)
+        flash[:success] = "Department sucessfully destroyed"
+        redirect_to departments_path, status: :see_other
   
-    rescue StandardError => e 
+    rescue => e 
         flash[:danger] = e.message
         redirect_to @department, status: :see_other
-   
-    rescue ActiveRecord::RecordNotFound #department cannot be found 
-        redirect_to department_path, status: :see_other, flash: { error: "Department does not exist" }
-
-    rescue ActiveRecord::RecordNotDestroyed #department not being destroyed 
-        redirect_to @department, status: :see_other, flash: { error: "Department could not be destroyed, please try again" } 
     end 
-    
 end
