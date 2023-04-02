@@ -1,0 +1,32 @@
+<html>
+  <% provide(:title, "Meeting Records") %> 
+  <body>
+    <div class="centre jumbotron">
+      <h1>Meetings</h1>
+  
+      <table>
+        <tr>
+          <th>Topic</th>
+          <th>Host</th>
+          <th>Start Time</th>
+          <th>Duration</th>
+          <th>ID</th>
+        </tr>
+        
+        <% @records.each do |meeting| %>
+          <tr>
+            <th><%= meeting.topic %></th>
+            <th><%= meeting.user.Name %></th>
+            <th><%= meeting.start_time %></th>
+            <th><%= meeting.duration %></th>
+            <th><%= meeting.zoom_meeting_id %></th>
+          </tr>
+        <% end %>
+      </table>
+
+      <p> 
+        <%= link_to "Back", "/home" %> 
+      </p>
+    </div>
+  </body>
+</html>

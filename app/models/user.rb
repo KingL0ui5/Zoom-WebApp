@@ -9,10 +9,6 @@ class User < ActiveRecord::Base
     
     validates :EmailAddress_confirmation, presence: {message: "This field cannot be empty"} 
     
-    has_secure_password
-    validates :password, format: { with: password_requirements, message: "Min: 8 chars, max: 32 chars. Password must have at least one letter, at least one number (1, 2, 3...) and include uppercase and lowercase letters. It should not contain only one identical character repeatedly and it cannot contain consecutive characters" }
-    validates :password_confirmation, presence: { message: "This field cannot be empty" }
-
     password_requirements = /\A
         (?=.*\d) #Must contain a digit
         (?=.*[a-z]) #Must contain a lowercase letter
@@ -24,5 +20,8 @@ class User < ActiveRecord::Base
         .{8,32} #Must be between 8 and 32 characters
      \z/x
      #according to zoom spec
-     
+    
+    has_secure_password
+    validates :password, format: { with: password_requirements, message: "Min: 8 chars, max: 32 chars. Password must have at least one letter, at least one number (1, 2, 3...) and include uppercase and lowercase letters. It should not contain only one identical character repeatedly and it cannot contain consecutive characters" }
+    validates :password_confirmation, presence: { message: "This field cannot be empty" }
 end 

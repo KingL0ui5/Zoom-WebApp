@@ -54,7 +54,11 @@ class Zooms2sController < ApplicationController
         start_url: meetinginfo['start_url']
       }
       
+      
+      
       send_emails(department, details, parameters[:type])
+      
+      Meetingrecord.new())
       
       flash[:success] = "Meeting successfully created!"
       redirect_to root_path

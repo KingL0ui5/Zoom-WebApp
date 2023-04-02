@@ -118,7 +118,7 @@ class UsersController < ApplicationController
     
     private
         def user_parameters
-          params.require(:user).permit(:Name, :EmailAddress, :EmailAddress_confirmation, :password, :password_confirmation, :department_id, :EmployeeID) #params are passed as hashes from the form
+            params.require(:user).permit(:Name, :EmailAddress, :EmailAddress_confirmation, :password, :password_confirmation, :department_id, :EmployeeID) #params are passed as hashes from the form
         end
         
         def zoom_formatting(form_hash)
