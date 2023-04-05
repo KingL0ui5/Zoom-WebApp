@@ -1,31 +1,33 @@
-<% provide(:title, "Users") %> 
-<body>
-<div class ="container">
-    <%= yield %> 
-</div>
-<div class="centre jumbotron">
-  <h1>Users</h1>
-  
-  <table>
-    <th>Name</th>
-    <th>Employee ID</th>
-    <th>More Details</th> 
-
-    <% @users.each do |user| %>
-      <tr>
-        <th><%= user.Name %></th>
-        <th><%= user.EmployeeID %></th>
-        <th><%= link_to "->", user %></th>
-      </tr>
-    <% end %>
-  </table>
-  
-  <p>
-    <%= link_to "New User", new_user_path %>
-  </p>
-
-  <p> 
-  <%= link_to "Back", "/departments" %> 
-  </p>
-</div>
-</body>
+<html>
+  <% provide(:title, "Users") %> 
+  <body>
+    <div class ="container">
+        <%= yield %> 
+    </div>
+    <div class="centre jumbotron">
+      <h1>Users</h1>
+      
+      <table>
+        <th>Name</th>
+        <th>Employee ID</th>
+        <th>More Details</th> 
+    
+        <% @users.each do |user| %>
+          <tr>
+            <th><%= user.Name %></th>
+            <th><%= user.EmployeeID %></th>
+            <th><%= link_to "->", user %></th>
+          </tr>
+        <% end %>
+      </table>
+      
+      <p>
+        <%= link_to "New User", new_user_path %>
+      </p>
+    
+      <p> 
+        <%= link_to "Back", request.referer || root_path %>
+      </p>
+    </div>
+  </body>
+</html>

@@ -21,6 +21,6 @@ class MeetingMailer < ApplicationMailer
     @meetinginfo = details
     @name = name
     
-    mail(to: email, subject: "#{@name}, your meeting has been scheduled" )
+    mail(to: email, subject: "Hello #{@name}, your meeting has been scheduled" )
   end 
 end

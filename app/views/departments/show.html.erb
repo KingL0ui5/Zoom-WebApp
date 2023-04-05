@@ -1,37 +1,41 @@
-<%= form_tag do %>
-  <%= csrf_meta_tags %>
-  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-<% end %>
-
-<% provide(:title, "Department") %> 
-<body>
-<div class="centre jumbotron">
-  <h1>Department: <%= @department.name %></h1>
-  <p>Department ID: <%= @department.id %></p>
-
-  <h3>Users</h3>
+<html>
+  <%= form_tag do %>
+    <%= csrf_meta_tags %>
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+  <% end %>
   
-  <table>
-    <th>Name</th>
-    <th>Employee ID</th>
-    <th>More Details</th> 
-
-    <% @users.each do |user| %>
-      <tr>
-        <th><%= user.Name %></th>
-        <th><%= user.EmployeeID %></th>
-        <th><%= link_to "->", user %></th>
-      </tr>
-    <% end %>
-  </table>
-
-  <div>
-    <% if logged_in? %>
-    <%= link_to "New User", new_user_path %><br>
-    <%= link_to "Edit", edit_department_path(@department) %><br>
-    <%= link_to "Destroy", @department, method: :delete, data: { confirm: 'Are you sure?' } %><br> 
-    <% end %> 
-    <%= link_to "Back", "/departments" %>
-  </div>
-</div>
-</body>
+  <% provide(:title, "Department") %> 
+  <body>
+    <div class="centre jumbotron">
+      <h1>Department: <%= @department.name %></h1>
+      <p>Department ID: <%= @department.id %></p>
+    
+      <h3>Users</h3>
+      
+      <table>
+        <th>Name</th>
+        <th>Employee ID</th>
+        <th>More Details</th> 
+    
+        <% @users.each do |user| %>
+          <tr>
+            <th><%= user.Name %></th>
+            <th><%= user.EmployeeID %></th>
+            <th><%= link_to "->", user %></th>
+          </tr>
+        <% end %>
+      </table>
+    
+      <div>
+        <% if logged_in? %>
+          <p><%= link_to "New User", new_user_path %></p>
+          <p><%= link_to "Edit", edit_department_path(@department) %></p>
+          <p><%= link_to "Destroy", @department, method: :delete, data: { confirm: 'Are you sure?' } %></p>
+        <% end %> 
+        
+        <p><%= link_to "Back", request.referer || root_path %></p>
+      </div>
+      
+    </div>
+  </body>
+</html>

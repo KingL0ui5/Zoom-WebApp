@@ -25,7 +25,7 @@
       </table>
 
       <p> 
-        <%= link_to "Back", "/home" %> 
+        <%= link_to "Back", request.referer || root_path %> 
       </p>
     </div>
   </body>

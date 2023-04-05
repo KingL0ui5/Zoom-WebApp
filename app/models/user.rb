@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base 
     belongs_to :department 
+    belongs_to :meetingrecord
     
     validates :Name, :EmailAddress, :department_id, :password, presence: { message: "This field cannot be empty" }
     

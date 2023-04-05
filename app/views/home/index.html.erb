@@ -1,44 +1,48 @@
-<% provide(:title, "Home") %> 
-<body>
-<div class ="container">
-    <%= yield %> 
-</div>
-<div class="centre jumbotron">
-    <h1>Welcome to the Vanishing Funds web application</h1>
-    <h2>This is a space where employees can sign in and create meetings using zoom.</h2>
-    
-    <% if logged_in? %> 
-     <%= link_to "Create Meeting Now!", '/zooms2s/new_meeting', class: "btn btn-lg btn-primary" %>
-    <% else %> 
-     <%= link_to "Log in", "/login", class: "btn btn-lg btn-primary" %>
-    <% end %> 
-</div>
-<div> 
-    <pre>            
-VVVVVVVV           VVVVVVVV                                  iiii                  hhhhhhh               iiii                                            FFFFFFFFFFFFFFFFFFFFFF                                              d::::::d                 
-V::::::V           V::::::V                                 i::::i                 h:::::h              i::::i                                           F::::::::::::::::::::F                                              d::::::d                 
-V::::::V           V::::::V                                  iiii                  h:::::h               iiii                                            F::::::::::::::::::::F                                              d::::::d                 
-V::::::V           V::::::V                                                        h:::::h                                                               FF::::::FFFFFFFFF::::F                                              d:::::d                  
- V:::::V           V:::::Vaaaaaaaaaaaaa  nnnn  nnnnnnnn    iiiiiii     ssssssssss   h::::h hhhhh       iiiiiiinnnn  nnnnnnnn       ggggggggg   ggggg       F:::::F       FFFFFFuuuuuu    uuuuuunnnn  nnnnnnnn        ddddddddd:::::d     ssssssssss   
-  V:::::V         V:::::V a::::::::::::a n:::nn::::::::nn  i:::::i   ss::::::::::s  h::::hh:::::hhh    i:::::in:::nn::::::::nn    g:::::::::ggg::::g       F:::::F             u::::u    u::::un:::nn::::::::nn    dd::::::::::::::d   ss::::::::::s  
-   V:::::V       V:::::V  aaaaaaaaa:::::an::::::::::::::nn  i::::i ss:::::::::::::s h::::::::::::::hh   i::::in::::::::::::::nn  g:::::::::::::::::g       F::::::FFFFFFFFFF   u::::u    u::::un::::::::::::::nn  d::::::::::::::::d ss:::::::::::::s 
-    V:::::V     V:::::V            a::::ann:::::::::::::::n i::::i s::::::ssss:::::sh:::::::hhh::::::h  i::::inn:::::::::::::::ng::::::ggggg::::::gg       F:::::::::::::::F   u::::u    u::::unn:::::::::::::::nd:::::::ddddd:::::d s::::::ssss:::::s
-     V:::::V   V:::::V      aaaaaaa:::::a  n:::::nnnn:::::n i::::i  s:::::s  ssssss h::::::h   h::::::h i::::i  n:::::nnnn:::::ng:::::g     g:::::g        F:::::::::::::::F   u::::u    u::::u  n:::::nnnn:::::nd::::::d    d:::::d  s:::::s  ssssss 
-      V:::::V V:::::V     aa::::::::::::a  n::::n    n::::n i::::i    s::::::s      h:::::h     h:::::h i::::i  n::::n    n::::ng:::::g     g:::::g        F::::::FFFFFFFFFF   u::::u    u::::u  n::::n    n::::nd:::::d     d:::::d    s::::::s      
-       V:::::V:::::V     a::::aaaa::::::a  n::::n    n::::n i::::i       s::::::s   h:::::h     h:::::h i::::i  n::::n    n::::ng:::::g     g:::::g        F:::::F             u::::u    u::::u  n::::n    n::::nd:::::d     d:::::d       s::::::s   
-        V:::::::::V     a::::a    a:::::a  n::::n    n::::n i::::i ssssss   s:::::s h:::::h     h:::::h i::::i  n::::n    n::::ng::::::g    g:::::g        F:::::F             u:::::uuuu:::::u  n::::n    n::::nd:::::d     d:::::d ssssss   s:::::s 
-         V:::::::V      a::::a    a:::::a  n::::n    n::::ni::::::is:::::ssss::::::sh:::::h     h:::::hi::::::i n::::n    n::::ng:::::::ggggg:::::g      FF:::::::FF           u:::::::::::::::uun::::n    n::::nd::::::ddddd::::::dds:::::ssss::::::s
-          V:::::V       a:::::aaaa::::::a  n::::n    n::::ni::::::is::::::::::::::s h:::::h     h:::::hi::::::i n::::n    n::::n g::::::::::::::::g      F::::::::FF            u:::::::::::::::un::::n    n::::n d:::::::::::::::::ds::::::::::::::s 
-           V:::V         a::::::::::aa:::a n::::n    n::::ni::::::i s:::::::::::ss  h:::::h     h:::::hi::::::i n::::n    n::::n  gg::::::::::::::g      F::::::::FF             uu::::::::uu:::un::::n    n::::n  d:::::::::ddd::::d s:::::::::::ss  
-            VVV           aaaaaaaaaa  aaaa nnnnnn    nnnnnniiiiiiii  sssssssssss    hhhhhhh     hhhhhhhiiiiiiii nnnnnn    nnnnnn    gggggggg::::::g      FFFFFFFFFFF               uuuuuuuu  uuuunnnnnn    nnnnnn   ddddddddd   ddddd  sssssssssss    
-                                                                                                                                            g:::::g                                                                                                   
-                                                                                                                                gggggg      g:::::g                                                                                                   
-                                                                                                                                g:::::gg   gg:::::g                                                                                                   
-                                                                                                                                 g::::::ggg:::::::g                                                                                                   
-                                                                                                                                  gg:::::::::::::g                                                                                                    
-                                                                                                                                    ggg::::::ggg                                                                                                      
-                                                                                                                                       gggggg                                                                                                         
-    </pre>
-</div>
-
-</body>
+<html>
+ <% provide(:title, "Home") %> 
+ <body>
+  <div class ="container">
+      <%= yield %> 
+  </div>
+  
+  <div class="centre jumbotron">
+      <h1>Welcome to the Vanishing Funds web application</h1>
+      <h2>This is a space where employees can sign in and create meetings using zoom.</h2>
+      
+      <% if logged_in? %> 
+       <%= link_to "Create Meeting Now!", '/zooms2s/new_meeting', class: "btn btn-lg btn-primary" %>
+      <% else %> 
+       <%= link_to "Log in", "/login", class: "btn btn-lg btn-primary" %>
+      <% end %> 
+  </div>
+  
+  <div> 
+   <pre>            
+  VVVVVVVV           VVVVVVVV                                  iiii                  hhhhhhh               iiii                                            FFFFFFFFFFFFFFFFFFFFFF                                              d::::::d                 
+  V::::::V           V::::::V                                 i::::i                 h:::::h              i::::i                                           F::::::::::::::::::::F                                              d::::::d                 
+  V::::::V           V::::::V                                  iiii                  h:::::h               iiii                                            F::::::::::::::::::::F                                              d::::::d                 
+  V::::::V           V::::::V                                                        h:::::h                                                               FF::::::FFFFFFFFF::::F                                              d:::::d                  
+   V:::::V           V:::::Vaaaaaaaaaaaaa  nnnn  nnnnnnnn    iiiiiii     ssssssssss   h::::h hhhhh       iiiiiiinnnn  nnnnnnnn       ggggggggg   ggggg       F:::::F       FFFFFFuuuuuu    uuuuuunnnn  nnnnnnnn        ddddddddd:::::d     ssssssssss   
+    V:::::V         V:::::V a::::::::::::a n:::nn::::::::nn  i:::::i   ss::::::::::s  h::::hh:::::hhh    i:::::in:::nn::::::::nn    g:::::::::ggg::::g       F:::::F             u::::u    u::::un:::nn::::::::nn    dd::::::::::::::d   ss::::::::::s  
+     V:::::V       V:::::V  aaaaaaaaa:::::an::::::::::::::nn  i::::i ss:::::::::::::s h::::::::::::::hh   i::::in::::::::::::::nn  g:::::::::::::::::g       F::::::FFFFFFFFFF   u::::u    u::::un::::::::::::::nn  d::::::::::::::::d ss:::::::::::::s 
+      V:::::V     V:::::V            a::::ann:::::::::::::::n i::::i s::::::ssss:::::sh:::::::hhh::::::h  i::::inn:::::::::::::::ng::::::ggggg::::::gg       F:::::::::::::::F   u::::u    u::::unn:::::::::::::::nd:::::::ddddd:::::d s::::::ssss:::::s
+       V:::::V   V:::::V      aaaaaaa:::::a  n:::::nnnn:::::n i::::i  s:::::s  ssssss h::::::h   h::::::h i::::i  n:::::nnnn:::::ng:::::g     g:::::g        F:::::::::::::::F   u::::u    u::::u  n:::::nnnn:::::nd::::::d    d:::::d  s:::::s  ssssss 
+        V:::::V V:::::V     aa::::::::::::a  n::::n    n::::n i::::i    s::::::s      h:::::h     h:::::h i::::i  n::::n    n::::ng:::::g     g:::::g        F::::::FFFFFFFFFF   u::::u    u::::u  n::::n    n::::nd:::::d     d:::::d    s::::::s      
+         V:::::V:::::V     a::::aaaa::::::a  n::::n    n::::n i::::i       s::::::s   h:::::h     h:::::h i::::i  n::::n    n::::ng:::::g     g:::::g        F:::::F             u::::u    u::::u  n::::n    n::::nd:::::d     d:::::d       s::::::s   
+          V:::::::::V     a::::a    a:::::a  n::::n    n::::n i::::i ssssss   s:::::s h:::::h     h:::::h i::::i  n::::n    n::::ng::::::g    g:::::g        F:::::F             u:::::uuuu:::::u  n::::n    n::::nd:::::d     d:::::d ssssss   s:::::s 
+           V:::::::V      a::::a    a:::::a  n::::n    n::::ni::::::is:::::ssss::::::sh:::::h     h:::::hi::::::i n::::n    n::::ng:::::::ggggg:::::g      FF:::::::FF           u:::::::::::::::uun::::n    n::::nd::::::ddddd::::::dds:::::ssss::::::s
+            V:::::V       a:::::aaaa::::::a  n::::n    n::::ni::::::is::::::::::::::s h:::::h     h:::::hi::::::i n::::n    n::::n g::::::::::::::::g      F::::::::FF            u:::::::::::::::un::::n    n::::n d:::::::::::::::::ds::::::::::::::s 
+             V:::V         a::::::::::aa:::a n::::n    n::::ni::::::i s:::::::::::ss  h:::::h     h:::::hi::::::i n::::n    n::::n  gg::::::::::::::g      F::::::::FF             uu::::::::uu:::un::::n    n::::n  d:::::::::ddd::::d s:::::::::::ss  
+              VVV           aaaaaaaaaa  aaaa nnnnnn    nnnnnniiiiiiii  sssssssssss    hhhhhhh     hhhhhhhiiiiiiii nnnnnn    nnnnnn    gggggggg::::::g      FFFFFFFFFFF               uuuuuuuu  uuuunnnnnn    nnnnnn   ddddddddd   ddddd  sssssssssss    
+                                                                                                                                              g:::::g                                                                                                   
+                                                                                                                                  gggggg      g:::::g                                                                                                   
+                                                                                                                                  g:::::gg   gg:::::g                                                                                                   
+                                                                                                                                   g::::::ggg:::::::g                                                                                                   
+                                                                                                                                    gg:::::::::::::g                                                                                                    
+                                                                                                                                      ggg::::::ggg                                                                                                      
+                                                                                                                                         gggggg                                                                                                         
+   </pre>
+  </div>
+ 
+ </body>
+</html>

@@ -69,8 +69,8 @@ end
 
 class Zoom_Meetings < ZoomS2SOAuth
   def initialize 
-    @meeting_endpoint = @zoom_base_url + 'meetings/'
-    super 
+    super
+    @meeting_endpoint = @zoom_base_url + 'meetings/' 
   end 
   
   def startmeeting(access_tok, parameters, host_id)
@@ -118,8 +118,8 @@ end
 
 class Zoom_Users < ZoomS2SOAuth
   def initialize
-    @users_url = @zoom_base_url + 'users/'
     super
+    @users_url = @zoom_base_url + 'users/'
   end
   
   def get_user(access_tok, zoom_user_id)

@@ -1,10 +1,15 @@
-<% provide(:title, "Edit User") %> 
-<body>
-<div class ="container">
-    <%= yield %> 
-</div>
-<div class="centre jumbotron">
-  <h1>Update User</h1>
-  <%= render "form", user: @user %> <!-- renders _form.html.erb passing @user as user-->
-</div>
-</body>
+<html>
+  <% provide(:title, "Edit User") %> 
+  <body>
+    <div class ="container">
+        <%= yield %> 
+    </div>
+
+    <div class="centre jumbotron">
+      <h1>Update User</h1>
+      <%= render "form", user: @user %> <!-- renders _form.html.erb passing @user as user-->
+      
+      <p><%= link_to "Back", request.referer || root_path %></p>
+    </div>
+  </body>
+</html>

@@ -1,10 +1,13 @@
-<% provide(:title, "New Department") %> 
-<body>
-<div class ="container">
-    <%= yield %> 
-</div>
-<div class="centre jumbotron">
-  <h1>Create New Department</h1> <!-- from app/app/controllers/department_controller.rb -->
-  <%= render "form", department: @department %> <!-- renders _form.html.erb from /views/departments -->
-</div>
-</body>
+<html>
+  <% provide(:title, "New Department") %> 
+  <body>
+    <div class ="container">
+        <%= yield %> 
+    </div>
+    <div class="centre jumbotron">
+      <h1>Create New Department</h1> <!-- from app/app/controllers/department_controller.rb -->
+      <%= render "form", department: @department %> <!-- renders _form.html.erb from /views/departments -->
+      <p><%= link_to "Back", request.referer || root_path %></p>
+    </div>
+  </body>
+</html>

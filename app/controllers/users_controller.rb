@@ -16,7 +16,7 @@ class UsersController < ApplicationController
         @user = User.find(params[:id])
         begin
             resp = @zoom_user.get_user(session[:access_token], @user.EmailAddress)
-            meetings = @zoom_user.list_meetings(session[:access_token], @user.EmailAddress)
+            meetings = @zoom_user.list_meetings(session[:access_token], @user.EmailAddress) #calls zoom api
         rescue StandardError => e
             flash[:danger] = e.message
             redirect_to index_path
@@ -26,14 +26,16 @@ class UsersController < ApplicationController
         meetings_body = JSON.parse(meetings.body)
         @meetings = meetings_body['meetings']
         
+        @department = Department.find(@user.department_id)
     rescue => e
         flash[:danger] = e.message
-        redirect_to index_path
+        redirect_to @department
     end
     
     def new 
         @user = User.new
         @departments = Department.all
+        render layout: 'application'
     end 
     
     def create #test
@@ -51,8 +53,7 @@ class UsersController < ApplicationController
         begin 
             @zoom_user.create_user(session[:access_token], details)
         rescue StandardError => e
-            flash[:danger] = e.message
-            render :new
+            render :new, layout: 'application'
             return
         end
         flash[:success] = "User successfully created" 
@@ -60,7 +61,7 @@ class UsersController < ApplicationController
         
     rescue => e
         flash[:danger] = e.message
-        render :new 
+        render :new, layout: 'application'
     end
     
     def edit #FIX authentication code not valid
@@ -82,15 +83,14 @@ class UsersController < ApplicationController
             @zoom_user.patch_user(session[:access_token], details)
         rescue StandardError => e
             flash[:danger] = e.message
-            render :edit
+            render :edit, layout: 'application'
             return
         end
         flash[:success] = "Changes saved"
         redirect_to users_path   
         
     rescue => e
-        flash[:danger] = e.message
-        render :edit 
+        render :edit, layout: 'application' 
     end
     
     def destroy 
@@ -100,7 +100,7 @@ class UsersController < ApplicationController
             @zoom_user.delete_user(session[:access_token], @user.EmailAddress, transfer_to) #not sure whether to include or not
         rescue StandardError => e
             flash[:danger] = e.message
-            render :new
+            render :new, layout: 'application'
             return
         end
         

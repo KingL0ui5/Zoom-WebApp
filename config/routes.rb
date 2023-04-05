@@ -22,6 +22,8 @@ Rails.application.routes.draw do
   get '/zoom/callback', to: 'zoom#callback' #for normal OAuth procedures 
   get '/zoom', to: 'zoom#index'
   
+  get '/meetings', to: 'meetingrecords#index'
+  
   resources :departments do 
     resources :users
   end 

@@ -49,13 +49,6 @@ class DepartmentsController < ApplicationController
     
     def destroy
         @department = Department.find(params[:id])
-        @department.users do |user|
-            puts user
-            user.destroy
-        end
-        i = User.last.EmployeeID
-        ActiveRecord::Base.connection.execute("ALTER TABLE users AUTO_INCREMENT = #{(i)}") #in case any users are destroyed 
-        
         @department.destroy
         
         i = Department.last.id

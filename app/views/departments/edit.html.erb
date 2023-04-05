@@ -1,11 +1,14 @@
-<% provide(:title, "Edit Department") %> 
-<body>
-<div class ="container">
-    <%= yield %> 
-</div>
-  <div class="centre jumbotron">
-    <h1>Update Department</h1>
-    <%= render "form", department: @department %> 
-  </div>
-</body>
-
+<html>
+  <% provide(:title, "Edit Department") %> 
+  <body>
+    <div class ="container">
+        <%= yield %> 
+    </div>
+    
+    <div class="centre jumbotron">
+      <h1>Update Department</h1>
+      <%= render "form", department: @department %> 
+      <p><%= link_to "Back", request.referer || root_path %></p>
+    </div>
+  </body>
+</html>

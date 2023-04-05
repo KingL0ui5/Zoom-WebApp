@@ -1,59 +1,55 @@
-<body class="layouts">
-<form action="/users" accept-charset="UTF-8" method="post">
-  <%= hidden_field_tag :authenticity_token, form_authenticity_token %> <!--Submits random authenticity token for csrf checks in parameters (see applicaton controller)-->
-  
-  <p>
-    <label for="user_Name">Name</label><br>
-    <input type="text" name="user[Name]" id="user_Name">
-    <% @user.errors.full_messages_for(:Name).each do |message| %> <!-- gets errors from validator see /app/app/models/user.rb --></%>
-      <div style="color:red";><%= message[5,1000] %></div>
-    <% end %><br>
-  </p>
-  
-  <p>
-    <label for="user_password">Password</label><br>
-    <input type="text" name="user[password]" id="password">
-    <% @user.errors.full_messages_for(:password).each do |message| %> 
-      <div style="color:red";><%= message[8,1000] %></div>
-    <% end %><br>
-  </p>
-  
-  <p>
-    <label for="user_password_confirmation">Confirm Password</label><br>
-    <input type="text" name="user[password_confirmation]" id="user_password_confirmation">
-    <% @user.errors.full_messages_for(:password_confirmation).each do |message| %>
-      <div style="color:red";><%= message[22,1000] %></div>
-    <% end %><br>       
-  </p>
-  
-  <p>
-    <label for="user_EmailAddress">Email Address</label><br>
-    <input type="text" name="user[EmailAddress]" id="user_EmailAddress">
-    <% @user.errors.full_messages_for(:EmailAddress).each do |message| %>
-      <div style="color:red";><%= message[13,1000] %></div>
-    <% end %><br> 
-  </p>
-  
-  <p>
-    <label for="user_EmailAddress_confirmation">Confirm Email Address</label><br>
-    <input type="text" name="user[EmailAddress_confirmation]" id="user_EmailAddress_confirmation">
-    <% @user.errors.full_messages_for(:EmailAddress_confirmation).each do |message| %>
-      <div style="color:red";><%= message[25,1000] %></div>
-    <% end %><br>       
-  </p>
-
-  <%= form_for(@user) do |f| %>
-    <p>
-      <%= f.label :department_id %>
-      <%= f.collection_select(:department_id, Department.all, :id, :name) %>
-    </p>
-    <p><%= f.submit %></p>
-  <% end %> 
-
+<html>
+  <body class="layouts">
+    <form action="/users" accept-charset="UTF-8" method="post">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %> <!--Submits random authenticity token for csrf checks in parameters (see applicaton controller)-->
+      
+      <p>
+        <label for="user_Name">Name</label><br>
+        <input type="text" name="user[Name]" id="user_Name">
+        <% @user.errors.full_messages_for(:Name).each do |message| %> <!-- gets errors from validator see /app/app/models/user.rb --></%>
+          <div style="color:red";><%= message[5,1000] %></div>
+        <% end %><br>
+      </p>
+      
+      <p>
+        <label for="user_password">Password</label><br>
+        <input type="text" name="user[password]" id="password">
+        <% @user.errors.full_messages_for(:password).each do |message| %> 
+          <div style="color:red";><%= message[8,1000] %></div>
+        <% end %><br>
+      </p>
+      
+      <p>
+        <label for="user_password_confirmation">Confirm Password</label><br>
+        <input type="text" name="user[password_confirmation]" id="user_password_confirmation">
+        <% @user.errors.full_messages_for(:password_confirmation).each do |message| %>
+          <div style="color:red";><%= message[22,1000] %></div>
+        <% end %><br>       
+      </p>
+      
+      <p>
+        <label for="user_EmailAddress">Email Address</label><br>
+        <input type="text" name="user[EmailAddress]" id="user_EmailAddress">
+        <% @user.errors.full_messages_for(:EmailAddress).each do |message| %>
+          <div style="color:red";><%= message[13,1000] %></div>
+        <% end %><br> 
+      </p>
+      
+      <p>
+        <label for="user_EmailAddress_confirmation">Confirm Email Address</label><br>
+        <input type="text" name="user[EmailAddress_confirmation]" id="user_EmailAddress_confirmation">
+        <% @user.errors.full_messages_for(:EmailAddress_confirmation).each do |message| %>
+          <div style="color:red";><%= message[25,1000] %></div>
+        <% end %><br>       
+      </p>
     
-  
-</form>
-
-<p><%= link_to "Back", "/users" %></p>
-
-</body>
+      <%= form_for(@user) do |f| %>
+        <p>
+          <%= f.label :department_id %>
+          <%= f.collection_select(:department_id, Department.all, :id, :name) %>
+        </p>
+        <p><%= f.submit %></p>
+      <% end %> 
+    </form>
+  </body>
+</html>

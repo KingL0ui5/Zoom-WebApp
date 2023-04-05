@@ -1,7 +1,6 @@
 require 'zoom_S2S_oauth'
 
 class Zooms2sController < ApplicationController
-  layout 'application'
   before_action :check_access_tok, except: [:initialize]
   
   def initialize
@@ -36,14 +35,16 @@ class Zooms2sController < ApplicationController
     i = meetingparameters[:department_id] 
     department = Department.find_by(id: i) #no need for exceptions - form only allows existing departments
     zoom_user_id = session[:user_EmailAddress]
-    
+
+    meetingparameters[:start_time], meetingparameters[:timezone] = format_date(meetingparameters[:start_time], meetingparameters[:timezone])
     parameters = meetingparameters.except(:message, :department_id, :utf8, :authenticity_token, :commit).symbolize_keys #removing clutter and fields that are not submitted to the zoom api & symbolizes keys
     
     begin
-      parameters[:start_time], parameters[:timezone] = format_date(parameters[:start_time], parameters[:timezone])
+      
       meetinginfo = @meeting.startmeeting(session[:access_token], parameters, zoom_user_id)
       
       details = { 
+        meeting_id: meetinginfo['id'],
         message: meetingparameters[:message],
         host: zoom_user_id,
         topic: meetinginfo['topic'],
@@ -54,11 +55,11 @@ class Zooms2sController < ApplicationController
         start_url: meetinginfo['start_url']
       }
       
-      
-      
       send_emails(department, details, parameters[:type])
       
-      Meetingrecord.new())
+      recordparams = meetingparameters.store(:EmployeeID, session[:user_EmployeeID])
+      recordparams.store(:zoom_meeting_id, meetinginfo['id'])
+      Meetingrecord.new(recordparams)
       
       flash[:success] = "Meeting successfully created!"
       redirect_to root_path
@@ -118,7 +119,6 @@ class Zooms2sController < ApplicationController
             MeetingMailer.meeting_host_email(host_email, details, username).deliver_now
           else #join link not needed
             MeetingMailer.meeting_confirmation_email(host_email, details, username).deliver_now #delivers seperate email to meetinghost
-            hold_email(details)
           end
         else
           MeetingMailer.meeting_email(user.Name, user.EmailAddress, details, username).deliver_now
@@ -154,10 +154,4 @@ class Zooms2sController < ApplicationController
         return true 
       end
     end
-    
-    def hold_email(meeting_details)
-      start_time = meeting_details['start_time']
-      
-      session[:email_timer] = DateTime.parse(start_time)
-    end 
 end

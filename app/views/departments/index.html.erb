@@ -1,31 +1,34 @@
+<html> 
 <% provide(:title, "Employees") %> 
-<body>
-  <div class="centre jumbotron">
-    <h1>Departments</h1>
-
-    <table>
-      <tr>
-        <th>Name</th>
-        <th>ID</th>
-        <th>More Details</th>
-      </tr>
-      
-      <% @departments.each do |department| %>
+  <body>
+    <div class="centre jumbotron">
+      <h1>Departments</h1>
+  
+      <table>
         <tr>
-          <th><%= department.name %></th>
-          <th><%= department.id %></th>
-          <th><%= link_to "->", department %></th>
+          <th>Name</th>
+          <th>ID</th>
+          <th>More Details</th>
         </tr>
+        
+        <% @departments.each do |department| %>
+          <tr>
+            <th><%= department.name %></th>
+            <th><%= department.id %></th>
+            <th><%= link_to "->", department %></th>
+          </tr>
+        <% end %>
+      </table>
+  
+      <% if logged_in? %>
+        <p>
+          <%= link_to "New Department", new_department_path %>
+        </p>
       <% end %>
-    </table>
-
-    <% if logged_in? %>
-      <p>
-        <%= link_to "New Department", new_department_path %>
+  
+      <p> 
+        <%= link_to "Back", request.referer || root_path %> 
       </p>
-    <% end %>
-
-    <p> 
-      <%= link_to "Back", "/home" %> 
-    </p>
+    </div>
   </body>
+</html>

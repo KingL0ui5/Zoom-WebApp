@@ -1,34 +1,38 @@
-<% provide(:title, "User") %> 
-<body>
-<div class ="container">
-    <%= yield %> 
-</div>
-<div class="centre jumbotron">
-  <h1>EmployeeID: <%= @user.EmployeeID %></h1>
-  <div>  
-    <p><%= @resp_body['role_name'] %>: <%= @user.Name %></p>
-    <p>EmailAddress: <%= @user.EmailAddress %></p>
-    <p>Department: <%= @user.department.name%></p>
-    <p>Zoom Account ID: <%= @resp_body['account_id'] %></p>
-  </div>
-  
-  <h2>Upcoming Meetings</h2>
-  <table> 
-    <th>Meeting</th>
-    <% @meetings.each do |meeting| %>
-    <tr>
-      Topic: <%= meeting['topic'] %>, 
-      Start Time: <%= meeting['start_time'] + meeting['timezone'] %>, 
-      Duration: <%= meeting['duration'] %> minutes
-    </tr>
-  </table>
-
-  <div>
-    <% if logged_in? %>
-      <p><%= link_to "Edit", edit_user_path(@user) %></p>
-      <p><%= link_to "Destroy", @user, method: :delete, data: { confirm: 'Are you sure?' } %></p>
-    <% end %>
+<html>
+  <% provide(:title, "User") %> 
+  <body>
+    <div class ="container">
+        <%= yield %> 
+    </div>
     
-    <p><%= link_to "Back", @user.department %></p>
-  </div>
-</body>
+    <div class="centre jumbotron">
+      <h1>EmployeeID: <%= @user.EmployeeID %></h1>
+      <div>  
+        <p><%= @resp_body['role_name'] %>: <%= @user.Name %></p>
+        <p>EmailAddress: <%= @user.EmailAddress %></p>
+        <p>Department: <%= @user.department.name%></p>
+        <p>Zoom Account ID: <%= @resp_body['account_id'] %></p>
+      </div>
+      
+      <h2>Upcoming Meetings</h2>
+      <table> 
+        <th>Meeting</th>
+        <% @meetings.each do |meeting| %>
+        <tr>
+          Topic: <%= meeting['topic'] %>, 
+          Start Time: <%= meeting['start_time'] + meeting['timezone'] %>, 
+          Duration: <%= meeting['duration'] %> minutes
+        </tr>
+      </table>
+    
+      <div>
+        <% if logged_in? %>
+          <p><%= link_to "Edit", edit_user_path(@user) %></p>
+          <p><%= link_to "Destroy", @user, method: :delete, data: { confirm: 'Are you sure?' } %></p>
+        <% end %>
+      </div>
+        
+      <p><%= link_to "Back", request.referer || root_path %></p>
+    </div>
+  </body>
+</html>
