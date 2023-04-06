@@ -6,24 +6,25 @@
     </div>
     
     <div class="centre jumbotron">
-      <h1>EmployeeID: <%= @user.EmployeeID %></h1>
+      <h1>EmployeeID: <%= @user.EmployeeID %></h1><br>
       <div>  
         <p><%= @resp_body['role_name'] %>: <%= @user.Name %></p>
         <p>EmailAddress: <%= @user.EmailAddress %></p>
         <p>Department: <%= @user.department.name%></p>
         <p>Zoom Account ID: <%= @resp_body['account_id'] %></p>
-      </div>
+      </div><br>
       
       <h2>Upcoming Meetings</h2>
       <table> 
-        <th>Meeting</th>
+        <th>Meetings</th>
         <% @meetings.each do |meeting| %>
         <tr>
           Topic: <%= meeting['topic'] %>, 
           Start Time: <%= meeting['start_time'] + meeting['timezone'] %>, 
           Duration: <%= meeting['duration'] %> minutes
         </tr>
-      </table>
+        <% end %>
+      </table><br>
     
       <div>
         <% if logged_in? %>

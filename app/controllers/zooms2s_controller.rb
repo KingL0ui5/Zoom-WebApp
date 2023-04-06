@@ -59,6 +59,19 @@ class Zooms2sController < ApplicationController
       
       recordparams = meetingparameters.store(:EmployeeID, session[:user_EmployeeID])
       recordparams.store(:zoom_meeting_id, meetinginfo['id'])
+      
+      settype = nil
+      case recordparams['type']
+      when 1
+        settype = "instant"
+      when 2
+        settype = "scheduled"  
+      when 3
+        settype = "recurring (no set time)"
+      end
+      
+      recordparams['meetingtype'] = settype 
+      
       Meetingrecord.new(recordparams)
       
       flash[:success] = "Meeting successfully created!"

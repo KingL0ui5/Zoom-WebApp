@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20230402181646) do
+ActiveRecord::Schema.define(version: 20230406165003) do
 
   create_table "departments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -19,15 +19,16 @@ ActiveRecord::Schema.define(version: 20230402181646) do
   end
 
   create_table "meetingrecords", primary_key: "meeting_id", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "zoom_meeting_id",               null: false
-    t.datetime "start_time",                    null: false
-    t.integer  "duration",                      null: false
-    t.string   "type",                          null: false
+    t.string   "zoom_meeting_id",                               null: false
+    t.datetime "start_time",                                    null: false
+    t.integer  "duration",                                      null: false
+    t.string   "meeting_type",                                  null: false
     t.integer  "department_id"
     t.integer  "EmployeeID"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
     t.text     "topic",           limit: 65535
+    t.boolean  "started",                       default: false
     t.index ["EmployeeID"], name: "index_meetingrecords_on_EmployeeID", using: :btree
     t.index ["department_id"], name: "index_meetingrecords_on_department_id", using: :btree
   end

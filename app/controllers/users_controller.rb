@@ -12,21 +12,23 @@ class UsersController < ApplicationController
         @users = User.all
     end
     
-    def show #test
+    def show 
         @user = User.find(params[:id])
+        @department = Department.find_by(id: @user.department_id)
+        
         begin
             resp = @zoom_user.get_user(session[:access_token], @user.EmailAddress)
             meetings = @zoom_user.list_meetings(session[:access_token], @user.EmailAddress) #calls zoom api
         rescue StandardError => e
             flash[:danger] = e.message
-            redirect_to index_path
+            redirect_to @department, layout: 'application'
             return 
         end
         @resp_body = JSON.parse(resp.body) #response body hash
         meetings_body = JSON.parse(meetings.body)
         @meetings = meetings_body['meetings']
+        render layout: 'application'
         
-        @department = Department.find(@user.department_id)
     rescue => e
         flash[:danger] = e.message
         redirect_to @department
@@ -38,20 +40,19 @@ class UsersController < ApplicationController
         render layout: 'application'
     end 
     
-    def create #test
+    def create
         i = user_parameters[:department_id] 
         department = Department.find_by(id: i)
         
-        hash = user_parameters.except(:department_id)
-        
-        @user = User.new(hash)
+        @user = User.new(user_parameters.except(:department_id))
         @user.department = department
-        @user.save!
         
         details = zoom_formatting(user_parameters)
+        puts details 
         
         begin 
             @zoom_user.create_user(session[:access_token], details)
+            @user.save
         rescue StandardError => e
             render :new, layout: 'application'
             return
@@ -59,8 +60,7 @@ class UsersController < ApplicationController
         flash[:success] = "User successfully created" 
         redirect_to @user.department
         
-    rescue => e
-        flash[:danger] = e.message
+    rescue 
         render :new, layout: 'application'
     end
     
@@ -97,7 +97,7 @@ class UsersController < ApplicationController
         @user = User.find(params[:id])
         
         begin
-            @zoom_user.delete_user(session[:access_token], @user.EmailAddress, transfer_to) #not sure whether to include or not
+            @zoom_user.delete_user(session[:access_token], @user.EmailAddress) 
         rescue StandardError => e
             flash[:danger] = e.message
             render :new, layout: 'application'
@@ -123,14 +123,14 @@ class UsersController < ApplicationController
         
         def zoom_formatting(form_hash)
             zoom_params = form_hash.except(:EmailAddress, :EmailAddress_confirmation, :password_confirmation, :department_id)
-        
+            
             zoom_params[:email] = form_hash[:EmailAddress] #foramatting for zoom
             zoom_params[:first_name], zoom_params[:last_name] = form_hash[:Name].split(" ") 
             formatted_zoom_params = {}
             zoom_params.each do |key, value| 
                 formatted_zoom_params[key.downcase] = value
             end
-            formatted_zoom_params[:display_name] = hash[:Name]
+            formatted_zoom_params[:display_name] = form_hash[:Name]
             return formatted_zoom_params
         end 
         

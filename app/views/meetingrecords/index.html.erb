@@ -6,20 +6,20 @@
   
       <table>
         <tr>
+          <th>ID</th>
           <th>Topic</th>
           <th>Host</th>
           <th>Start Time</th>
           <th>Duration</th>
-          <th>ID</th>
         </tr>
         
         <% @records.each do |meeting| %>
           <tr>
+            <th><%= meeting.zoom_meeting_id %></th>
             <th><%= meeting.topic %></th>
-            <th><%= meeting.user.Name %></th>
+            <th><%= User.find_by(EmployeeID: meeting.EmployeeID).Name %></th>
             <th><%= meeting.start_time %></th>
             <th><%= meeting.duration %></th>
-            <th><%= meeting.zoom_meeting_id %></th>
           </tr>
         <% end %>
       </table>

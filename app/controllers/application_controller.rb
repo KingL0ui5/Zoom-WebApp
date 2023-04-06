@@ -1,4 +1,5 @@
 require 'meetingrecord'
+require 'zoom_S2S_oauth'
 
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
@@ -31,14 +32,30 @@ class ApplicationController < ActionController::Base
     def check_timer
       @meetingrecords = Meetingrecord.all
       @meetingrecords.each do |meeting|
-        if meeting.start_time - Time.now <= 1.hour
+        if Time.now - meeting.start_time >= 1.week #deletes records from table after 1 week
+          meeting.destroy
+          i = Meetingrecord.last.meeting_id
+          ActiveRecord::Base.connection.execute("ALTER TABLE meetingrecords AUTO_INCREMENT = #{(i)}") 
+        end
         
-          resp = Zoom_Meetings.get_meeting(session[:access_token], meeting_id)
+        if meeting.start_time - Time.now <= 1.hour && !meeting.started #sends emails 1 hour before meeting
+          request = Zoom_Meetings.new
+          resp = request.get_meeting(session[:access_token], meeting.zoom_meeting_id)
           response_body = JSON.parse(resp.body)
           username = (User.find_by(EmailAddress: response_body['host_email'])).Name
         
           MeetingMailer.meeting_host_email(response_body['host_email'], response_body, username).deliver_now
+          meeting.started = True
         end
+      end
+    
+    rescue => e
+      if e.message.match(/Status: (\d+)/)[1] == 124
+        zoom = ZoomS2SOAuth.new
+        flash[:danger] = "Access token invalid, please try again"
+        session[:access_token], session[:access_token_expiry] = zoom.authorise
+      else 
+        flash[:danger] = e.message
       end
     end
 end

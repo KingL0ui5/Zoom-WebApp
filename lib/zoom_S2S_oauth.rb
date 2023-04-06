@@ -13,7 +13,6 @@ class ZoomS2SOAuth
     @client_secret = CONFIG['CLIENT_SECRET_S2S']
     
     @zoom_base_url = CONFIG['ZOOM_BASE_URL'] 
-    @zoom_token_url = CONFIG['ZOOM_TOKEN_URL']
   end
   
   def authorise
@@ -33,7 +32,7 @@ class ZoomS2SOAuth
   
   private 
     def get_access_token
-      url = @zoom_token_url
+      url = CONFIG['ZOOM_TOKEN_URL']
       authorisation = "#{@client_id}:#{@client_secret}" 
       encoded_authorisation = Base64.strict_encode64(authorisation) #encoding authorisation code 
       headers = {
@@ -74,7 +73,7 @@ class Zoom_Meetings < ZoomS2SOAuth
   end 
   
   def startmeeting(access_tok, parameters, host_id)
-    url = @zoom_base_url + 'users/liulouis1@gmail.com/meetings' #'users/#{host_id}/meetings'
+    url = @zoom_base_url + "users/#{host_id}/meetings"
     payload = JSON.generate(parameters) #parses form params to JSON
     headers = {
       'Authorization' => "Bearer #{access_tok}",
@@ -108,7 +107,7 @@ class Zoom_Meetings < ZoomS2SOAuth
     resp = HTTParty.get(
       url,
       headers: headers,
-      debut_output: $stdout
+      debug_output: $stdout
       )
     if resp.code != 200
       raise StandardError, "Status: #{resp['code']},\nError: #{resp['message']}"
@@ -123,7 +122,7 @@ class Zoom_Users < ZoomS2SOAuth
   end
   
   def get_user(access_tok, zoom_user_id)
-    url = @users_url + "liulouis1@gmail.com"#zoom_user_id
+    url = @users_url + zoom_user_id
     headers = {
       'Authorization' => "Bearer #{access_tok}",
       'Content-Type' => "application/json"     
@@ -147,7 +146,7 @@ class Zoom_Users < ZoomS2SOAuth
     return resp
   end
     
-  def create_user(access_tok, details) #test
+  def create_user(access_tok, details)
     url = @users_url
     details[:type] = 2
     headers = {
@@ -193,7 +192,7 @@ class Zoom_Users < ZoomS2SOAuth
     end
   end 
   
-  def delete_user(access_tok, zoom_user_id, transfer_to) #CHECK, test
+  def delete_user(access_tok, zoom_user_id) #CHECK, test
     url = @users_url + zoom_user_id
     
     headers = {
@@ -240,7 +239,10 @@ class Zoom_Users < ZoomS2SOAuth
       )
       
     puts resp 
-    if resp.code != 200
+    
+    if resp.code == 1001 
+      raise StandardError, "Error: #{resp['message']} Ensure that user has activated their account"
+    elsif resp.code != 200
       raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
     end 
     return resp 

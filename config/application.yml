@@ -1,14 +1,12 @@
 development: 
-  ACCOUNT_ID: 'aEDeWyabSIejB839_Pnw2w'
-  CLIENT_ID_S2S: 'Ndm7Nt6WStuYgoEckNuYfQ' #configured in app, does not change
-  CLIENT_SECRET_S2S: 'lkW9IzW3TsCYR50dBTbbwd6CtN1ztdU6' #confugured in app, can be regenerated
+  ACCOUNT_ID: 'ImtcIVvNTLy_OGC5IaVY6A'
+  CLIENT_ID_S2S: 'sde4M43TSqWALn3PFpEoQQ' #configured in app, does not change
+  CLIENT_SECRET_S2S: 'HrFH45YValPaQn5GLBRzjU2iZa7JGADe' #confugured in app, can be regenerated
   
-  CLIENT_ID_OAUTH: "h5mCujLdRfubftjQt_f_0w"
-  CLIENT_SECRET_OAUTH: "7u9AhiGL7d406UftKG8NwaQbtOmqAmbl"
   REDIRECT_URI: 'https://c68dc96b16ad48c6ba78dbbb297e85d4.vfs.cloud9.us-east-1.amazonaws.com/zoom/callback'
   ZOOM_BASE_URL: 'https://api.zoom.us/v2/'  
   
-  MEETING_ENDPOINT: '/v2/users/liulouis1@gmail.com/meetings'
+  MEETING_ENDPOINT: '/v2/users/robert.liu@zoomtamtest.com/meetings'
   ZOOM_TOKEN_URL: 'https://api.zoom.us/oauth/token'
   
 test:
