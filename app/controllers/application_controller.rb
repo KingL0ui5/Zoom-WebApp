@@ -50,10 +50,12 @@ class ApplicationController < ActionController::Base
       end
     
     rescue => e
-      if e.message.match(/Status: (\d+)/)[1] == 124
-        zoom = ZoomS2SOAuth.new
-        flash[:danger] = "Access token invalid, please try again"
-        session[:access_token], session[:access_token_expiry] = zoom.authorise
+      if e.message
+        if e.message.match(/Status: (124)/)
+          zoom = ZoomS2SOAuth.new
+          flash[:danger] = "Access token invalid, please try again"
+          session[:access_token], session[:access_token_expiry] = zoom.authorise
+        end    
       else 
         flash[:danger] = e.message
       end

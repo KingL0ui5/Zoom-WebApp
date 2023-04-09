@@ -19,9 +19,11 @@
         <th>Meetings</th>
         <% @meetings.each do |meeting| %>
         <tr>
-          Topic: <%= meeting['topic'] %>, 
-          Start Time: <%= meeting['start_time'] + meeting['timezone'] %>, 
-          Duration: <%= meeting['duration'] %> minutes
+          <th>
+            Topic: <%= meeting['topic'] %>,
+            Start Time: <%= meeting['start_time'] %> <%= meeting['timezone'] %>,
+            Duration: <%= meeting['duration'] %> minutes
+          </th>
         </tr>
         <% end %>
       </table><br>

@@ -58,5 +58,19 @@ Rails.application.configure do
  # config.action_mailer.raise_delivery_errors = false #for sending emails 
   host = 'https://c68dc96b16ad48c6ba78dbbb297e85d4.vfs.cloud9.us-east-1.amazonaws.com/'
   config.action_mailer.default_url_options = { host: host, protocol: 'https' }
+  config.action_mailer.perform_deliveries = true
   config.assets.check_precompiled_asset = false
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.smtp_settings = {
+    :address        => 'smtp.gmail.com',
+    :port           => 587,
+    :user_name      => "notifications.vanishingfunds@gmail.com",
+    :password       => "ayatgrlgkeivrgcn",
+    :authentication => 'plain',
+    :enable_starttls_auto => true,
+    :openssl_verify_mode => OpenSSL::SSL::VERIFY_NONE
+  }
+  config.action_mailer.default_options = { from: 'notifications.vanishingfunds@gmail.com' }
+
 end

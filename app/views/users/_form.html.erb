@@ -1,8 +1,7 @@
 <html>
   <body>
     <form action="/users" accept-charset="UTF-8" method="post">
-      <%= hidden_field_tag :authenticity_token, form_authenticity_token %> <!--Submits random authenticity token for csrf checks in parameters (see applicaton controller)-->
-      
+
       <p>
         <label for="user_Name">Name</label><br>
         <input type="text" name="user[Name]" id="user_Name">
@@ -13,7 +12,7 @@
       
       <p>
         <label for="user_password">Password</label><br>
-        <input type="text" name="user[password]" id="password">
+        <input type="password" name="user[password]" id="password">
         <% @user.errors.full_messages_for(:password).each do |message| %> 
           <div style="color:red";><%= message[8,1000] %></div>
         <% end %><br>
@@ -21,7 +20,7 @@
       
       <p>
         <label for="user_password_confirmation">Confirm Password</label><br>
-        <input type="text" name="user[password_confirmation]" id="user_password_confirmation">
+        <input type="password" name="user[password_confirmation]" id="user_password_confirmation">
         <% @user.errors.full_messages_for(:password_confirmation).each do |message| %>
           <div style="color:red";><%= message[22,1000] %></div>
         <% end %><br>       

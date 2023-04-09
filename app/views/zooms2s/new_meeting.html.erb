@@ -72,7 +72,7 @@
       
           <p>
             <%= label_tag :department_id, "Particpiants" %> 
-            <%= collection_select(:department_id, :department_id, Department.all, :id, :name, { prompt: "Select department" }, class: 'form-control') %><br>
+            <%= collection_select(@meetingrecord, :department_id, Department.all, :id, :name, { prompt: "Select department" }, class: 'form-control') %><br>
           </p>
           
           <p> 

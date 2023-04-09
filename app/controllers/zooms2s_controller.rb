@@ -10,8 +10,7 @@ class Zooms2sController < ApplicationController
   end
   
   def testing #for testing
-    check_if_user_exists(session[:access_token], "test")
-    session[:access_token] = nil
+    session[:access_token], session[:access_token_expiry] = @meeting.authorise 
   end
 
   def new_meeting
@@ -26,16 +25,15 @@ class Zooms2sController < ApplicationController
       return
     end 
   
-    if !check_if_user_exists(session[:access_token], session[:user_EmailAddress]) #check that user exists before attempting to create meeting
-      flash[:danger] = "Host user is not registered under zoom"
+    if !check_if_user_exists(session[:access_token], session[:EmailAddress]) #check that user exists before attempting to create meeting
+      flash[:danger] = "Host user is not registered with zoom"
       redirect_to '/zooms2s/new_meeting'
       return
     end
     
     i = meetingparameters[:department_id] 
     department = Department.find_by(id: i) #no need for exceptions - form only allows existing departments
-    zoom_user_id = session[:user_EmailAddress]
-
+    zoom_user_id = session[:EmailAddress]
     meetingparameters[:start_time], meetingparameters[:timezone] = format_date(meetingparameters[:start_time], meetingparameters[:timezone])
     parameters = meetingparameters.except(:message, :department_id, :utf8, :authenticity_token, :commit).symbolize_keys #removing clutter and fields that are not submitted to the zoom api & symbolizes keys
     
@@ -45,8 +43,9 @@ class Zooms2sController < ApplicationController
       
       details = { 
         meeting_id: meetinginfo['id'],
+        password: meetinginfo['password'],
         message: meetingparameters[:message],
-        host: zoom_user_id,
+        host_email: zoom_user_id,
         topic: meetinginfo['topic'],
         join_url: meetinginfo['join_url'],
         duration: meetinginfo['duration'],
@@ -55,24 +54,31 @@ class Zooms2sController < ApplicationController
         start_url: meetinginfo['start_url']
       }
       
-      send_emails(department, details, parameters[:type])
+      if department 
+        send_emails(department, details, parameters[:type])
+      end 
       
-      recordparams = meetingparameters.store(:EmployeeID, session[:user_EmployeeID])
+      recordparams = meetingparameters.except(:timezone, :message, :password, :type, :utf8, :authenticity_token, :commit)
+      recordparams.store(:EmployeeID, session[:user_EmployeeID])
       recordparams.store(:zoom_meeting_id, meetinginfo['id'])
       
       settype = nil
-      case recordparams['type']
-      when 1
+      case meetingparameters[:type]
+      when "1"
         settype = "instant"
-      when 2
+      when "2"
         settype = "scheduled"  
-      when 3
+      when "3"
         settype = "recurring (no set time)"
       end
       
-      recordparams['meetingtype'] = settype 
+      recordparams[:meeting_type] = settype
+      recordparams[:start_time] += meetingparameters[:timezone].to_s
       
-      Meetingrecord.new(recordparams)
+      newrecord = Meetingrecord.new(recordparams)
+      if !newrecord.save
+        raise StandardError, "Could not save meeting"
+      end
       
       flash[:success] = "Meeting successfully created!"
       redirect_to root_path
@@ -123,9 +129,9 @@ class Zooms2sController < ApplicationController
     end  
     
     def send_emails(department, details, type)
-      users = department.users 
-      username = (User.find_by(EmailAddress: details['host'])).Name
-      host_email = details['host']
+      users = department.users
+      username = (User.find_by(EmailAddress: details[:host_email])).Name
+      host_email = details[:host_email]
       users.each do |user| #iterates through all users in department 
         if user.EmailAddress == host_email
           if type == 1 #instant meeting so join link needed now
@@ -140,12 +146,14 @@ class Zooms2sController < ApplicationController
     end 
     
     def format_date(start_time, timezone)
-      if start_time
+      if start_time != ""
         start_time = DateTime.parse(start_time).strftime('%Y-%m-%dT%H:%M:%S') #parsing from ISO 8601 format to yyyy-MM-ddTHH:mm:ss format as required by zoom
         if timezone == "GMT"
           timezone = nil
           start_time << "Z" #adding "Z" to the end for GMT timezone as required by zoom 
         end
+      elsif start_time == ""
+        start_time = Time.now
       end
   
       return start_time, timezone

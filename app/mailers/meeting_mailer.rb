@@ -1,13 +1,12 @@
 class MeetingMailer < ApplicationMailer
   layout 'mailer'
-  default from: 'notifications@vanishingfunds.com'
   
   def meeting_email(recipitent_name, reciptitent_email, meeting_details, sender_name)
     @meetinginfo = meeting_details
     @recipitent_name = recipitent_name
     @sender_name = sender_name
     
-    mail(to: reciptitent_email, subject: "#{@sender_name} from VanishingFunds has invited you to a meeting!", from: @meetinginfo[:host])
+    mail(to: reciptitent_email, subject: "#{@sender_name} from VanishingFunds has invited you to a meeting!")
   end
   
   def meeting_host_email(email, details, name)

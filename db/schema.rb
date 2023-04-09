@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20230406165003) do
+ActiveRecord::Schema.define(version: 20230409160651) do
 
   create_table "departments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 20230406165003) do
 
   create_table "meetingrecords", primary_key: "meeting_id", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "zoom_meeting_id",                               null: false
-    t.datetime "start_time",                                    null: false
+    t.datetime "start_time"
     t.integer  "duration",                                      null: false
     t.string   "meeting_type",                                  null: false
     t.integer  "department_id"

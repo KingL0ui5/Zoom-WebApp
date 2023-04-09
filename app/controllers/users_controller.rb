@@ -48,11 +48,13 @@ class UsersController < ApplicationController
         @user.department = department
         
         details = zoom_formatting(user_parameters)
-        puts details 
+        if !@user.save
+            raise StandardError
+        end
         
-        begin 
+        begin
             @zoom_user.create_user(session[:access_token], details)
-            @user.save
+            
         rescue StandardError => e
             render :new, layout: 'application'
             return
@@ -65,14 +67,27 @@ class UsersController < ApplicationController
     end
     
     def edit #FIX authentication code not valid
+        puts "Authenticity token: #{session[:_csrf_token]}"
+    
+    
         @user = User.find(params[:id])
         @department = Department.find_by(params[:department_id])
         session[:user] = @user
+        
+        puts "session user: #{session[:user]}"
+        
+        render layout: 'application'
     end 
     
     def update
+        
+        puts "Authenticity token: #{session[:_csrf_token]}"
+        puts session[:user]
+        
         @user = session[:user]
         session[:user] = nil
+        
+        puts "user: #{@user}"
         
         @user.update(user_parameters)
         @user.valid?
@@ -104,16 +119,16 @@ class UsersController < ApplicationController
             return
         end
         
-        @user.destroy
+        @user.delete
         i = User.last.EmployeeID
         ActiveRecord::Base.connection.execute("ALTER TABLE users AUTO_INCREMENT = #{(i)}") #resets auto increment of primary key
         
         flash[:success] = "User successfully destroyed"
-        redirect_to department_path, status: :see_other
+        redirect_to "/departments", status: :see_other
         
     rescue => e
         flash[:danger] = e.message
-        redirect_to users_path, status: :see_other
+        redirect_to "/departments", status: :see_other
     end 
     
     private

@@ -135,7 +135,7 @@ class Zoom_Users < ZoomS2SOAuth
     
     resp = HTTParty.get(
     url,
-    query: JSON.generate(payload),
+    query: payload,
     headers: headers,
     debug_output: $stdout
     )
@@ -193,23 +193,16 @@ class Zoom_Users < ZoomS2SOAuth
   end 
   
   def delete_user(access_tok, zoom_user_id) #CHECK, test
-    url = @users_url + zoom_user_id
+    url = @users_url + zoom_user_id + "?action=delete"
     
     headers = {
       'Authorization' => "Bearer #{access_tok}",
       'Content-Type' => "application/json"
     }
     
-    payload = {
-      action: "delete",
-      encrypted_email: "false",
-      transfer_email: "#{transfer_to}" #not sure whether to include or not
-    }
-    
     resp = HTTParty.delete(
       url,
       headers: headers, 
-      query: JSON.generate(payload),
       debug_output: $stdout
       )
       
