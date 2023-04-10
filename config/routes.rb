@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :home
   resources :users
   resources :departments
+  
   get "/csrf_js", to: 'application#csrf_meta_tags'  #for csrf requests
   
   get '/login', to: "sessions#new" #for logins

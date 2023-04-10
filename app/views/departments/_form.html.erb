@@ -1,20 +1,23 @@
 <html>
   <body>
-    <form action="/departments" accept-charset="UTF-8" method="post">
+    <form action="/departments/<%= link %>" accept-charset="UTF-8", method="post">
       <%= hidden_field_tag :authenticity_token, form_authenticity_token %> <!--Submits random authenticity token for csrf checks in parameters (see applicaton controller)-->
-    
-      <div>
+      <% if !create %>
+        <%= hidden_field_tag :_method, :patch %> 
+      <% end %>
+          
+      <p>
         <label for="name">Department Name</label><br>
         <input type="text" name="department[name]" id="department_name">
         <% department.errors.full_messages_for(:name).each do |message| %>  <!-- gets errors from validator see /app/app/models/department.rb -->
           <div style="color:red";><%= message[10,1000] %></div>
         <% end %>
-      </div><br>
-      
-      <div>
-        <input type="submit" name="commit" value="Submit" data-disable-with="Submit">
-      </div>
-      
+      </p>
+          
+      <p>
+        <input type="Submit" name="commit" value=<%= action %> data-disable-with="Submit">
+      </p>
+       
     </form>
   </body>
 </html>

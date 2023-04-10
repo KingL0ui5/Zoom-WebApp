@@ -7,7 +7,7 @@
 
     <div class="centre jumbotron">
       <h1>Update User</h1>
-      <%= render "form", user: @user %> <!-- renders _form.html.erb passing @user as user-->
+      <%= render "form", user: @user, create: false, link: @user.EmployeeID, action: "Save Changes" %> <!-- renders _form.html.erb passing @user as user-->
       
       <p><%= link_to "Back", request.referer || root_path %></p>
     </div>

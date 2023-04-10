@@ -15,11 +15,12 @@ class DepartmentsController < ApplicationController
     end
     
     def new
+        puts "new"
         @department = Department.new
-        session[:department] = @department
     end 
     
     def create 
+        puts "creating"
         @department = Department.new(params.require(:department).permit(:name))
         @department.save!
         flash[:success] = "Department created successfully"
@@ -31,20 +32,20 @@ class DepartmentsController < ApplicationController
     end
     
     def edit #FIX
+        puts "editing"
         @department = Department.find(params[:id])
-        session[:department] = @department
     end 
     
     def update
-        @department = session[:department]
-        session[:department] = nil
-        
+        puts "updating"
+        @department = Department.find(params[:id])
         @department.update(params.require(:department).permit(:name))
-        @department.valid?
-    
-    rescue => e 
-        flash[:danger] = e.message
-        render :edit
+        
+        if !@department.valid?
+            render :edit
+        end
+        flash[:success] = "Changes saved"
+        redirect_to @department
     end
     
     def destroy

@@ -1,5 +1,7 @@
 <html>
   <% provide(:title, "Edit Department") %> 
+  <% provide(:action, "Save changes") %>
+  
   <body>
     <div class ="container">
         <%= yield %> 
@@ -7,7 +9,9 @@
     
     <div class="centre jumbotron">
       <h1>Update Department</h1>
-      <%= render "form", department: @department %> 
+      
+      <%= render "form", department: @department, create: false, link: @department.id, action: "Save Changes" %>
+      
       <p><%= link_to "Back", request.referer || root_path %></p>
     </div>
   </body>

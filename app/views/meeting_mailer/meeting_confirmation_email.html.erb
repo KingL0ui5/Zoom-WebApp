@@ -1,26 +1,27 @@
+<!DOCTYPE html>
 <html>
   <body>
-    <p>
-      Hello <%= @name %>, your meeting has been scheduled<br>
+    <div>
+      Hello <%= @name %>, your meeting has been scheduled
       
-      <div> 
-        This is the message that you have sent to all of the partipiants:<br>
+      <p> 
+        This is the message that you have sent to all partipiants:<br>
         <%= @meetinginfo[:message] %> 
-      </div>
+      </p>
       
-      Meeting description: <%= @meetinginfo[:topic] %>
+      <p>Meeting description: <%= @meetinginfo[:topic] %></p>
       
-      <div> 
+      <p> 
         Meeting starts at <%= @meetinginfo[:start_time] %> <%= @meetinginfo[:timezone] %>.
         
         <% if @meetinginfo[:password] != "" %>
-          The password to join the meeting is: <%= @meetinginfo[:password] %>. Please do not share this password with anyone. 
+          <%= "The password to join the meeting is: #{@meetinginfo[:password]}. Please do not share this password with anyone." %>
         <% end %>
         
         Meeting duration: <%= @meetinginfo[:duration] %> minutes
-      </div>
+      </p>
         
       Your unique join link will be sent one hour before the start of the meeting.
-    </p>
+    </div>
   </body>
 </html>

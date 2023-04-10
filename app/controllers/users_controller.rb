@@ -66,31 +66,21 @@ class UsersController < ApplicationController
         render :new, layout: 'application'
     end
     
-    def edit #FIX authentication code not valid
-        puts "Authenticity token: #{session[:_csrf_token]}"
-    
-    
+    def edit
         @user = User.find(params[:id])
         @department = Department.find_by(params[:department_id])
-        session[:user] = @user
-        
-        puts "session user: #{session[:user]}"
         
         render layout: 'application'
     end 
     
     def update
-        
-        puts "Authenticity token: #{session[:_csrf_token]}"
-        puts session[:user]
-        
-        @user = session[:user]
-        session[:user] = nil
-        
-        puts "user: #{@user}"
-        
+        @user = User.find(params[:id])
+
         @user.update(user_parameters)
-        @user.valid?
+        if !@user.valid?
+            render :edit, layout: "application"
+            return
+        end
         
         details = zoom_formatting(user_parameters)
         
@@ -101,11 +91,10 @@ class UsersController < ApplicationController
             render :edit, layout: 'application'
             return
         end
-        flash[:success] = "Changes saved"
-        redirect_to users_path   
         
-    rescue => e
-        render :edit, layout: 'application' 
+        flash[:success] = "Changes saved"
+        redirect_to @user   
+        
     end
     
     def destroy 
