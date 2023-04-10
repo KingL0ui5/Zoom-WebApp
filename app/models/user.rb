@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base 
     belongs_to :department 
-    has_many :meetingrecords, dependent: :destroy
+    has_many :meetingrecords, foreign_key: "EmployeeID", dependent: :destroy
     
     validates :Name, :EmailAddress, :department_id, :password, presence: { message: "This field cannot be empty" }
     

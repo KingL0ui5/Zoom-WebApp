@@ -15,12 +15,10 @@ class DepartmentsController < ApplicationController
     end
     
     def new
-        puts "new"
         @department = Department.new
     end 
     
     def create 
-        puts "creating"
         @department = Department.new(params.require(:department).permit(:name))
         @department.save!
         flash[:success] = "Department created successfully"
@@ -31,13 +29,11 @@ class DepartmentsController < ApplicationController
         render :new
     end
     
-    def edit #FIX
-        puts "editing"
+    def edit 
         @department = Department.find(params[:id])
     end 
     
     def update
-        puts "updating"
         @department = Department.find(params[:id])
         @department.update(params.require(:department).permit(:name))
         
@@ -50,7 +46,13 @@ class DepartmentsController < ApplicationController
     
     def destroy
         @department = Department.find(params[:id])
-        @department.destroy
+        
+        @department.users.each do |user| 
+            user.destroy #invokes destroy method in the controller 
+        end
+        
+        @department.meetingrecords.destroy_all
+        @department.delete
         
         i = Department.last.id
         ActiveRecord::Base.connection.execute("ALTER TABLE departments AUTO_INCREMENT = #{(i)} ") #resets the auto-increment function to the previous largest ie the last ID

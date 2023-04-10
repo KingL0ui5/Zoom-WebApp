@@ -173,7 +173,7 @@ class Zoom_Users < ZoomS2SOAuth
   end
   
   def patch_user(access_tok, details) #test
-    url = @users_url + details[:email ]
+    url = @users_url + details['email']
     headers = {
       'Authorization' => "Bearer #{access_tok}",
       'Content-Type' => "application/json"

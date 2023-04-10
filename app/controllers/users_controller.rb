@@ -86,6 +86,7 @@ class UsersController < ApplicationController
         
         begin 
             @zoom_user.patch_user(session[:access_token], details)
+            
         rescue StandardError => e
             flash[:danger] = e.message
             render :edit, layout: 'application'
@@ -100,6 +101,10 @@ class UsersController < ApplicationController
     def destroy 
         @user = User.find(params[:id])
         
+        if @user.EmployeeID == session[:user_EmployeeID]
+            raise StandardError, "You cannot delete your own account!"
+        end
+        
         begin
             @zoom_user.delete_user(session[:access_token], @user.EmailAddress) 
         rescue StandardError => e
@@ -108,6 +113,7 @@ class UsersController < ApplicationController
             return
         end
         
+        @user.meetingrecords.destroy_all
         @user.delete
         i = User.last.EmployeeID
         ActiveRecord::Base.connection.execute("ALTER TABLE users AUTO_INCREMENT = #{(i)}") #resets auto increment of primary key
@@ -117,7 +123,7 @@ class UsersController < ApplicationController
         
     rescue => e
         flash[:danger] = e.message
-        redirect_to "/departments", status: :see_other
+        redirect_to @user, status: :see_other
     end 
     
     private
@@ -129,12 +135,12 @@ class UsersController < ApplicationController
             zoom_params = form_hash.except(:EmailAddress, :EmailAddress_confirmation, :password_confirmation, :department_id)
             
             zoom_params[:email] = form_hash[:EmailAddress] #foramatting for zoom
-            zoom_params[:first_name], zoom_params[:last_name] = form_hash[:Name].split(" ") 
+            zoom_params[:first_name], zoom_params[:last_name] = form_hash[:Name]&.split(" ") 
             formatted_zoom_params = {}
             zoom_params.each do |key, value| 
                 formatted_zoom_params[key.downcase] = value
             end
-            formatted_zoom_params[:display_name] = form_hash[:Name]
+            formatted_zoom_params['display_name'] = form_hash[:Name]
             return formatted_zoom_params
         end 
         
