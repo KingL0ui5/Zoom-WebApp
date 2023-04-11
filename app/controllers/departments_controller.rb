@@ -39,9 +39,10 @@ class DepartmentsController < ApplicationController
         
         if !@department.valid?
             render :edit
+        else
+            flash[:success] = "Changes saved"
+            redirect_to @department
         end
-        flash[:success] = "Changes saved"
-        redirect_to @department
     end
     
     def destroy
