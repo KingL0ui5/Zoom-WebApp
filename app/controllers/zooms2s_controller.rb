@@ -2,6 +2,7 @@ require 'zoom_S2S_oauth'
 
 class Zooms2sController < ApplicationController
   before_action :check_access_tok, except: [:initialize]
+  before_action :check_if_logged_in
   
   def initialize
     @meeting = Zoom_Meetings.new #new instance of zoom s2s functions under base method
@@ -73,6 +74,11 @@ class Zooms2sController < ApplicationController
       end
       
       recordparams[:meeting_type] = settype
+      
+      if meetingparameters[:type] == "1" #instant so start time is now
+        recordparams[:start_time] = Time.now
+      end
+      
       recordparams[:start_time] += meetingparameters[:timezone].to_s
       
       newrecord = Meetingrecord.new(recordparams)
@@ -105,23 +111,31 @@ class Zooms2sController < ApplicationController
     end
     
     def check_for_errors
-      [:duration, :type].each do |field|
+      [:duration, :type, :topic].each do |field|
         if params[field].blank?
           @errors[field] = "This field must not be blank"
         end
       end
       
       if params[:topic].length > 200 
-        @errors[:topic] = "Length cannot be greater than 200 characters"
+        @errors[:topic] = "Length cannot exceed 200 characters"
       end
       
-      if params[:type] == 2 && params[:start_time] == nil
-        @errors[:start_time] = "Cannot be blank if meeting type is scheduled"
+      if params[:type] != 1 && params[:start_time] == nil
+        @errors[:start_time] = "Cannot be blank if meeting type is scheduled or recurring"
       end 
       
-      if params[:type] == 2 && params[:timezone] == nil
-        @errors[:timezone] = "Cannot be blank if meeting type is scheduled"
+      if params[:type] != 1 && params[:timezone] == nil
+        @errors[:timezone] = "Cannot be blank if meeting type is scheduled or recurring"
       end 
+      
+      if params[:start_time] < Time.now
+        @errors[:start_time] = "Cannot be in the past"
+      end
+      
+      if params[:password].length > 10 
+        @errors[:password] = "Length cannot exceed 10 characters"
+      end
       
       if !@errors.empty?
         return true
@@ -136,7 +150,7 @@ class Zooms2sController < ApplicationController
         if user.EmailAddress == host_email
           if type == 1 #instant meeting so join link needed now
             MeetingMailer.meeting_host_email(host_email, details, username).deliver_now
-          else #join link not needed
+          else #join link not needed until later
             MeetingMailer.meeting_confirmation_email(host_email, details, username).deliver_now #delivers seperate email to meetinghost
           end
         else

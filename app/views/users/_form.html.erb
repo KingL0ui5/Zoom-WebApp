@@ -30,27 +30,29 @@
         <% end %><br>       
       </p>
       
-      <p>
-        <label for="user_EmailAddress">Email Address</label><br>
-        <input type="text" name="user[EmailAddress]" id="user_EmailAddress">
-        <% @user.errors.full_messages_for(:EmailAddress).each do |message| %>
-          <div style="color:red";><%= message[13,1000] %></div>
-        <% end %><br> 
-      </p>
-      
-      <p>
-        <label for="user_EmailAddress_confirmation">Confirm Email Address</label><br>
-        <input type="text" name="user[EmailAddress_confirmation]" id="user_EmailAddress_confirmation">
-        <% @user.errors.full_messages_for(:EmailAddress_confirmation).each do |message| %>
-          <div style="color:red";><%= message[25,1000] %></div>
-        <% end %><br>       
-      </p>
+      <% if create %>
+        <p>
+          <label for="user_EmailAddress">Email Address</label><br>
+          <input type="text" name="user[EmailAddress]" id="user_EmailAddress">
+          <% @user.errors.full_messages_for(:EmailAddress).each do |message| %>
+            <div style="color:red";><%= message[13,1000] %></div>
+          <% end %><br> 
+        </p>
+        
+        <p>
+          <label for="user_EmailAddress_confirmation">Confirm Email Address</label><br>
+          <input type="text" name="user[EmailAddress_confirmation]" id="user_EmailAddress_confirmation">
+          <% @user.errors.full_messages_for(:EmailAddress_confirmation).each do |message| %>
+            <div style="color:red";><%= message[25,1000] %></div>
+          <% end %><br>       
+        </p>
+      <% end %>
     
       <%= form_for(@user) do |f| %>
-        <p>
-          <%= f.label :department_id %>
+        <p class:'form-control'>
+          <%= f.label :department_id %><br>
           <%= f.collection_select(:department_id, Department.all, :id, :name) %>
-        </p>
+        </p><br>
         <p><%= f.submit action %></p>
       <% end %>  
     </form>

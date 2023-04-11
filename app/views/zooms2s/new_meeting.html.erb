@@ -13,7 +13,7 @@
           <p>
             <%= label_tag :topic %>
             <%= text_field_tag :topic, nil, class: "form-control" %>
-            <small class="text-muted">Enter the topic of the meeting (optional)</small><br> 
+            <small class="text-muted">Enter the topic of the meeting</small><br> 
             <% if @errors[:topic].present? %> 
               <div style="color:red";><%= @errors[:topic] %></div>
             <% end %>
@@ -72,6 +72,7 @@
       
           <p>
             <%= label_tag :department_id, "Particpiants" %> 
+            <small class="text-muted">(optional)</small><br>
             <%= collection_select(@meetingrecord, :department_id, Department.all, :id, :name, { prompt: "Select department" }, class: 'form-control') %><br>
           </p>
           

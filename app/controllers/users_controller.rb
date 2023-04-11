@@ -75,7 +75,9 @@ class UsersController < ApplicationController
     
     def update
         @user = User.find(params[:id])
-
+        params[:user][:EmailAddress] = params[:user][:EmailAddress_confirmation] = @user.EmailAddress
+        
+        puts params
         @user.update(user_parameters)
         if !@user.valid?
             render :edit, layout: "application"
