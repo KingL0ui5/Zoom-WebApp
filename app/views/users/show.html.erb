@@ -31,7 +31,7 @@
       <div>
         <% if logged_in? %>
           <p><%= link_to "Edit", edit_user_path(@user) %></p>
-          <p><%= link_to "Destroy", @user, method: :delete, data: { confirm: 'Are you sure?' } %></p>
+          <p><%= link_to "Destroy", @user, method: :delete, data: { confirm: 'Are you sure? All associated meetings will be destroyed' } %></p>
         <% end %>
       </div>
         

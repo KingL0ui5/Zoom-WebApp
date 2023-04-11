@@ -1,5 +1,5 @@
 class MeetingrecordsController < ApplicationController
   def index
-    @records = Meetingrecord.all
+    @records = Meetingrecord.order(start_time: :desc ).all
   end
 end

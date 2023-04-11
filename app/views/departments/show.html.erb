@@ -30,7 +30,7 @@
         <% if logged_in? %>
           <p><%= link_to "New User", new_user_path %></p>
           <p><%= link_to "Edit", edit_department_path(@department) %></p>
-          <p><%= link_to "Destroy", @department, method: :delete, data: { confirm: 'Are you sure?' } %></p>
+          <p><%= link_to "Destroy", @department, method: :delete, data: { confirm: 'Are you sure? All associated Users and Meetings will be destroyed' } %></p>
         <% end %> 
         
         <p><%= link_to "Back", request.referer || root_path %></p>
