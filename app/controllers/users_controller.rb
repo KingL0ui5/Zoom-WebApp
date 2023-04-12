@@ -1,7 +1,7 @@
 require 'zoom_S2S_oauth'
 
 class UsersController < ApplicationController
-    before_action :check_if_logged_in, only: [:update, :create, :destroy] #ensures that user is logged in first
+    before_action :check_if_logged_in, only: [:edit, :new, :update, :create, :destroy] #ensures that user is logged in first
     before_action :check_access_tok, except: [:initialize]
     
     def initialize

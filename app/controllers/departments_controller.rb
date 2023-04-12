@@ -1,5 +1,5 @@
 class DepartmentsController < ApplicationController
-    before_action :check_if_logged_in, only: [:update, :create, :destroy] #ensures that user is logged in first
+    before_action :check_if_logged_in, only: [:edit, :update, :new, :create, :destroy] #ensures that user is logged in first
     
     def index
         @departments = Department.all
