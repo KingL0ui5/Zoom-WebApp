@@ -1,4 +1,5 @@
 class DepartmentsController < ApplicationController
+    include SessionsHelper
     before_action :check_if_logged_in, only: [:edit, :update, :new, :create, :destroy] #ensures that user is logged in first
     
     def index
@@ -47,6 +48,9 @@ class DepartmentsController < ApplicationController
     
     def destroy
         @department = Department.find(params[:id])
+        if current_user.department == @department 
+            raise StandardError, 'You cannot destroy the department in which your account is contained!'
+        end
         
         @department.users.each do |user| 
             user.destroy #invokes destroy method in the controller 

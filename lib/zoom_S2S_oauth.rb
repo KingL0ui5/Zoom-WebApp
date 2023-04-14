@@ -1,5 +1,3 @@
-require 'oauth2'
-require 'digest'
 require 'base64'
 require 'httparty'
 require 'json'
@@ -16,60 +14,72 @@ class ZoomS2SOAuth
   end
   
   def authorise
-    resp_body = get_access_token #calls method to get access token 
+    url = CONFIG['ZOOM_TOKEN_URL']
+    authorisation = "#{@client_id}:#{@client_secret}" 
+    encoded_authorisation = Base64.strict_encode64(authorisation) #encoding authorisation code 
+    headers = {
+      'Content-Type' => 'application/x-www-form-urlencoded',
+      'Host' => 'zoom.us',
+      'Authorization' => "Basic #{encoded_authorisation}"
+    }
+    payload = {
+      grant_type: 'account_credentials',
+      account_id: @account_id
+    }
+      
+    resp = HTTParty.post(
+    url, 
+    body: URI.encode_www_form(payload),
+    headers: headers,
+    debug_output: $stdout
+    )
+    status = resp.code
+    if status == 400
+      raise OAuth2::Error, "Error: #{resp['error']}"
+    end
+      
+    puts "Response: #{resp}"
+    resp_body = JSON.parse(resp.body)
   
     error = resp_body['reason'] #exception handling for errors on server end
     if error != nil
-      puts "Error #{error}"
-      redirect_to root_path, flash: { error: "Authorisation failed: #{error}" }
+      flash[:danger] = "Authorisation failed: #{error}" 
+      redirect_to root_path
     end 
       
     access_token = resp_body['access_token']
     expires_in = resp_body['expires_in']
     
     return access_token, set_session_expiration(expires_in)
-  end
-  
-  private 
-    def get_access_token
-      url = CONFIG['ZOOM_TOKEN_URL']
-      authorisation = "#{@client_id}:#{@client_secret}" 
-      encoded_authorisation = Base64.strict_encode64(authorisation) #encoding authorisation code 
-      headers = {
-        'Content-Type' => 'application/x-www-form-urlencoded',
-        'Host' => 'zoom.us',
-        'Authorization' => "Basic #{encoded_authorisation}"
-      }
-      payload = {
-        grant_type: 'account_credentials',
-        account_id: @account_id
-      }
-      
-      resp = HTTParty.post(
-      url, 
-      body: URI.encode_www_form(payload),
-      headers: headers,
-      debug_output: $stdout
-      )
-      status = resp.code
-      if status == 400
-        raise OAuth2::Error, "Error: #{resp['error']}, please check parameters"
-      end
-      
-      puts "Response: #{resp}"
-      resp_body = JSON.parse(resp.body)
-      return resp_body
-    end 
     
+  rescue StandardError => e #for handling rate limit
+    if e.message.include?("429")
+      flash[:danger] = "Warning: Zoom API rate limit exceeded. You cannot make any more requests for 24 hours on this account.\nYou are about to be signed out"
+      redirect_to root_path
+      sleep 30.seconds #waits for 30 seconds then signs out user, and resets access token.
+      reset_session
+    else 
+      raise e 
+    end
+  end 
+  
+  
+  private
     def set_session_expiration(expires_in)
       expires_in.seconds.from_now
     end
+
+  protected 
+    @account_id 
+    @client_id
+    @client_secret
+  
 end 
 
 class Zoom_Meetings < ZoomS2SOAuth
   def initialize 
     super
-    @meeting_endpoint = @zoom_base_url + 'meetings/' 
+    @meeting_url = @zoom_base_url + 'meetings/' 
   end 
   
   def startmeeting(access_tok, parameters, host_id)
@@ -95,10 +105,20 @@ class Zoom_Meetings < ZoomS2SOAuth
     resp_body = JSON.parse(resp.body)
     puts "Response: #{resp_body}"
     return resp_body 
+    
+  rescue StandardError => e
+    if e.message.include?("429")
+      flash[:danger] = "Warning: Zoom API rate limit exceeded. You cannot make any more requests for 24 hours on this account.\nYou are about to be signed out"
+      redirect_to root_path
+      sleep 30.seconds #waits for 30 seconds then signs out user, and resets access token.
+      reset_session
+    else 
+      raise e
+    end
   end
   
   def get_meeting(access_tok, meeting_id)
-    url = @meeting_endpoint + meeting_id
+    url = @meeting_url + meeting_id
     headers = {
       'Authorization' => "Bearer #{access_tok}",
       'Content-Type' => "application/json"
@@ -112,12 +132,24 @@ class Zoom_Meetings < ZoomS2SOAuth
     if resp.code != 200
       raise StandardError, "Status: #{resp['code']},\nError: #{resp['message']}"
     end
+  rescue StandardError => e
+    if e.message.include?("429")
+      flash[:danger] = "Warning: Zoom API rate limit exceeded. You cannot make any more requests for 24 hours on this account.\nYou are about to be signed out"
+      redirect_to root_path
+      sleep 30.seconds #waits for 30 seconds then signs out user, and resets access token.
+      reset_session
+    else 
+      raise e
+    end
   end
+  
+  private
+    @meeting_url
 end
 
 class Zoom_Users < ZoomS2SOAuth
   def initialize
-    super
+    super #runs initializer of ZoomS2SOAuth 
     @users_url = @zoom_base_url + 'users/'
   end
   
@@ -142,8 +174,20 @@ class Zoom_Users < ZoomS2SOAuth
     puts resp
     if resp.code != 200 
       raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
+    elsif resp.code == 1001 
+      raise StandardError, "Error: #{resp['message']} Ensure that user has activated their account"
     end 
     return resp
+    
+  rescue StandardError => e
+    if e.message.include?("429")
+      flash[:danger] = "Warning: Zoom API rate limit exceeded. You cannot make any more requests for 24 hours on this account.\nYou are about to be signed out"
+      redirect_to root_path
+      sleep 30.seconds #waits for 30 seconds then signs out user, and resets access token.
+      reset_session
+    else 
+      raise e
+    end    
   end
     
   def create_user(access_tok, details)
@@ -170,6 +214,16 @@ class Zoom_Users < ZoomS2SOAuth
     if resp.code != 201 
       raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
     end 
+    
+  rescue StandardError => e
+    if e.message.include?("429")
+      flash[:danger] = "Warning: Zoom API rate limit exceeded. You cannot make any more requests for 24 hours on this account.\nYou are about to be signed out"
+      redirect_to root_path
+      sleep 30.seconds #waits for 30 seconds then signs out user, and resets access token.
+      reset_session
+    else 
+      raise e
+    end    
   end
   
   def patch_user(access_tok, details) #test
@@ -189,6 +243,16 @@ class Zoom_Users < ZoomS2SOAuth
     puts resp   
     if resp.code != 204
       raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
+    end
+    
+  rescue StandardError => e
+    if e.message.include?("429")
+      flash[:danger] = "Warning: Zoom API rate limit exceeded. You cannot make any more requests for 24 hours on this account.\nYou are about to be signed out"
+      redirect_to root_path
+      sleep 30.seconds #waits for 30 seconds then signs out user, and resets access token.
+      reset_session
+    else 
+      raise e
     end
   end 
   
@@ -210,6 +274,15 @@ class Zoom_Users < ZoomS2SOAuth
     if resp.code != 204
       raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
     end 
+  rescue StandardError => e
+    if e.message.include?("429")
+      flash[:danger] = "Warning: Zoom API rate limit exceeded. You cannot make any more requests for 24 hours on this account.\nYou are about to be signed out"
+      redirect_to root_path
+      sleep 30.seconds #waits for 30 seconds then signs out user, and resets access token.
+      reset_session
+    else 
+      raise e
+    end
   end
   
   def list_meetings(access_tok, zoom_user_id) #test
@@ -238,6 +311,20 @@ class Zoom_Users < ZoomS2SOAuth
     elsif resp.code != 200
       raise StandardError, "Code: #{resp['code']}\nError: #{resp['message']}" 
     end 
-    return resp 
+    return resp
+    
+  rescue StandardError => e
+    if e.message.include?("429")
+      flash[:danger] = "Warning: Zoom API rate limit exceeded. You cannot make any more requests for 24 hours on this account.\nYou are about to be signed out"
+      redirect_to root_path
+      sleep 30.seconds #waits for 30 seconds then signs out user, and resets access token.
+      reset_session
+    else 
+      raise e
+    end
   end
+  
+  private 
+    @users_url
+  
 end

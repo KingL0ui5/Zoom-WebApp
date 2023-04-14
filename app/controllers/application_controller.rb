@@ -22,13 +22,6 @@ class ApplicationController < ActionController::Base
       end
     end
     
-    def check_if_logged_in
-      unless logged_in?
-        flash[:danger] = "Please log in"
-        redirect_to login_url
-      end
-    end
-    
     def check_timer
       @meetingrecords = Meetingrecord.all
       @meetingrecords.each do |meeting|
@@ -38,7 +31,7 @@ class ApplicationController < ActionController::Base
           ActiveRecord::Base.connection.execute("ALTER TABLE meetingrecords AUTO_INCREMENT = #{(i)}") 
         end
         
-        if meeting.start_time - Time.now <= 1.hour && !meeting.started #sends emails 1 hour before meeting
+        if meeting.start_time - Time.now <= 1.hour && !meeting.started && meeting.type != "instant" #sends emails 1 hour before meeting
           request = Zoom_Meetings.new
           resp = request.get_meeting(session[:access_token], meeting.zoom_meeting_id)
           response_body = JSON.parse(resp.body)
@@ -58,6 +51,14 @@ class ApplicationController < ActionController::Base
         end    
       else 
         flash[:danger] = e.message
+      end
+    end
+    
+  protected 
+    def check_if_logged_in
+      unless logged_in?
+        flash[:danger] = "Please log in"
+        redirect_to login_url
       end
     end
 end

@@ -61,10 +61,10 @@ class Zooms2sController < ApplicationController
       
       recordparams = meetingparameters.except(:timezone, :message, :password, :type, :utf8, :authenticity_token, :commit)
       recordparams.store(:EmployeeID, session[:user_EmployeeID])
-      recordparams.store(:zoom_meeting_id, meetinginfo['id'])
+      recordparams.store(:zoom_meeting_id, meetinginfo['id']) #for meetingrecords table formatting
       
       settype = nil
-      case meetingparameters[:type]
+      case meetingparameters[:type] #easier to read in the meetingrecords table
       when "1"
         settype = "instant"
       when "2"
@@ -82,14 +82,15 @@ class Zooms2sController < ApplicationController
       recordparams[:start_time] += meetingparameters[:timezone].to_s
       
       newrecord = Meetingrecord.new(recordparams)
+      
       if !newrecord.save
-        raise StandardError, "Could not save meeting"
+        raise StandardError, "Could not save meeting" #for any reason
       end
       
       flash[:success] = "Meeting successfully created!"
       redirect_to root_path
   
-    rescue StandardError => e #any errors from zoom
+    rescue StandardError => e #any errors from zoom/application when storing meeting in database
       flash[:danger] = e.message
       redirect_to '/zooms2s/new_meeting'
     end
@@ -143,9 +144,10 @@ class Zooms2sController < ApplicationController
     end  
     
     def send_emails(department, details, type)
-      users = department.users
-      username = (User.find_by(EmailAddress: details[:host_email])).Name
       host_email = details[:host_email]
+      users = department.users
+      username = (User.find_by(EmailAddress: host_email)).Name
+      
       users.each do |user| #iterates through all users in department 
         if user.EmailAddress == host_email
           if type == 1 #instant meeting so join link needed now
