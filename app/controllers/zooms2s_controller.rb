@@ -35,6 +35,7 @@ class Zooms2sController < ApplicationController
     i = meetingparameters[:department_id] 
     department = Department.find_by(id: i) #no need for exceptions - form only allows existing departments
     zoom_user_id = session[:EmailAddress]
+    
     meetingparameters[:start_time], meetingparameters[:timezone] = format_date(meetingparameters[:start_time], meetingparameters[:timezone])
     parameters = meetingparameters.except(:message, :department_id, :utf8, :authenticity_token, :commit).symbolize_keys #removing clutter and fields that are not submitted to the zoom api & symbolizes keys
     
@@ -45,13 +46,13 @@ class Zooms2sController < ApplicationController
       details = { 
         meeting_id: meetinginfo['id'],
         password: meetinginfo['password'],
-        message: meetingparameters[:message],
+        message: parameters[:message],
         host_email: zoom_user_id,
-        topic: meetinginfo['topic'],
+        topic: parameters[:topic],
         join_url: meetinginfo['join_url'],
-        duration: meetinginfo['duration'],
-        start_time: meetinginfo['start_time'],
-        timezone: meetinginfo['timezone'],
+        duration: parameters[:duration],
+        start_time: parameters[:start_time],
+        timezone: parameters[:timezone],
         start_url: meetinginfo['start_url']
       }
       
@@ -72,10 +73,6 @@ class Zooms2sController < ApplicationController
       end
       
       recordparams[:meeting_type] = settype
-      
-      if meetingparameters[:type] == "1" #instant so start time is now
-        recordparams[:start_time] = Time.now
-      end
       
       recordparams[:start_time] += meetingparameters[:timezone].to_s
       
@@ -158,6 +155,7 @@ class Zooms2sController < ApplicationController
       
       if type == "1" #instant meeting so join link needed now
         MeetingMailer.meeting_host_email(host_email, details, username).deliver_now
+        puts details
       else #join link not needed until later
         MeetingMailer.meeting_confirmation_email(host_email, details, username).deliver_now #delivers seperate email to meetinghost
       end

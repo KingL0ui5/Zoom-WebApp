@@ -29,17 +29,16 @@ class ApplicationController < ActionController::Base
           meeting.destroy
           i = Meetingrecord.last.meeting_id
           ActiveRecord::Base.connection.execute("ALTER TABLE meetingrecords AUTO_INCREMENT = #{(i)}") 
-        end
         
-        if meeting.start_time - Time.now <= 1.hour && !meeting.started && meeting.type != "instant" #sends emails 1 hour before meeting
-          puts "sending join link"
+        elsif (meeting.start_time - Time.now <= 3600) && (!meeting.started && meeting.meeting_type != "instant") #sends emails 1 hour before meeting
+          meeting.started = true
+          meeting.save
           request = Zoom_Meetings.new
           resp = request.get_meeting(session[:access_token], meeting.zoom_meeting_id)
           response_body = JSON.parse(resp.body)
           username = (User.find_by(EmailAddress: response_body['host_email'])).Name
         
           MeetingMailer.meeting_host_email(response_body['host_email'], response_body, username).deliver_now
-          meeting.started = True
         end
       end
     

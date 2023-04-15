@@ -132,6 +132,8 @@ class Zoom_Meetings < ZoomS2SOAuth
     if resp.code != 200
       raise StandardError, "Status: #{resp['code']},\nError: #{resp['message']}"
     end
+    
+    return resp 
   rescue StandardError => e
     if e.message.include?("429")
       flash[:danger] = "Warning: Zoom API rate limit exceeded. You cannot make any more requests for 24 hours on this account.\nYou are about to be signed out"
