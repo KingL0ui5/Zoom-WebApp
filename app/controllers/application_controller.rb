@@ -32,6 +32,7 @@ class ApplicationController < ActionController::Base
         end
         
         if meeting.start_time - Time.now <= 1.hour && !meeting.started && meeting.type != "instant" #sends emails 1 hour before meeting
+          puts "sending join link"
           request = Zoom_Meetings.new
           resp = request.get_meeting(session[:access_token], meeting.zoom_meeting_id)
           response_body = JSON.parse(resp.body)

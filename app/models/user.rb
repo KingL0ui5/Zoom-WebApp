@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
     belongs_to :department 
     has_many :meetingrecords, foreign_key: "EmployeeID", dependent: :destroy
     
-    validates :Name, :EmailAddress, :department_id, :password, presence: { message: "This field cannot be empty" }
+    validates :Name, :EmailAddress, :department_id, presence: { message: "This field cannot be empty" }
     
     validates :EmailAddress, confirmation: {case_sensitive: false, message: "Email addresses do not match"},
                              format: {with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, message: "This is not a valid email address"}, #regex for email address

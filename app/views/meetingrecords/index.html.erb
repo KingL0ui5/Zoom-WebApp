@@ -19,7 +19,9 @@
             <th><%= meeting.zoom_meeting_id %></th>
             <th><%= meeting.topic %></th>
             <th><%= User.find_by(EmployeeID: meeting.EmployeeID).Name %></th>
-            <th><%= Department.find_by(id: meeting.department_id).name %></th>
+            <th><%= if meeting.department_id 
+                      Department.find_by(id: meeting.department_id).name 
+                    end %></th>
             <th><%= meeting.start_time %></th>
             <th><%= meeting.duration %></th>
           </tr>

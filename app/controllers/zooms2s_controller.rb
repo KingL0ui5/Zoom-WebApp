@@ -55,9 +55,7 @@ class Zooms2sController < ApplicationController
         start_url: meetinginfo['start_url']
       }
       
-      if department 
-        send_emails(department, details, parameters[:type])
-      end 
+      send_emails(department, details, parameters[:type])
       
       recordparams = meetingparameters.except(:timezone, :message, :password, :type, :utf8, :authenticity_token, :commit)
       recordparams.store(:EmployeeID, session[:user_EmployeeID])
@@ -122,16 +120,18 @@ class Zooms2sController < ApplicationController
         @errors[:topic] = "Length cannot exceed 200 characters"
       end
       
-      if params[:type] != 1 && params[:start_time] == nil
+      if params[:type] != "1" && params[:start_time] == ""
         @errors[:start_time] = "Cannot be blank if meeting type is scheduled or recurring"
       end 
       
-      if params[:type] != 1 && params[:timezone] == nil
+      if params[:type] != "1" && params[:timezone] == nil
         @errors[:timezone] = "Cannot be blank if meeting type is scheduled or recurring"
       end 
       
-      if params[:start_time] < Time.now
-        @errors[:start_time] = "Cannot be in the past"
+      if params[:start_time] != ""
+        if params[:start_time] < Time.now
+          @errors[:start_time] = "Cannot be in the past"
+        end
       end
       
       if params[:password].length > 10 
@@ -145,19 +145,21 @@ class Zooms2sController < ApplicationController
     
     def send_emails(department, details, type)
       host_email = details[:host_email]
-      users = department.users
       username = (User.find_by(EmailAddress: host_email)).Name
       
-      users.each do |user| #iterates through all users in department 
-        if user.EmailAddress == host_email
-          if type == 1 #instant meeting so join link needed now
-            MeetingMailer.meeting_host_email(host_email, details, username).deliver_now
-          else #join link not needed until later
-            MeetingMailer.meeting_confirmation_email(host_email, details, username).deliver_now #delivers seperate email to meetinghost
+      if department #if department was selected
+        users = department.users
+        users.each do |user| #iterates through all users in department 
+          if user.EmailAddress != host_email
+            MeetingMailer.meeting_email(user.Name, user.EmailAddress, details, username).deliver_now
           end
-        else
-          MeetingMailer.meeting_email(user.Name, user.EmailAddress, details, username).deliver_now
         end
+      end
+      
+      if type == "1" #instant meeting so join link needed now
+        MeetingMailer.meeting_host_email(host_email, details, username).deliver_now
+      else #join link not needed until later
+        MeetingMailer.meeting_confirmation_email(host_email, details, username).deliver_now #delivers seperate email to meetinghost
       end
     end 
     

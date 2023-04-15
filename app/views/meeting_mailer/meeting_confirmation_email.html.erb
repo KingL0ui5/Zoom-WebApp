@@ -14,9 +14,9 @@
       <p> 
         Meeting starts at <%= @meetinginfo[:start_time] %> <%= @meetinginfo[:timezone] %>.
         
-        <% if @meetinginfo[:password] != "" %>
-          <%= "The password to join the meeting is: #{@meetinginfo[:password]}. Please do not share this password with anyone." %>
-        <% end %>
+        <%= if @meetinginfo[:password] != ""
+          "The password to join the meeting is: #{@meetinginfo[:password]}. Please do not share this password with anyone."
+          end %>
         
         Meeting duration: <%= @meetinginfo[:duration] %> minutes
       </p>

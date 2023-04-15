@@ -29,9 +29,6 @@ class UsersController < ApplicationController
         @meetings = meetings_body['meetings']
         render layout: 'application'
         
-    rescue => e
-        flash[:danger] = e.message
-        redirect_to @department
     end
     
     def new 

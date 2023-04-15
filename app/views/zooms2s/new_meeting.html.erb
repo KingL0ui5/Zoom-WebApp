@@ -53,7 +53,7 @@
           <p> 
             <%= label_tag :start_time %><br>
             <%= datetime_field_tag :start_time, nil, min: Time.now.iso8601, class: 'form-control'%>
-            <small class="text-muted">Enter only if meeting type is scheduled</small><br>
+            <small class="text-muted">Enter if meeting type is not instant</small><br>
             <% if @errors[:start_time].present? %> 
               <div style="color:red";><%= @errors[:start_time] %></div>
             <% end %>

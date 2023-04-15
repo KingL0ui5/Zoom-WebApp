@@ -10,9 +10,9 @@
         The meeting will last for <%= @meetinginfo[:duration] %> minutes.
       </p>  
       <p>  
-        <% if @meetinginfo[:password] != "" %>
-          <%= "The password to join the meeting is: #{@meetinginfo[:password]}. Please do not share this password with anyone." %> 
-        <% end %>
+        <%= if @meetinginfo[:password] != "" 
+          "The password to join the meeting is: #{@meetinginfo[:password]}. Please do not share this password with anyone." 
+        end %>
       </p>  
       <p href=https:/<%= @meetinginfo[:join_url] %> target="_blank">Press here to join the meeting!</p>
     </div>

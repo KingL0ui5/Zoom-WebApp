@@ -9,10 +9,6 @@ class DepartmentsController < ApplicationController
     def show
         @department = Department.find(params[:id])
         @users = @department.users 
-        
-    rescue => e 
-        flash[:danger] = e.message
-        redirect_to department_path
     end
     
     def new
@@ -26,7 +22,6 @@ class DepartmentsController < ApplicationController
         redirect_to @department
         
     rescue => e
-        flash[:danger] = e.message
         render :new
     end
     
