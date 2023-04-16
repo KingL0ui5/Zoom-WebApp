@@ -50,7 +50,7 @@ class UsersController < ApplicationController
         end
         
         begin
-            @zoom_user.create_user(session[:access_token], details)
+            #@zoom_user.create_user(session[:access_token], details)
             
         rescue StandardError => e
             render :new, layout: 'application'

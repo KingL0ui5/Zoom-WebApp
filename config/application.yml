@@ -9,8 +9,3 @@ development:
   MEETING_ENDPOINT: '/v2/users/robert.liu@zoomtamtest.com/meetings'
   ZOOM_TOKEN_URL: 'https://api.zoom.us/oauth/token'
   
-test:
-  CLIENT_ID: ''
-  CLIENT_SECRET: ''
-  REDIRECT_URI: ''
-  ZOOM_BASE_URL: ''

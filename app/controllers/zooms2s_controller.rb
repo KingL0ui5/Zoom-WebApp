@@ -16,6 +16,11 @@ class Zooms2sController < ApplicationController
 
   def new_meeting
     @errors = session.delete(:errors)&.transform_keys(&:to_sym) || { } #keys are transformed into strings when stored in session 
+    if !check_if_user_exists(session[:access_token], session[:EmailAddress]) #check that user exists before attempting to create meeting
+      flash[:danger] = "Host user is not registered with zoom cannot create meeting."
+      redirect_to root_path
+      return
+    end
     render layout: 'application'
   end
   
@@ -25,12 +30,6 @@ class Zooms2sController < ApplicationController
       redirect_to '/zooms2s/new_meeting'
       return
     end 
-  
-    if !check_if_user_exists(session[:access_token], session[:EmailAddress]) #check that user exists before attempting to create meeting
-      flash[:danger] = "Host user is not registered with zoom"
-      redirect_to '/zooms2s/new_meeting'
-      return
-    end
     
     i = meetingparameters[:department_id] 
     department = Department.find_by(id: i) #no need for exceptions - form only allows existing departments
