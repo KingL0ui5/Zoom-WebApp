@@ -1,24 +1,5 @@
-# README
+A Level Computer Science NEA written in Ruby on Rails 7.0
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Read below for full details:
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+https://1drv.ms/w/s!Ao2_8ehAU3lTh1MKlT0uSc-lqsJt
